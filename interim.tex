@@ -21,9 +21,9 @@
 
 \usepackage[backend=bibtex,style=authoryear,natbib=true]{biblatex} % Use the bibtex backend with the authoryear citation style (which resembles APA)
 
-\addbibresource{reference.bib}
+\addbibresource{interim.bib}
 
-\usepackage[autostyle=true]{csquotes}
+    \usepackage[autostyle=true]{csquotes}
 
 \geometry{
     paper=a4paper,
@@ -57,9 +57,8 @@
 
 \begin{document}
 
-    \frontmatter % Use roman page numbering style (i, ii, iii, iv...) for the pre-content pages
-
-    \pagestyle{plain} % Default to the plain heading style until the thesis style is called for the body content
+    \frontmatter
+    \pagestyle{plain}
 
 %----------------------------------------------------------------------------------------
 %	TITLE PAGE
@@ -72,22 +71,22 @@
             {\scshape\LARGE \univname\par}\vspace{1.5cm}
             \textsc{\Large MEng Final Year Project}\\[0.5cm]
 
-            \HRule \\[0.4cm] % Horizontal line
+            \HRule \\[0.4cm]
             {\huge \bfseries \ttitle\par}\vspace{0.4cm} % Thesis title
-            \HRule \\[1.5cm] % Horizontal line
+            \HRule \\[1.5cm]
 
             \begin{minipage}[t]{0.4\textwidth}
                 \begin{flushleft}
                     \large
                     \emph{Author:}\\
-                    \href{https://nico.dcotta.eu}{\authorname} % Author name - remove the \href bracket to remove the link
+                    \href{https://nico.dcotta.eu}{\authorname}
                 \end{flushleft}
             \end{minipage}
             \begin{minipage}[t]{0.4\textwidth}
                 \begin{flushright}
                     \large
                     \emph{Supervisor:} \\
-                    \href{https://www.doc.ic.ac.uk/~wjk/}{\supname} % Supervisor name - remove the \href bracket to remove the link
+                    \href{https://www.doc.ic.ac.uk/~wjk/}{\supname}
                 \end{flushright}
             \end{minipage}\\[3cm]
 
@@ -95,7 +94,7 @@
 
             \large \textit{A thesis submitted in fulfillment of the requirements\\ for the degree of \degreename}\\[0.3cm] % University requirement text
             \textit{in the}\\[0.4cm]
-            \\ \facname \\ \deptname\\[2cm]
+            \facname \\ \deptname\\[2cm]
 
             \vfill
 
@@ -156,6 +155,7 @@
     \include{chapters/evaluation}
     \include{chapters/ethical}
 
+    \appendix
 
     \printbibliography[heading=bibintoc]
 
