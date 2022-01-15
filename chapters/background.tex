@@ -7,7 +7,8 @@
 
 Hash functions are cryptographic functions designed to behave like random
 functions~\cite{smart2016randomOracleModel}.
-When building a security proof, they can be assumed to have the following properties~\cite{smart2016randomOracleModel, smart2016hashFunctions}:
+When building a security proof, they can be assumed to have the following properties~\cite{smart2016randomOracleModel,
+    smart2016hashFunctions}:
 % FIXME needs references
 \begin{description}
     \item[Determinism] A hash function always produces the same output for the same input
@@ -21,23 +22,122 @@ When building a security proof, they can be assumed to have the following proper
 
 % TODO will i need this
 
-\subsection{Public Key cryptography}\label{subsec:crypto:asym-keys}
+\subsection{Public Key Cryptography}\label{subsec:crypto:pubkey}
 
 In public key cryptography, two communicating parties (say Alice and Bob) can communicate privately by using pairs of
-numbers that are related mathematically and which allow converting cleartext into cyphertext and back~\cite{smart2016publicKey}.
+numbers that are related mathematically and which allow converting cleartext into cyphertext and
+back~\cite{smart2016publicKey}.
 This pair of numbers is called an asymmetric keypair, and is composed of a \textbf{public key} $e$ and a \textbf{private
 key} $d$.\\
 
 In this example, if Alice wishes to communicate with Bob, Bob can generate a keypair $(d, e)$ and publish $e$.
 Alice can then encrypt her cleartext with $e$, and only Bob will be able to decrypt it (because only Bob knows $d$).
 
+\begin{figure}[th]
+    \centering
+    \tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt
+    \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,355); %set diagram left start at 0, and has height of 355
+
+%Straight Lines [id:da017592532205451983]
+        \draw    (60.54,179.69) -- (359.87,179.69) ;
+
+% Text Node
+        \draw    (131,104) -- (234,104) -- (234,129.67) -- (131,129.67) -- cycle ;
+        \draw (135,108.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {\small \texttt{Hi from Alice}};
+% Text Node
+        \draw (185.33,52.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {$\displaystyle f_{\texttt{hash}}$};
+% Text Node
+        \draw (275,4.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {$\displaystyle A_{priv}$};
+% Text Node
+        \draw (332.33,263.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {$\displaystyle A_{pub}$};
+% Text Node
+        \draw (269,52) node [anchor=north west][inner sep=0.75pt]   [align=left] {$\displaystyle f_{\texttt{encrypt}}$};
+% Text Node
+        \draw    (241.67,104) -- (360.67,104) -- (360.67,129.33) -- (241.67,129.33) -- cycle ;
+        \draw (245.67,108.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {Encrypted digest};
+% Text Node
+        \draw (60,156) node [anchor=north west][inner sep=0.75pt]   [align=left] {Alice};
+% Text Node
+        \draw (59.67,186.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {Bob};
+% Text Node
+        \draw (159.67,209.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {$\displaystyle f_{\texttt{hash}}$};
+% Text Node
+        \draw (279.33,209.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {$\displaystyle f_{\texttt{decrypt}}$};
+% Text Node
+        \draw (231.67,252.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {equal?};
+% Text Node
+        \draw (59.67,307.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {Message is from Alice};
+% Text Node
+        \draw (208.67,280.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {\textit{{ yes}}};
+% Connection
+        \draw    (182.78,104.67) -- (195.03,78.15) ;
+        \draw [shift={(195.87,76.33)}, rotate = 114.8] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+% Connection
+        \draw    (223.33,62.25) -- (263,62.11) ;
+        \draw [shift={(265,62.1)}, rotate = 179.79] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+% Connection
+        \draw    (294.1,76) -- (298.98,102.37) ;
+        \draw [shift={(299.35,104.33)}, rotate = 259.5] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+% Connection
+        \draw    (291.87,26.33) -- (291.66,46) ;
+        \draw [shift={(291.64,48)}, rotate = 270.59] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+% Connection
+        \draw    (176.96,129.67) -- (176.72,203.67) ;
+        \draw [shift={(176.71,205.67)}, rotate = 270.19] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+% Connection
+        \draw    (301.69,129.33) -- (301.81,203.67) ;
+        \draw [shift={(301.81,205.67)}, rotate = 269.91] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+% Connection
+        \draw    (197.67,230.82) -- (228.87,247.4) ;
+        \draw [shift={(230.63,248.33)}, rotate = 207.98] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+% Connection
+        \draw    (285.62,233.67) -- (270.15,247.03) ;
+        \draw [shift={(268.64,248.33)}, rotate = 319.18] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+% Connection
+        \draw    (227.67,272.83) -- (162.1,302.51) ;
+        \draw [shift={(160.28,303.33)}, rotate = 335.64] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+% Connection
+        \draw    (337.23,259.33) -- (315.66,235.16) ;
+        \draw [shift={(314.33,233.67)}, rotate = 48.25] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+    \end{tikzpicture}
+    \decoRule
+    \caption[Asymmetric signing scheme]{An asymmetric key signing scheme where Bob is able to verify only Alice could have written '\texttt{Hi from Alice}'}
+    \label{fig:pubkey-signing}
+\end{figure}
+
 Conversely, the same keypair can be used by Bob to send a message to Alice where Alice can verify that only Bob
 could have written the message.
 This is called \textit{signing}~\cite{smart2016signatures} and, more generally, it allows a sender of a message to
 prove they are the authors of the message to a recipient.
+An example of a signing scheme can be seen in Figure~\ref{fig:pubkey-signing}.
 
 \subsection{Secure Digital Timestamps}\label{subsec:crypto:timestamps}
-%TODO
+% TODO citation for definiton
+\textit{Trusted (digital) timestamping} is the process of securely proving that a document (for our purposes, a blob of bytes) was
+created, was modified at, or existed at a certain point in time.
+% TODO citation for widely used
+In industry this is commonly implemented by trusting a Time Stamping Authority (TSA)~\cite{timestamps_tsp_rfc} that
+signs (see~\nameref{subsec:crypto:pubkey}) a concatenation of the hash of the document and a timestamp representing some
+time $t$.
+Therefore a party that trusts the TSA to provide the right timestamp can verify that, when the TSA made the signature,
+the current time was $t$.
+\\
+
+This method can be used for confidential data because the TSA does not perform the hashing of the original document
+themselves - they are exposed only to its digest.
+
+Additionally, the requester of the timestamp cannot deny they were not in possession of the original data at the time
+% TODO verify statement
+$t$ given by the timestamp, because it was them that produced its hash digest.
+
+\subsubsection{Decentralised Timestamps}
+
+Secure timestamps can also be achieved without relying on trusted parties by publishing
+the document digest to a blockchain~\cite{gipp2015timestamps_btc}: blocks are public and cannot be tampered with (see~\nameref{subsec:btc:pow}), so
+putting a signed digest in a block shows that the signer knew the original document at the time the block was accepted
+by the network.
 
 
 \section{Bitcoin Protocol}\label{sec:bitcoin}
@@ -56,13 +156,9 @@ key, the hash of the previous transaction, and the payee's public key to create 
 the payee (and used by them for \textit{their} next transaction).
 This is illustrated in Figure~\ref{fig:bitcoin-tx}.
 
-
-
-
 \begin{figure}[th]
     \centering
     \includegraphics[width=0.8\columnwidth]{figures/bitcoin-tx}
-    \decoRule
     \caption[Bitcoin coin ownership transfer]{Transfer of ownership signature chain, from~\cite{nakamoto2008bitcoin}}
     \label{fig:bitcoin-tx}
 \end{figure}
