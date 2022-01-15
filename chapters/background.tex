@@ -1,6 +1,10 @@
 \chapter{Background}\label{ch:background}
 
-\section{Bitcoin Protocol}\label{sec:bitcoin-protocol}
+
+\section{Cryptography Primitives}\label{sec:cryptography}
+
+
+\section{Bitcoin Protocol}\label{sec:bitcoin}
 
 Blockchain technology was introduced by~\cite{nakamoto2008bitcoin} as a decentralised system allowing for electronic
 cash payments.
@@ -9,7 +13,7 @@ and it is computationally hard to tamper with balances to perform attacks (such 
 participant spends more funds than what they own). \\
 I will provide a brief overview of how Bitcoin provides these guarantees.
 
-\subsection{Transactions}
+\subsection{Transactions}\label{subsec:btc:txs}
 
 \cite{nakamoto2008bitcoin} defines an \textit{electronic coin} as a chain of signatures: a payer can use their private key, the
 hash of the previous transaction, and the payee's public key to create a signed hash that can be verified by the payee
@@ -20,11 +24,11 @@ This is illustrated in Figure~\ref{fig:bitcoin-tx}.
 
 
 \begin{figure}[th]
-\centering
-\includegraphics[width=0.8\columnwidth]{figures/bitcoin-tx}
-\decoRule
-\caption[Transaction signing in Bitcoin]{Transaction signing in Bitcoin, from~\cite{nakamoto2008bitcoin}}
-\label{fig:bitcoin-tx}
+    \centering
+    \includegraphics[width=0.8\columnwidth]{figures/bitcoin-tx}
+    \decoRule
+    \caption[Bitcoin coin ownership transfer]{Transfer of ownership signature chain, from~\cite{nakamoto2008bitcoin}}
+    \label{fig:bitcoin-tx}
 \end{figure}
 
 This ensures that, as long as a participants sign transactions at most once:
@@ -42,30 +46,56 @@ Participants can then verify a payer has not signed a hash of a single transacti
 transactions.\\
 Blocks are made immutable by including in them a value (called a \textit{nonce}) and the hash of the previous block.
 % TODO verify it is the hash of the entire block that must yield the zeroes (implementation detail really)
-The protocol then accepts only blocks where the hash's $n$ first bits are zeroes. \\
+The protocol then accepts only blocks where the $n$ first bits of its hash are zeroes. \\
 
 Thus, in order to publish a block a participant must do work to find a nonce such that the block's hash meets this
-condition, and other participants can verify its validity with a single hash operation.
+condition - then other participants can verify its validity with a single hash operation.
 This guarantees that a block cannot be changed (ie, a new copy published) without redoing the computational work.
 Because blocks are chained (they include the hash of the previous block), in order to modify a transaction in the past
 an adversary needs to redo the computational work for every block since that transaction.
+% TODO implementation of mining rewards
+Additionally, participants that successfully find a suitable nonce and propose new blocks (also referred to as
+\textit{miners}) are allowed to add a specific transaction to the block where they own a newly created coin (also
+referred to as \textit{mining reward}).
+
+This model of consensus ensures that
+\begin{itemize}
+    \item Participants have a monetary incentive to stay honest with respect to the protocol
+    \item An honest chain will out-compete an adversary's chain as long as the majority of computing power is honest
+\end{itemize}
+
+\subsection{Further details of the Bitcoin protocol}\label{subsec:btc.details}
+
+While I provide a high-level overview of what makes the protocol function, there are many more details that combined
+allow for more efficiency and usability:
+\begin{itemize}
+    \item Transactions may have several inputs and outputs, so participants can transfer amounts rather than single
+    \textit{electronic coins}.
+    Thus, a participant's balance is the sum of all the unspent outputs of previous transactions.
+    \item By modifying how many of the leading bits of a blocks' hash must be zeroes, the average computation necessary to
+    produce a new block can be adjusted by the protocol.
+    \item By using Merkle Trees~\cite{merkle1980tree} transactions with fully spent transaction outputs can be discarded
+    without breaking the block's hash.
+    This allows compacting old blocks to reclaim disk space.
+    \item A participant that does not wish to mine or hold a copy of the entire blockchain can still verify payments.
+    It can keep a copy of the block headers of the longest chain and link a transaction to where it is on-chain and
+    check that other network nodes have accepted it.
+\end{itemize}
+\\
+For more information on all the workings of the Bitcoin protocol, please refer to~\cite{nakamoto2008bitcoin}.
 
 
-
-\section{Ethereum Smart Contracts}
-
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam ultricies lacinia euismod. Nam tempus risus in dolor rhoncus in interdum enim tincidunt. Donec vel nunc neque. In condimentum ullamcorper quam non consequat. Fusce sagittis tempor feugiat. Fusce magna erat, molestie eu convallis ut, tempus sed arcu. Quisque molestie, ante a tincidunt ullamcorper, sapien enim dignissim lacus, in semper nibh erat lobortis purus. Integer dapibus ligula ac risus convallis pellentesque.
-
-\subsection{Subsection 1}
-
-Nunc posuere quam at lectus tristique eu ultrices augue venenatis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam erat volutpat. Vivamus sodales tortor eget quam adipiscing in vulputate ante ullamcorper. Sed eros ante, lacinia et sollicitudin et, aliquam sit amet augue. In hac habitasse platea dictumst.
+\section{Ethereum Smart Contracts}\label{sec:ethereum}
+% TODO idk to what extent I will need this?
 
 
-\subsection{Subsection 2}
-Morbi rutrum odio eget arcu adipiscing sodales. Aenean et purus a est pulvinar pellentesque. Cras in elit neque, quis varius elit. Phasellus fringilla, nibh eu tempus venenatis, dolor elit posuere quam, quis adipiscing urna leo nec orci. Sed nec nulla auctor odio aliquet consequat. Ut nec nulla in ante ullamcorper aliquam at sed dolor. Phasellus fermentum magna in augue gravida cursus. Cras sed pretium lorem. Pellentesque eget ornare odio. Proin accumsan, massa viverra cursus pharetra, ipsum nisi lobortis velit, a malesuada dolor lorem eu neque.
+\section{Licensing}
+% TODO
 
-\section{Main Section 2}
+\subsection{Dataset Licesing}
+% TODO
 
-Sed ullamcorper quam eu nisl interdum at interdum enim egestas. Aliquam placerat justo sed lectus lobortis ut porta nisl porttitor. Vestibulum mi dolor, lacinia molestie gravida at, tempus vitae ligula. Donec eget quam sapien, in viverra eros. Donec pellentesque justo a massa fringilla non vestibulum metus vestibulum. Vestibulum in orci quis felis tempor lacinia. Vivamus ornare ultrices facilisis. Ut hendrerit volutpat vulputate. Morbi condimentum venenatis augue, id porta ipsum vulputate in. Curabitur luctus tempus justo. Vestibulum risus lectus, adipiscing nec condimentum quis, condimentum nec nisl. Aliquam dictum sagittis velit sed iaculis. Morbi tristique augue sit amet nulla pulvinar id facilisis ligula mollis. Nam elit libero, tincidunt ut aliquam at, molestie in quam. Aenean rhoncus vehicula hendrerit.
-Stand on
+
+\section{Zero-Knowledge Proofs}
+% TODO
+
