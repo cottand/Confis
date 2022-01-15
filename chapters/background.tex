@@ -3,6 +3,42 @@
 
 \section{Cryptography Primitives}\label{sec:cryptography}
 
+\subsection{Hash Functions}\label{subsec:crypto:hash}
+
+Hash functions are cryptographic functions designed to behave like random
+functions~\cite{smart2016randomOracleModel}.
+When building a security proof, they can be assumed to have the following properties~\cite{smart2016randomOracleModel, smart2016hashFunctions}:
+% FIXME needs references
+\begin{description}
+    \item[Determinism] A hash function always produces the same output for the same input
+    \item[One-way] It is computationally impossible to compute the preimage for some output of a hash function
+    \item[Uniformity] Outputs of a hash function are expected to be uniformly distributed.
+    In practice, the output space of a hash function is finite, so \textit{collisions} (where two inputs produce the
+    same output) are possible, but uniformity ensures this is an unlikely scenario.
+\end{description}
+
+\subsection{Symmetric key cryptocraphy}
+
+% TODO will i need this
+
+\subsection{Public Key cryptography}\label{subsec:crypto:asym-keys}
+
+In public key cryptography, two communicating parties (say Alice and Bob) can communicate privately by using pairs of
+numbers that are related mathematically and which allow converting cleartext into cyphertext and back~\cite{smart2016publicKey}.
+This pair of numbers is called an asymmetric keypair, and is composed of a \textbf{public key} $e$ and a \textbf{private
+key} $d$.\\
+
+In this example, if Alice wishes to communicate with Bob, Bob can generate a keypair $(d, e)$ and publish $e$.
+Alice can then encrypt her cleartext with $e$, and only Bob will be able to decrypt it (because only Bob knows $d$).
+
+Conversely, the same keypair can be used by Bob to send a message to Alice where Alice can verify that only Bob
+could have written the message.
+This is called \textit{signing}~\cite{smart2016signatures} and, more generally, it allows a sender of a message to
+prove they are the authors of the message to a recipient.
+
+\subsection{Secure Digital Timestamps}\label{subsec:crypto:timestamps}
+%TODO
+
 
 \section{Bitcoin Protocol}\label{sec:bitcoin}
 
@@ -15,9 +51,9 @@ I will provide a brief overview of how Bitcoin provides these guarantees.
 
 \subsection{Transactions}\label{subsec:btc:txs}
 
-\cite{nakamoto2008bitcoin} defines an \textit{electronic coin} as a chain of signatures: a payer can use their private key, the
-hash of the previous transaction, and the payee's public key to create a signed hash that can be verified by the payee
-(and used by them for \textit{their} next transaction).
+\cite{nakamoto2008bitcoin} defines an \textit{electronic coin} as a chain of signatures: a payer can use their private
+key, the hash of the previous transaction, and the payee's public key to create a signed hash that can be verified by
+the payee (and used by them for \textit{their} next transaction).
 This is illustrated in Figure~\ref{fig:bitcoin-tx}.
 
 
@@ -37,13 +73,15 @@ This ensures that, as long as a participants sign transactions at most once:
     \item Only the owner of a coin can initiate a transaction with that coin
 \end{itemize}
 
-Bitcoin enforces that participants can only sign transactions once thanks to its proof-of-work (see~\ref{subsec:btc:pow}) algorithm.
+Bitcoin enforces that participants can only sign transactions once thanks to its proof-of-work
+(see~\ref{subsec:btc:pow}) algorithm.
 
 \subsection{Proof-Of-Work}\label{subsec:btc:pow}
 
 Bitcoin ensures 'unique signatures' in transactions by grouping transactions in immutable, public \textit{blocks}.
 Participants can then verify a payer has not signed a hash of a single transaction twice by looking at all existing
 transactions.\\
+
 Blocks are made immutable by including in them a value (called a \textit{nonce}) and the hash of the previous block.
 % TODO verify it is the hash of the entire block that must yield the zeroes (implementation detail really)
 The protocol then accepts only blocks where the $n$ first bits of its hash are zeroes. \\
@@ -72,8 +110,8 @@ allow for more efficiency and usability:
     \item Transactions may have several inputs and outputs, so participants can transfer amounts rather than single
     \textit{electronic coins}.
     Thus, a participant's balance is the sum of all the unspent outputs of previous transactions.
-    \item By modifying how many of the leading bits of a blocks' hash must be zeroes, the average computation necessary to
-    produce a new block can be adjusted by the protocol.
+    \item By modifying how many of the leading bits of a blocks' hash must be zeroes, the average computation necessary
+    to produce a new block can be adjusted by the protocol.
     \item By using Merkle Trees~\cite{merkle1980tree} transactions with fully spent transaction outputs can be discarded
     without breaking the block's hash.
     This allows compacting old blocks to reclaim disk space.
@@ -87,6 +125,8 @@ For more information on all the workings of the Bitcoin protocol, please refer t
 
 \section{Ethereum Smart Contracts}\label{sec:ethereum}
 % TODO idk to what extent I will need this?
+
+Smart contracts were first formalised by~\cite{szabo1997smart-contracts} and implemented in~\cite{buterin2015ethereum}
 
 
 \section{Licensing}
