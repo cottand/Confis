@@ -18,7 +18,7 @@ When building a security proof, they can be assumed to have the following proper
     same output) are possible, but uniformity ensures this is an unlikely scenario.
 \end{description}
 
-\subsection{Symmetric key cryptocraphy}
+\subsection{Symmetric key cryptography}
 
 % TODO will i need this
 
@@ -242,5 +242,23 @@ Smart contracts were first formalised by~\cite{szabo1997smart-contracts} and imp
 
 
 \section{Zero-Knowledge Proofs}
-% TODO
+
+An \textit{Interactive Proof} is a protocol where a verifier $V$ either \textit{accepts} or \textit{rejects} whether a
+prover $P$ knows something~\cite{damgaard1998zk_protocols}.
+For example, $P$ could be trying to convince $P$ that they know the preimage of a hash known by $V$.
+
+A \textit{Zero-Knowledge Proof} is an interactive proof with an additional property of \textit{zero-knowledge}, where
+$V$ accepts without having learned any new information during their exchange with $P$~\cite{damgaard1998zk_protocols, smart2016zeroknowledgeproofs}.
+In our example, a zero-knowledge proof where $P$ convinces $V$ that they know the preimage of a hash would require $P$
+not sharing any information about the preimage itself.
+\\
+This protocol has the interesting properties that the information $P$ has proven to know is still private to $V$, and
+$V$ is unable to reproduce the proof and convince a third party (say, $V'$) that they (or $P$) know that information.
+
+%  TODO maybe talk about assumptions like unbounded computation
+
+\subsubsection{Zero-Knowledge Arguments of Knowledge}
+
+%  TODO
+
 
