@@ -90,11 +90,20 @@ Thus, in order to publish a block a participant must do work to find a nonce suc
 condition - then other participants can verify its validity with a single hash operation.
 This guarantees that a block cannot be changed (ie, a new copy published) without redoing the computational work.
 Because blocks are chained (they include the hash of the previous block), in order to modify a transaction in the past
-an adversary needs to redo the computational work for every block since that transaction.
+an adversary needs to redo the computational work for every block since that transaction (see Figure
+\ref{fig:bitcoin-blockchain}).
 % TODO implementation of mining rewards
 Additionally, participants that successfully find a suitable nonce and propose new blocks (also referred to as
 \textit{miners}) are allowed to add a specific transaction to the block where they own a newly created coin (also
 referred to as \textit{mining reward}).
+
+\begin{figure}[th]
+    \centering
+    \includegraphics[width=0.8\columnwidth]{figures/bitcoin-blockchain}
+    \caption[Two last blocks in a blockhain]{Two last blocks in a blockchain, from~\cite{nakamoto2008bitcoin}}
+    \label{fig:bitcoin-blockchain}
+\end{figure}
+
 
 This model of consensus ensures that
 \begin{itemize}

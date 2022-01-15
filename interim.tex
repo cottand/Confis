@@ -24,7 +24,26 @@
 \addbibresource{interim.bib}
 
     \usepackage[autostyle=true]{csquotes}
-
+    \usepackage{tikz}
+\usetikzlibrary{arrows,positioning}
+\tikzset{
+    %Define standard arrow tip
+    >=stealth',
+    %Define style for boxes
+    punkt/.style={
+           rectangle,
+           rounded corners,
+           draw=black, thick,
+           text width=6.5em,
+           minimum height=2em,
+           text centered},
+    % Define arrow style
+    pil/.style={
+           ->,
+           thick,
+           shorten <=2pt,
+           shorten >=2pt,}
+}
 \geometry{
     paper=a4paper,
     inner=2.5cm,
