@@ -143,11 +143,12 @@ accepted by the network.
 
 \section{Bitcoin Protocol}\label{sec:bitcoin}
 
-Blockchain technology was introduced by~\cite{nakamoto2008bitcoin} as a decentralised system allowing for electronic
+Blockchain technology was introduced in~\cite{nakamoto2008bitcoin} as a decentralised system allowing for electronic
 cash payments.
 Blockchains are immutable distributed ledgers where participants' balances can be verified by every other participant,
 and it is computationally hard to tamper with balances to perform attacks (such as performing a transaction where a
-participant spends more funds than what they own). \\
+participant spends more funds than what they own).
+
 I will provide a brief overview of how Bitcoin provides these guarantees.
 
 \subsection{Transactions}\label{subsec:btc:txs}
@@ -224,12 +225,30 @@ allow for more efficiency and usability:
     \item A participant that does not wish to mine or hold a copy of the entire blockchain can still verify payments.
     It can keep a copy of the block headers of the longest chain and link a transaction to where it is on-chain and
     check that other network nodes have accepted it.
+    \item Miners have an additional incentive (other than the mining reward) to verify transactions: the
+    \textit{transaction fee} of %TODO PICKUP!
 \end{itemize}
 \\
 For more information on all the workings of the Bitcoin protocol, please refer to~\cite{nakamoto2008bitcoin}.
 
 
-\section{Ethereum Smart Contracts}\label{sec:ethereum}
+\section{Smart Contracts}\label{sec:ethereum}
+
+Smart contracts~\cite{szabo1997smart-contracts}, where a protocol formalises a secure agreement or program over a
+network, are supported to some extent in Bitcoin (see~\ref{sec:bitcoin}) through scripting~\cite{bitcoinwiki-scripts}.
+
+A bitcoin script is a list of instructions in the \textit{Script} language recorded with each transaction
+(see~\nameref{subsec:btc:txs}) that gets executed by every participant that verifies that block and describes how the
+payee can access the coins being transferred.
+Bitcoin's Script has several limitations, such as lack of Turing-completeness (not all computable functions can be
+represented in Script), value blindness (a script cannot easily specify an exact amount to be
+withdrawn) and lack of internal state (beyond whether a transaction output is spent or
+unspent)~\cite{buterin2015ethereum}.
+
+Ethereum~\cite{buterin2015ethereum} is also a blockchain sharing many of Bitcoin's features, such as transactions and
+a proof-of-work consensus algorithm.
+While it also as scripting support, it varies greatly from Bitcoin's in that its build-in programming language is
+Turing-complete, value-aware and allows keeping internal state. %TODO PICKUP!
 % TODO idk to what extent I will need this?
 
 Smart contracts were first formalised by~\cite{szabo1997smart-contracts} and implemented in~\cite{buterin2015ethereum}
@@ -281,7 +300,7 @@ comparison to the length of the actual computation), then we have a \textit{Zero
 Knowledge} (or \textit{zkSNARK})~\cite{reitwiessner2016zksnarks}.\\
 
 Recent applications of zkSNARKs include privacy preserving blockchains (see~\ref{sec:bitcoin}) where a network can
-verify a participant does not spend more funds that their balance without leaking any knowledge of the amount being
+verify a participant does not spend more funds that their balance without leaking any knowledge about the amount being
 spent, the balance itself, or the identities of payer and payee~\cite{zerocash_whitepaper}.
 
 % TODO idk what the right section for this is
