@@ -235,7 +235,7 @@ For more information on all the workings of the Bitcoin protocol, please refer t
 Smart contracts were first formalised by~\cite{szabo1997smart-contracts} and implemented in~\cite{buterin2015ethereum}
 
 
-\section{Zero-Knowledge Proofs}
+\section{Zero-Knowledge Proofs}\label{sec:zero-knowledge-proofs}
 
 An \textit{Interactive Proof} is a protocol where a verifier $V$ either \textit{accepts} or \textit{rejects} whether a
 prover $P$ knows something~\cite{damgaard1998zk_protocols}.
@@ -258,18 +258,16 @@ not sharing any information about (or related to) the preimage itself.
 This protocol has the interesting property that the information $P$ has proven to know is still private to $V$, and
 $V$ is unable to reproduce the proof and convince a third party (say, $V'$) that they (or $P$) know that information.
 
-%  TODO maybe talk about assumptions like unbounded computation
-
-\subsection{Zero-Knowledge Succinct Arguments of Knowledge (zk-SNARKs)}
+\subsection{Zero-Knowledge Succinct Arguments of Knowledge (zkSNARKs)}\label{subsec:zksnarks}
 
 Interactive proofs assume the prover is computationally unbounded (and so worries about computationally
 unbounded adversaries), but by relaxing the soundness property to computationally sound proofs we can assume a
 polynomial time prover~\cite{damgaard1998zk_protocols}.
 
-This variation of an interactive proof is called an \textit{interactive argument} (because an unbounded adversary would be
-able to fool $V$)~\cite{smart2016zeroknowledgeproofs}.
+This variation of an interactive proof is called an \textit{interactive argument} (because an unbounded adversary would
+be able to fool $V$)~\cite{smart2016zeroknowledgeproofs}.
 
-If we also preserve the zero-knowledge property, we have an \textit{zero-knowledge argument}, which can now be
+If we also preserve the zero-knowledge property, we have a \textit{zero-knowledge argument}, which can now be
 efficient because it can run in polynomial time~\cite{naranker2022zeroknowledge}.
 
 Additionally, if the prover is unable to construct a proof without some sort of secret (in our previous example, the
@@ -280,13 +278,28 @@ protocol leaking any information about the secret.\\
 If our zero-knowledge argument of knowledge additionally satisfies the properties of being \textit{non-interactive}~(no
 or little interaction between prover and verifier) and \textit{succinct}~(the sizes of the messages are small in
 comparison to the length of the actual computation), then we have a \textit{Zero-Knowledge Succinct Argument of
-Knowledge} (or \textit{zk-SNARK})~\cite{reitwiessner2016zksnarks}.
+Knowledge} (or \textit{zkSNARK})~\cite{reitwiessner2016zksnarks}.\\
 
-Recent applications of zk-SNARKs include privacy preserving blockchains (see~\ref{sec:bitcoin}) where a network can
-verify a participant does not spend more funds that their balance, without leaking any knowledge of the amount being
-spent or the balance itself~\cite{zerocash_whitepaper}.
+Recent applications of zkSNARKs include privacy preserving blockchains (see~\ref{sec:bitcoin}) where a network can
+verify a participant does not spend more funds that their balance without leaking any knowledge of the amount being
+spent, the balance itself, or the identities of payer and payee~\cite{zerocash_whitepaper}.
 
-% TODO mention zksnarks in eth smart contracts? or maybe wait for it?
+% TODO idk what the right section for this is
+
+\subsection{zkSNARKs on Blockchains}\label{subsec:onchain-snarks}
+
+% TODO ref eth gas
+Smart contracts quickly result in high costs for callers due to gas costs that increase with complexity of the
+contract's computation.
+zkSNARKs allow to verify a computation for a fraction of the cost of running it~\cite{zokrates_intro}.
+
+% TODO cite other frameworks?
+Several frameworks allow writing zkSNARKs and deploying them to a blockchain that supports smart contracts.\\
+
+\textit{ZoKrates}~\cite{zokrates_repo} allows writing off-chain programs (which can be tested locally) for a verifier.
+% TODO you have to ahve emntioned solidity by know or have to have ref'd it
+The programs can be exported as Solidity programs~\cite{solidity_repo} which can then be deployed to the Ethereum
+network.
 
 
 \section{Licensing}
