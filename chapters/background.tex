@@ -202,7 +202,6 @@ referred to as \textit{mining reward}).
     \label{fig:bitcoin-blockchain}
 \end{figure}
 
-
 This model of consensus ensures that
 \begin{itemize}
     \item Participants have a monetary incentive to stay honest with respect to the protocol
@@ -361,8 +360,8 @@ Recent applications of zkSNARKs include privacy preserving blockchains (see~\ref
 verify a participant does not spend more funds that their balance without leaking any knowledge about the amount being
 spent, the balance itself, or the identities of payer and payee~\cite{zerocash_whitepaper}.\\
 
-% TODO ref eth gas
-Smart contracts (see~\ref{sec:ethereum}) quickly result in high costs for callers due to gas costs that increase with complexity of the
+% TODO would be nice to talk about ETH costs which are so so high
+Complex smart contracts (see~\ref{sec:ethereum}) quickly result in high costs for callers due to gas costs that increase with complexity of the
 contract's computation (see~\nameref{subsec:eth:gas}).
 zkSNARKs allow to verify a computation for a fraction of the cost of running it~\cite{zokrates_intro}.
 
@@ -371,16 +370,27 @@ Several frameworks allow writing zkSNARKs and deploying them to a blockchain tha
 
 \textit{ZoKrates}~\cite{zokrates_repo} allows writing off-chain programs (which can be run tested locally) for a
 verifier.
-% TODO you have to have emntioned solidity by know or have to have ref'd it
-The programs can also be exported as Solidity programs~\cite{solidity_repo} which can then be deployed to the Ethereum
-network.
+The programs can also be exported as Solidity programs~(see~\ref{subsec:eth:contract_langs})~\cite{solidity_repo} which
+can then be deployed to the Ethereum network.
 %TODO zokrates 1.6m gas ouch
 
 % TODO STARKS??
 
 
 \section{Licensing}
-% TODO
+
+A legal agreement is a fairly broad definition wich varies with each country's legal system.
+Most generally, it involves~\cite{contractDef2018precedent}:
+\begin{itemize}
+    \item An offer by a party
+    \item An acceptance by another party
+    \item Intention to create a legal relationship
+    \item Consideration for the offer - a sort of `promise' where a price is paid for the offer (monetary or
+    otherwise).
+\end{itemize}
+
+A license is a specific kind of legal agreement which allows a party to perform an activity under some specific
+conditions\cite{licenseDefinition}.
 
 \subsection{Dataset Licesing}
 % TODO
