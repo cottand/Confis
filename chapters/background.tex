@@ -210,13 +210,23 @@ This model of consensus ensures that
 \end{itemize}
 
 \subsection{Further details of the Bitcoin protocol}\label{subsec:btc.details}
+\begin{figure}[th]
+    \centering
+    \includegraphics[width=0.6\columnwidth]{figures/bitcoin-2txs-outputs}
+    \caption[Outputs and Inputs of two consecutive Transactions]{The outputs of a transaction correspond to
+    the input of the next transaction (miner's fee not represented) from~\cite{gervais2022distribLedgers_transactionsInBitcoin}}
+    \label{fig:bitcoin-2txs-outputs}
+\end{figure}
 
 While I provide a high-level overview of what makes the protocol function, there are many more details that combined
 allow for more efficiency and usability:
 \begin{itemize}
     \item Transactions may have several inputs and outputs, so participants can transfer amounts rather than single
     \textit{electronic coins}.
-    Thus, a participant's balance is the sum of all the unspent outputs of previous transactions.
+    When performing a payment, a typical transaction by Alice has two outputs: the amount she is paying Bob and the
+    remainder, which makes up the rest of her funds (see Figure~\ref{fig:bitcoin-2txs-outputs}).
+    Thus, a participant's balance is the sum of all the unspent outputs of previous transactions (the set of unspent
+    outputs is commonly called the \textit{UTXO} set).
     \item By modifying how many of the leading bits of a blocks' hash must be zeroes, the average computation necessary
     to produce a new block can be adjusted by the protocol.
     \item By using Merkle Trees~\cite{merkle1980tree} transactions with fully spent transaction outputs can be discarded
@@ -225,17 +235,22 @@ allow for more efficiency and usability:
     \item A participant that does not wish to mine or hold a copy of the entire blockchain can still verify payments.
     It can keep a copy of the block headers of the longest chain and link a transaction to where it is on-chain and
     check that other network nodes have accepted it.
+    This process is called \textit{Simple Payment Verification} (SPV)~\cite{nakamoto2008bitcoin}.
     \item Miners have an additional incentive (other than the mining reward) to verify transactions: the
     \textit{transaction fee}.
-    A transaction performed by a payer will typically have three outputs: the payee's address, the payer's remaining
-    balance, and a small fee for the miner.
+    The difference of the sum of a transaction's inputs and the sum its outputs corresponds to the transaction fee, which
+    goes to the miner.
+    \[
+        \text{fee}_\text{miner} = \sum{\text{inputs}} - \sum{\text{outputs}}
+    \]
     This provides an incentive for the miner to place this specific transaction in the block they propose.
 \end{itemize}
 \\
+
 For more information on all the workings of the Bitcoin protocol, please refer to~\cite{nakamoto2008bitcoin}.
 
 
-\section{Smart Contracts in Ethereum}\label{sec:ethereum}
+\section{Smart Contracts and Ethereum}\label{sec:ethereum}
 
 Smart contracts~\cite{szabo1997smart-contracts}, where a protocol formalises a secure agreement or program over a
 network, are supported to some extent in Bitcoin (see~\ref{sec:bitcoin}) through scripting~\cite{bitcoinwiki-scripts}.
@@ -248,16 +263,34 @@ represented in Script), value blindness (a script cannot easily specify an exact
 withdrawn) and lack of internal state (beyond whether a transaction output is spent or
 unspent)~\cite{buterin2015ethereum}.\\
 
-Ethereum~\cite{buterin2015ethereum} is also a blockchain sharing many of Bitcoin's features, such as transactions and
+Ethereum is also a blockchain sharing many of Bitcoin's features, such as transactions and
 a proof-of-work consensus algorithm.
 While it also as scripting support, it varies greatly from Bitcoin's in that its built-in programming language is
 Turing-complete, value-aware and allows keeping internal state.
-The scripting language is a stack-based low-level bytecode language called \textit{EVM language}.
+For more details on Ethereum's scripting language, see~\ref{subsec:eth:contract_langs}.
 The name of the coin of the Ethereum Ecosystem is \textit{ether}.
 
-Ethereum's state is encoded in \textit{accounts} - an object with its own address that contains the account's
+Ethereum's state is encoded in \textit{accounts} - objects with their own address that contain the account's
 balance~(in ether), the contract code~(if present), the nonce~(a transaction counter), and the account's
 storage~(a persistent key-value store which is initially empty)~\cite{buterin2015ethereum}.\\
+
+% TODO talk about eth state transitions (slides from distrib are good) if we'll be using eth
+
+\subsection{The Ethereum Virtual Machine}\label{subsec:eth:contract_langs}
+
+Ethereum's built-in scripting language is a stack-based low-level bytecode language called \textit{EVM language},
+and runs on an execution environment called the \textit{Ethereum Virtual Machine} (EVM).
+Besides its stack, the EVM does have memory (an infinitely expandable byte array) which resets after each computation.
+For persisting data, the account's storage is used~\cite{buterin2015ethereum}. \\
+
+There are several high level languages that compile to EVM bytecode that are used to write smart contracts, such as
+Solidity~\cite{solidity_repo} and Vyper~\cite{vyper_repo}~(the most active and maintained languages at the
+time of writing~\cite{eth_smartContractLangs}).
+
+% TODO code an examples if you're going to be writing on these
+
+An application built on top of decentralised smart contracts is commonly called a \textit{Decentralised Application} (or
+DApp)~\cite{masteringEthGlossary}.
 
 \subsection{Gas Fees in Eterum}\label{subsec:eth:gas}
 
@@ -267,12 +300,13 @@ Computational steps when scripting are priced in units of \textit{gas} (most com
 When performing a transaction, the sender specifies the values \texttt{STARTGAS} (the maximum amount of gas they are
 willing to spend in the transaction execution) and \texttt{GASPRICE} (the price of a single gas unit in ether).\\
 
-Therefore, when executing a smart contract its cost will be determined by the computation it requires (more computation
-means more gas!).
+Therefore, when executing a smart contract its cost (the fee to be paid for its execution, in ether) will be determined
+by the computation it requires (more computation means more gas!).
 It is in the interest of the caller of the contract that the contract requires as little computation as possible, so
 that the fee they pay for the call remains low.
 
 %TODO should I extend? It is so much shorter than bitcoin
+
 
 \section{Zero-Knowledge Proofs}\label{sec:zero-knowledge-proofs}
 
@@ -342,7 +376,8 @@ The programs can also be exported as Solidity programs~\cite{solidity_repo} whic
 network.
 %TODO zokrates 1.6m gas ouch
 
- % TODO STARKS??
+% TODO STARKS??
+
 
 \section{Licensing}
 % TODO
