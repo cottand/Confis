@@ -226,13 +226,16 @@ allow for more efficiency and usability:
     It can keep a copy of the block headers of the longest chain and link a transaction to where it is on-chain and
     check that other network nodes have accepted it.
     \item Miners have an additional incentive (other than the mining reward) to verify transactions: the
-    \textit{transaction fee} of %TODO PICKUP!
+    \textit{transaction fee}.
+    A transaction performed by a payer will typically have three outputs: the payee's address, the payer's remaining
+    balance, and a small fee for the miner.
+    This provides an incentive for the miner to place this specific transaction in the block they propose.
 \end{itemize}
 \\
 For more information on all the workings of the Bitcoin protocol, please refer to~\cite{nakamoto2008bitcoin}.
 
 
-\section{Smart Contracts}\label{sec:ethereum}
+\section{Smart Contracts in Ethereum}\label{sec:ethereum}
 
 Smart contracts~\cite{szabo1997smart-contracts}, where a protocol formalises a secure agreement or program over a
 network, are supported to some extent in Bitcoin (see~\ref{sec:bitcoin}) through scripting~\cite{bitcoinwiki-scripts}.
@@ -243,16 +246,33 @@ payee can access the coins being transferred.
 Bitcoin's Script has several limitations, such as lack of Turing-completeness (not all computable functions can be
 represented in Script), value blindness (a script cannot easily specify an exact amount to be
 withdrawn) and lack of internal state (beyond whether a transaction output is spent or
-unspent)~\cite{buterin2015ethereum}.
+unspent)~\cite{buterin2015ethereum}.\\
 
 Ethereum~\cite{buterin2015ethereum} is also a blockchain sharing many of Bitcoin's features, such as transactions and
 a proof-of-work consensus algorithm.
-While it also as scripting support, it varies greatly from Bitcoin's in that its build-in programming language is
-Turing-complete, value-aware and allows keeping internal state. %TODO PICKUP!
-% TODO idk to what extent I will need this?
+While it also as scripting support, it varies greatly from Bitcoin's in that its built-in programming language is
+Turing-complete, value-aware and allows keeping internal state.
+The scripting language is a stack-based low-level bytecode language called \textit{EVM language}.
+The name of the coin of the Ethereum Ecosystem is \textit{ether}.
 
-Smart contracts were first formalised by~\cite{szabo1997smart-contracts} and implemented in~\cite{buterin2015ethereum}
+Ethereum's state is encoded in \textit{accounts} - an object with its own address that contains the account's
+balance~(in ether), the contract code~(if present), the nonce~(a transaction counter), and the account's
+storage~(a persistent key-value store which is initially empty)~\cite{buterin2015ethereum}.\\
 
+\subsection{Gas Fees in Eterum}\label{subsec:eth:gas}
+
+When performing a transaction, an Ethereum account pays transaction fees (similarly to bitcoin as explained
+in~\ref{subsec:btc.details}) from their balance.
+Computational steps when scripting are priced in units of \textit{gas} (most commonly, a step costs 1 gas).
+When performing a transaction, the sender specifies the values \texttt{STARTGAS} (the maximum amount of gas they are
+willing to spend in the transaction execution) and \texttt{GASPRICE} (the price of a single gas unit in ether).\\
+
+Therefore, when executing a smart contract its cost will be determined by the computation it requires (more computation
+means more gas!).
+It is in the interest of the caller of the contract that the contract requires as little computation as possible, so
+that the fee they pay for the call remains low.
+
+%TODO should I extend? It is so much shorter than bitcoin
 
 \section{Zero-Knowledge Proofs}\label{sec:zero-knowledge-proofs}
 
@@ -279,6 +299,8 @@ $V$ is unable to reproduce the proof and convince a third party (say, $V'$) that
 
 \subsection{Zero-Knowledge Succinct Arguments of Knowledge (zkSNARKs)}\label{subsec:zksnarks}
 
+% TODO do I need to go through eliptic curve math :c
+
 Interactive proofs assume the prover is computationally unbounded (and so worries about computationally
 unbounded adversaries), but by relaxing the soundness property to computationally sound proofs we can assume a
 polynomial time prover~\cite{damgaard1998zk_protocols}.
@@ -297,32 +319,37 @@ protocol leaking any information about the secret.\\
 If our zero-knowledge argument of knowledge additionally satisfies the properties of being \textit{non-interactive}~(no
 or little interaction between prover and verifier) and \textit{succinct}~(the sizes of the messages are small in
 comparison to the length of the actual computation), then we have a \textit{Zero-Knowledge Succinct Argument of
-Knowledge} (or \textit{zkSNARK})~\cite{reitwiessner2016zksnarks}.\\
-
-Recent applications of zkSNARKs include privacy preserving blockchains (see~\ref{sec:bitcoin}) where a network can
-verify a participant does not spend more funds that their balance without leaking any knowledge about the amount being
-spent, the balance itself, or the identities of payer and payee~\cite{zerocash_whitepaper}.
-
-% TODO idk what the right section for this is
+Knowledge} (or \textit{zkSNARK})~\cite{reitwiessner2016zksnarks}.
 
 \subsection{zkSNARKs on Blockchains}\label{subsec:onchain-snarks}
 
+Recent applications of zkSNARKs include privacy preserving blockchains (see~\ref{sec:bitcoin}) where a network can
+verify a participant does not spend more funds that their balance without leaking any knowledge about the amount being
+spent, the balance itself, or the identities of payer and payee~\cite{zerocash_whitepaper}.\\
+
 % TODO ref eth gas
-Smart contracts quickly result in high costs for callers due to gas costs that increase with complexity of the
-contract's computation.
+Smart contracts (see~\ref{sec:ethereum}) quickly result in high costs for callers due to gas costs that increase with complexity of the
+contract's computation (see~\nameref{subsec:eth:gas}).
 zkSNARKs allow to verify a computation for a fraction of the cost of running it~\cite{zokrates_intro}.
 
 % TODO cite other frameworks?
 Several frameworks allow writing zkSNARKs and deploying them to a blockchain that supports smart contracts.\\
 
-\textit{ZoKrates}~\cite{zokrates_repo} allows writing off-chain programs (which can be tested locally) for a verifier.
-% TODO you have to ahve emntioned solidity by know or have to have ref'd it
-The programs can be exported as Solidity programs~\cite{solidity_repo} which can then be deployed to the Ethereum
+\textit{ZoKrates}~\cite{zokrates_repo} allows writing off-chain programs (which can be run tested locally) for a
+verifier.
+% TODO you have to have emntioned solidity by know or have to have ref'd it
+The programs can also be exported as Solidity programs~\cite{solidity_repo} which can then be deployed to the Ethereum
 network.
+%TODO zokrates 1.6m gas ouch
 
+ % TODO STARKS??
 
 \section{Licensing}
 % TODO
 
 \subsection{Dataset Licesing}
+% TODO
+
+\subsection{Software Licensing}
+
 % TODO
