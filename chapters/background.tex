@@ -244,7 +244,6 @@ allow for more efficiency and usability:
     \]
     This provides an incentive for the miner to place this specific transaction in the block they propose.
 \end{itemize}
-\\
 
 For more information on all the workings of the Bitcoin protocol, please refer to~\cite{nakamoto2008bitcoin}.
 
@@ -394,15 +393,26 @@ conditions\cite{licenseDefinition}.
 In order to limit the scope, this project will only consider licences (rather than legal agreements as a whole).
 
 \subsection{Dataset Licensing}\label{subsec:licensing:dataset}
+See~\cite{seismicDataLicence} for an example of a license allowing access to data by a library.
+The license includes the following clauses, cherry-picked and simplified here for clarity:
+\begin{itemize}
+    \item The licence is non transferable.
+    \item The data cannot be sold or used to provide a service
+    \item The licensee can provide access to the data to third parties provided they sign a confidentiality agreement.
+    The licensee becomes liable for any breach of the licence by such third party, so it is in the licensee's interests
+    that the third party also complies to the licence.
+    \item The data cannot be copied or modified for any other use other than the licensee's.
+\end{itemize}
 
 \subsection{Software Licensing}\label{subsec:licensing:software}
-See~\cite{jetbrainsEduLicense} for an example of a software license between a software company (JetBrains) and users for
+See~\cite{jetbrainsEduLicence} for an example of a software licence between a software company (JetBrains) and users for
 the use of their development software.
 The license includes the following clauses, cherry-picked and simplified here for clarity:
 \begin{itemize}
+    \item The licence is non transferable.
     \item The software must be used only for specific but vague purposes \textcite[for non-commercial, educational purposes
-    only]{jetbrainsEduLicense}.
-    \item Only the licensee is allowed to use the software, but they may install it in multiple machines simultaneously.
+    only]{jetbrainsEduLicence}.
+    \item Only the licensee may use the software, but they may install it in multiple machines simultaneously.
     \item The software cannot be sold, rented, or modified.
     \item The licensee may provide feedback - if they choose to do they themselves grant JetBrains a very permissive
     license to use it.
@@ -412,4 +422,83 @@ The license includes the following clauses, cherry-picked and simplified here fo
     license.
 \end{itemize}
 
-% TODO
+
+\section{Previous Work on Machine Readable Contracts}\label{sec:machine-readable-contracts}
+
+\subsection{Juro}\label{subsec:juro}
+Juro~\cite{juroWhitepaper} is a start-up business seeking to make structured machine-readable data out of contracts.
+It focuses on:
+\begin{itemize}
+    \item Enabling easy collaboration between contract authors.
+    \item Auditing and keeping track of the \textit{workflow} of the agreement (version control of the documents'
+    drafts, signatures, amendments, views, etc.)
+    \item Improving the user experience of employees involved in legal agreements by integrating into the company's CRM
+    \textit{(Customer Relationship Management)} software (such as new hires and the Human Resources department).
+    \item Ease of use by making legal documents searchable.
+\end{itemize}
+
+Juro aims to achieve this by encoding the contract as a JSON document~\cite{jsonSpec}, written by end-users
+with the assistance of a web graphical user interface (GUI).
+This document keeps all version control information and can be rendered into a human-readable format or exported
+to PDF~\cite{pdf2020spec} or Microsoft Word~\cite{microsoftWordWeb} formats.
+The JSON document can be further processed to provide extra analytics and tools, like summarization statistics or
+agreement renewal reminders.\\
+
+Juro's whitepaper lists `self-executing' clauses as future work~\cite[p.~6]{juroWhitepaper}.
+Therefore, Juro does not attempt to make any contributions with respect to verification of compliance or enforcement of
+contract clauses.
+
+\subsection{Accord Project}\label{subsec:accord}
+
+The Accord Project~\cite{accordHomepage} is an open source Linux Foundation project with the aim of enabling
+machine-readable and machine-executable legal agreements.
+
+Contracts are written pre-signature in a human-readable markup language similar to Markdown~\cite{markdownSpec}
+where typed variables can be embedded.
+During drafting, functions can be defined with a Domain Specific Language (DSL) that allow to perform
+computations~(such as compounding interest over a period of time).
+
+After signature, more behaviour can be written in code to check information against a contract (like checking for
+breach of contract, or what action to take in a specific situation).
+See Figure~\ref{fig:accord-post-signature-code} for an example where the clause checks for the state of a
+delivery~(whether it is timely, has passed inspection, etc).
+
+\begin{figure}[th]
+    \centering
+    \small
+    \begin{verbatim}
+    contract SupplyAgreement over SupplyAgreementModel {
+      clause acceptanceofdelivery(request : InspectDeliverable) : Response {
+
+        let received = request.deliverableReceivedAt;
+        enforce isBefore(received,now()) else
+          throw ErgoErrorResponse{
+            message : "Transaction time is before the deliverable date."
+          }
+        ;
+
+        let status =
+          if isAfter(now(),
+            addDuration(
+                received,
+                Duration{ amount: contract.businessDays, unit: days}
+            )
+          )
+          then OUTSIDE_INSPECTION_PERIOD
+          else if request.inspectionPassed
+          then PASSED_TESTING
+          else FAILED_TESTING
+        ;
+        return Response{
+          status : status,
+          shipper : contract.shipper,
+          receiver : contract.receiver
+        }
+      }
+    }
+    \end{verbatim}
+    \caption[Accord contract clause as code]{A contract clause encoded in Accord's \textit{Ergo} language,
+        from~\cite{accordAfterSignatureCode}.}
+    \label{fig:accord-post-signature-code}
+\end{figure}
+
