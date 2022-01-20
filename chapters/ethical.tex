@@ -2,9 +2,13 @@
 
 \chapter{Ethical Considerations}\label{ch:ethical}
 
+
 \section{Legal Implications}\label{sec:legal-implications}
 
- This project hopes to automate enforcement of clauses in legal agreements.
+\subsection{Possible Discrepancies Between Machine-Readable Representations and Legal Requirements}
+\label{subsec:legal-discrepancies}
+
+This project hopes to automate enforcement of clauses in legal agreements.
 Contracts commonly have exceptions where violating the terms of the agreement is not a breach of the contract in
 circumstances outside the control of all parties (referred to as \textit{`Force Majeure'}~\cite{forceMajeureDefinition} -
 see~\cite[\textsection13.14]{jetbrainsEduLicence} for an example).\\
@@ -19,6 +23,53 @@ action).
 While the latter may seem like a safer option, enforcing compliance outside of courts can be very attractive to all
 parties because they would be able to protect the terms of the contract without having to go to court and expending the
 financial and legal resources to take action in case of contract breach.
-So much so that this is the case already in many software licenses~(where~\cite{jetbrainsEduLicence} is a prime example),
-where the end user has their access revoked before the licensor.
-% TODO PICKUP talk about existing auto enforcing and add it to background too!!
+So much so that this is the case already in many software licenses~(where~\cite{jetbrainsEduLicence} is a prime example,
+see~\ref{subsec:licensing:software}), where the end user has their access revoked before the licensor.
+
+% TODO maybe there is better wording for this term
+
+\subsection{Legal Validity}
+
+If this project wants to represent or encode legal agreements in any way, they should qualify as such within the legal
+definitions of a legal system (or of several!).\\
+
+Ideally, a court should be able to recognise a machine-readable representation as well as a traditional manually typed
+one.
+This must also hold true for other elements such as signatures (digital signatures as opposed handwritten ones),
+written notices, etc.
+
+
+\section{Misuse}\label{sec:misuse}
+
+Depending on the future scope of this project, one of the parties could abuse self-executing contract clauses (for
+example, to revoke access to data in breach of the terms of an agreement).
+
+Different possible thread models will have to be carefully considered taking into account scenarios with
+malicious vs honest-but-curious adversaries.
+
+
+\section{Data Privacy and Compliance}\label{sec:data-privacy-compliance}
+
+Legal agreements between businesses can be confidential both in their contents and their existence - the project should
+aim to preserve these properties, whatever the format it considers for representing such agreements.\\
+
+As for General Data Protection Regulation (GDPR)~\cite{gdprInfo}, if this project's prototype is implemented as software
+libraries (rather than a centralised server under control of a third party), then compliance obligations should remain
+within the responsibilities of the party using the software~\citeTODO.
+
+
+\section{Dual Use}\label{sec:dual-use}
+
+This project has an exclusively civilian focus.
+
+
+\section{Environmental Implications}\label{sec:environmental-implications}
+
+%TODO more citations here
+While this project does not consider directly using any environmental-unfriendly technology, it considers using
+decentralised ledgers which heavily rely on Proof-of-Work algorithms~(see~\ref{subsec:btc:pow}) which has shown
+to be energy-hungry when used at the scale of Bitcoin or Ethereum~\cite{GOODKIND2020101281}.\\
+
+While addressing these issues is outside the scope of this project, at the time of writing the Ethereum community aims
+to make significant changes to its consensus mechanism that should greatly mitigate this environmental
+impact~\cite{eth2Vision}.
