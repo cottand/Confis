@@ -409,7 +409,7 @@ See~\cite{jetbrainsEduLicence} for an example of a software licence between a so
 the use of their development software.
 The license includes the following clauses, cherry-picked and simplified here for clarity:
 \begin{itemize}
-    \item The licence is non transferable.
+    \item The licence is non-transferable.
     \item The software must be used only for specific but vague purposes \textcite[for non-commercial, educational purposes
     only]{jetbrainsEduLicence}.
     \item Only the licensee may use the software, but they may install it in multiple machines simultaneously.
@@ -421,6 +421,15 @@ The license includes the following clauses, cherry-picked and simplified here fo
     \item The user may choose to use an early access development version of the software, subject ot its own separate
     license.
 \end{itemize}
+
+While this contract is not machine-readable, JetBrains does have mechanisms in place to enforce its interests.
+Their software comes with a launcher, \textit{JetBrains Toolbox}~\cite{jetbrainsToolbox} that controls access to it
+depending on the license status of the user.
+This is most likely implemented in a centralised server controlled by JetBrains where it keeps records
+of their licensees.
+
+For a licensee, this means they cannot easily prove they did enter an agreement with JetBrains if JetBrains chooses
+to deny issuing a license~\citeTODO.
 
 
 \section{Previous Work on Machine Readable Contracts}\label{sec:machine-readable-contracts}
@@ -445,7 +454,7 @@ The JSON document can be further processed to provide extra analytics and tools,
 agreement renewal reminders.\\
 
 Juro's whitepaper lists `self-executing' clauses as future work~\cite[p.~6]{juroWhitepaper}.
-Therefore, Juro does not attempt to make any contributions with respect to verification of compliance or enforcement of
+Therefore Juro does not attempt to make any contributions with respect to verification of compliance or enforcement of
 contract clauses.
 
 \subsection{Accord Project}\label{subsec:accord}
@@ -461,7 +470,7 @@ computations~(such as compounding interest over a period of time).
 After signature, more behaviour can be written in code to check information against a contract (like checking for
 breach of contract, or what action to take in a specific situation).
 See Figure~\ref{fig:accord-post-signature-code} for an example where the clause checks for the state of a
-delivery~(whether it is timely, has passed inspection, etc).
+delivery~(whether it is timely, has passed inspection, etc).\\
 
 \begin{figure}[th]
     \centering
@@ -501,4 +510,8 @@ delivery~(whether it is timely, has passed inspection, etc).
         from~\cite{accordAfterSignatureCode}.}
     \label{fig:accord-post-signature-code}
 \end{figure}
+
+\textit{Ergo} code (the language in which Accord allows specifying contract behaviour~\cite{accordErgo}) can then be
+deployed to a permissioned open-source enterprise-oriented blockchain called \textit{HyperLedger
+Fabric}~\cite{hyperledgerFabric_repo, accordFabricDeployDocs} or to a NodeJS server~\cite{accordNodeJSDeployDocs}.
 
