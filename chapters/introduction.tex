@@ -1,6 +1,6 @@
 \chapter{Introduction}\label{ch:introduction}
 
-\section{The Hassle of Enterprise Legal Agreements}\label{sec:intro:legal-hassle}
+\section*{The Hassle of Enterprise Legal Agreements}\label{sec:intro:legal-hassle}
 
 Businesses are routinely bound by legal agreements to each other and those agreements give them constraints with respect to
 the legal boundaries they can operate within.
@@ -12,13 +12,16 @@ Additionally, even when an agreement is being complied with by all, parties must
 leading to large amounts of unstructured documents of audit trails.\\
 
 I suggest automating some hassles of legal agreement compliance, audit and verification, by encoding a contract
-in a machine-readable format and enable querying it and logging interactions.
+in a machine-readable format and enable querying it and logging interactions, while preserving privacy.
 The goals are:
 \begin{itemize}
     \item Minimising costs in legal advice by allowing a business to 'ask questions' about the legal boundaries within
     which they are able to operate.
     \item Enabling secure audit trails that all parties involved in the agreement can trust in order to prove
-    compliance (or lack thereof!).
+    compliance (or lack thereof!) without the need for trusted third parties.
+    \item Meeting business' privacy requirements with respect to information about the contracts they sign.
 \end{itemize}
 
-Thanks for assisting to my TED talk~\citeTODO.
+In order to limit the scope of work, this project will initially focus on data and software licences,
+particular kinds of legal agreements where access is granted to documents existing in digital formats (eg, bytes)
+and parties are likely to employ technical staff.
