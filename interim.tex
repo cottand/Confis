@@ -16,10 +16,10 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-
+\usepackage[nodayofweek]{datetime}
 \usepackage{mathpazo}
-\usepackage{minted}
-
+%\usepackage{minted}
+%\usepackage{pgfgantt}
 \usepackage[backend=bibtex,style=vancouver,natbib=true]{biblatex} % Use the bibtex backend with the authoryear citation style (which resembles APA)
 
 \addbibresource{biblio.bib}
@@ -28,6 +28,7 @@
     \usepackage{tikz}
     \usepackage{amsmath}
     \usepackage{listings}
+    \usepackage{textcomp}
 \usetikzlibrary{arrows,positioning}
 \tikzset{
     %Define standard arrow tip
@@ -60,6 +61,12 @@
 % personal macros
 
 \newcommand{\citeTODO}{[\scriptsize{\textit{\textsc{CITATION NEEDED}}}\normalsize]}
+%
+%\newcommand{\thickerhline}{
+%    \setlength{\arrayrulewidth}{.15em}
+%    \hline
+%    \setlength{\arrayrulewidth}{.05em}
+%}
 
 \thesistitle{Exploring Trustless Licensing} % print with \ttitle
 \supervisor{Prof. William J. \textsc{Knottenbelt}} % print with \supname
