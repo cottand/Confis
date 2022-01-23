@@ -1,36 +1,56 @@
 % Chapter Template
 
 \chapter{Project Plan}\label{ch:timeline}
-\newdateformat{daymonth}{
-    \ordinal{DAY}\ of \monthname[\THEMONTH]
-}
-\newdateformat{dayordinal}{
-    \ordinal{DAY}
-}
+
+
 % see https://tex.stackexchange.com/questions/196794/how-can-you-create-a-vertical-timeline
-\newcommand{\foo}{\color{darkgray}\makebox[0pt]{\tiny\textbullet}\hskip-0.5pt\vrule width 1pt\hspace{\labelsep}}
+\newcommand{\foo}{\color{darkgray}\makebox[0pt]{\small\textbullet}\hskip-0.5pt\vrule width 1pt\hspace{\labelsep}}
 \newcommand{\bfoo}{\raisebox{2.1ex}[0pt]{\makebox[\dimexpr2\tabcolsep]
 {\color{LightSteelBlue3}\tiny\textbullet}}}
 \newcommand{\tfoo}{\makebox[\dimexpr2\tabcolsep]{}}%
 \daymonth
 
-\newcommand{\monthdate}[2]{\daymonth\formatdate{#1}{#2}{2022}}
+\newcommand{\monthdate}[2]{ \daymonth\formatdate{#1}{#2}{2022}}
+\newcommand{\para}{\newline\newline}
 
-\renewcommand\arraystretch{1.4}
+\renewcommand\arraystretch{1.5}
 \captionsetup{font=blue, labelfont=sc, labelsep=quad}
-\begin{longtable}{@{\,}r <{\hskip 2pt} !{\foo} >{\raggedright\arraybackslash}p{5cm}}
+\begin{longtable}{@{\,}r <{\hskip 2pt} !{\foo} >{\raggedright\arraybackslash}p{7cm}}
     \caption{Timeline} \\[-1.5ex]
     \toprule
     \addlinespace[1.5ex]
 %    \multicolumn{1}{c!{\bfoo}}{}          & \\ [-3.4ex]
     \monthdate{27}{01}                    & \textbf{Interim report due}              \\
     \monthdate{27}{01}-\monthdate{10}{01} & Interim report review                    \\
+
+    \monthdate{01}{03} & Acceptance criteria for software prototype defined.\para
+    I should have decided the scope of the software prototype and settled for what
+    representation this project will use to encode a contract. \newline
+    I should have also started seeking out stakeholders willing to provide feedback during
+    development which will also be critical during the evaluation phase \\
+
+    \monthdate{02}{03}-\monthdate{15}{04} & Bulk of prototype software development   \\
+
+    \monthdate{16}{04} & Revision of software acceptance criteria \para
+    I should refrain from large changes to the prototype beyond this point.
+    I should revisit the project's goals for the prototype and decide if I have time for an extension
+    or if on the contrary I need to further narrow the scope. \\
+    \monthdate{17}{04}-\monthdate{09}{05} & Extension developing and                 \\
+
     \monthdate{10}{05}                    & \textbf{Project health checkup}          \\
-    \monthdate{01}{05}-\monthdate{15}{05} & Project Evaluation                       \\
+    \monthdate{01}{05}-\monthdate{15}{05} & Project Evaluation \para
+    I should have a prototype good enough to be evaluated by stakeholders in industry by May.
+    I should implement critical feedback without fundamental code changes during this period. \\
     \monthdate{16}{05}-\monthdate{30}{05} & Report writing                           \\
     \monthdate{30}{05}                    & Report draft first hand-in               \\
+    \monthdate{01}{06}-\monthdate{19}{06} & Address report feedback                  \\
     \monthdate{20}{06}                    & \textbf{Final report due}                \\
     \monthdate{24}{06}                    & \textbf{Slides and software archive due} \\
 %    \multicolumn{1}{c!{\bfoo}}{} &
 \end{longtable}
 
+
+\section{Fallback Strategy}
+
+
+\section{Extensions}
