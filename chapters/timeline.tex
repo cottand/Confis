@@ -3,6 +3,28 @@
 \chapter{Project Plan}\label{ch:timeline}
 
 
+
+\section{Core Goals for Prototype}\label{sec:core-goals}
+
+At the time of writing the interim report, the goals of the prototype are vague: I have not estimated
+how long each idea will take to implement nor separated them into core goals and extensions.
+
+In particular, it is yet to be decided how a licence will be encoded in a machine-readable format.
+If this project decides to  tackle that, it wil be one of its main contributions.
+If on the contrary it finds a suitable representation in the literature (like the Accord
+project, see~\ref{subsec:accord}) then it can focus more other areas, like private verification through
+zero-knowledge proofs or decentralised auditing through blockchains.
+
+
+\section{Extensions}\label{sec:extensions}
+
+Suitable extensions could include:
+\begin{itemize}
+    \item Going beyond encoding a single contract and reasoning about a party bound to several
+    licences (some possibly related to the same data) and how these interact with each other.
+    \item Improving ease-of-use of dataset-related licences by somehow relating data to the licence
+    itself, in order to make the license easy to find.
+\end{itemize}
 % see https://tex.stackexchange.com/questions/196794/how-can-you-create-a-vertical-timeline
 \newcommand{\foo}{\color{darkgray}\makebox[0pt]{\small\textbullet}\hskip-0.5pt\vrule width 1pt\hspace{\labelsep}}
 \newcommand{\bfoo}{\raisebox{2.1ex}[0pt]{\makebox[\dimexpr2\tabcolsep]
@@ -10,7 +32,6 @@
 \newcommand{\tfoo}{\makebox[\dimexpr2\tabcolsep]{}}%
 \daymonth
 
-\newcommand{\monthdate}[2]{ \daymonth\formatdate{#1}{#2}{2022}}
 \newcommand{\para}{\newline\newline}
 
 \renewcommand\arraystretch{1.5}
@@ -27,7 +48,7 @@
     I should have decided the scope of the software prototype and settled for what
     representation this project will use to encode a contract. \newline
     I should have also started seeking out stakeholders willing to provide feedback during
-    development which will also be critical during the evaluation phase \\
+    development - which will also be critical during the evaluation phase \\
 
     \monthdate{02}{03}-\monthdate{15}{04} & Bulk of prototype software development   \\
 
@@ -49,8 +70,3 @@
 %    \multicolumn{1}{c!{\bfoo}}{} &
 \end{longtable}
 
-
-\section{Fallback Strategy}
-
-
-\section{Extensions}
