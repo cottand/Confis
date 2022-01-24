@@ -2,7 +2,7 @@
 
 \chapter{Evaluation Plan}\label{ch:evaluation}
 
-\section{Machine Readable Licence Representations}
+\section{Machine Readable Licence Representations}\label{sec:licence-representations}
 
 % we are looking to eavaluate the project - a lot of this should go into the intro probably...
 
@@ -20,11 +20,11 @@ A successful project should include:
     \item \textbf{Machine-readable representation of licenses}.
     \item \textbf{Prototype Software} that uses the contract representation to ease the existing
     manual workflow related to agreements in a business.
-    This should include a searchable database that is aware of licenses related to the same data or
-    software.
+    This could include a searchable database that is aware of licenses related to the same data or
+    software~(see~\ref{sec:contract-registry}).
     The software should, to some extent, allow querying a contract to be able to determine the
     conditions which the license allows to use the data in.
-    \item Secure, self-executing clauses that all parties bound to the contract can trust.
+    \item Secure, \textbf{self-executing clauses} that all parties bound to the contract can trust.
     This includes making it so parties cannot have plausible deniability or repudiation if they are
     dishonest.
 \end{itemize}
@@ -39,9 +39,15 @@ For example, a successful prototype should be aware of this enough to refer the 
 license when it is unable to provide certainties with respect to a query against a license.
 
 In other words, this uncertainty created by attempting to represent a contract in a machine-readable
-encoding should be part of the encoding itself, for the sake of completeness and usability.
+encoding should be part of the encoding itself, for the sake of completeness and usability.\\
 
-% TODO ask will
+Evaluation criteria would include whether the project can successfully encode a wide range of
+licence agreements.
 
+\section{A Universal Contract Registry}\label{sec:contract-registry}
 
-
+A decentralised contract registry, shared by multiple businesses (not unlike a decentralised version
+of Juro, see~\ref{subsec:juro}), can be a very useful contribution if it manages to meet the
+requirement of privacy.
+Businesses need not just the contents of their agreements to be secret to competitors, but also
+the existence of the contracts themselves must be private.

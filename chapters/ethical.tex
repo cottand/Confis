@@ -27,11 +27,28 @@ having to go to court and expending the financial and legal resources to take ac
 contract breach.
 So much so that this is the case already in many software licenses~(where~\cite{jetbrainsEduLicence}
 is a prime example, see~\ref{subsec:licensing:software}), where the end user has their access
-revoked before the licensor.
+revoked before the licensor.\\
+
+At any rate, due to the nature of legal agreements, it is likely there will be discrepancies
+between the traditional representation of the agreement and the structured format this project
+may propose.
+To what extent this discrepancy is mitigated or taken into account should be part of the
+evaluation criteria.
 
 % TODO maybe there is better wording for this term
 
-\subsection{Legal Validity}
+\subsection{Liability}\label{subsec:liability}
+
+When discrepancies between human- and machine-readable representations of legal agreements do occur,
+this project must consider where liability lies in case this causes a breach of contract.
+
+An easy (even naive) first approach could involve having parties agreeing to contracts forfeit
+liability for issues caused by this project, by appending a \textit{disclaimer of damages} clause to
+the agreement (common practice in software licenses, as seen
+in~\cite[\textsection9]{jetbrainsToolbox}).
+
+
+\subsection{Legal Validity}\label{subsec:legal-validity}
 
 If this project wants to represent or encode legal agreements in any way, they should qualify as
 such within the legal definitions of a legal system (or of several!).\\
@@ -41,6 +58,13 @@ traditional manually typed one.
 This must also hold true for other elements such as signatures (digital signatures as opposed
 handwritten ones), written notices, etc.
 
+\subsection{Copyright}\label{subsec:copyright}
+
+The prototype for this project is likely to make use of several licensed, open-source software
+libraries.
+
+The prototype will be open-source and at all times operate within the licences it has been granted,
+by crediting the original authors and including copyright notices where applicable.
 
 \section{Misuse}\label{sec:misuse}
 
@@ -62,11 +86,13 @@ implemented as software libraries (rather than a centralised server under contro
 then compliance obligations should remain within the responsibilities of the party using the
 software~\citeTODO.
 
-
 \section{Dual Use}\label{sec:dual-use}
 
-This project has an exclusively civilian focus.
+This project does have military applications: more automated licensing could be used to improve
+any supply chains, including military ones;
+but its focus and motivations are exclusively civilian.
 
+Therefore, this project falls under the definition of Dual Use.
 
 \section{Environmental Implications}\label{sec:environmental-implications}
 
@@ -79,3 +105,4 @@ Bitcoin or Ethereum~\cite{GOODKIND2020101281}.\\
 While addressing these issues is outside the scope of this project, at the time of writing the
 Ethereum community aims to make significant changes to its consensus mechanism (by moving away from
 proof-of-work altogether) that should greatly mitigate this environmental impact~\cite{eth2Vision}.
+
