@@ -18,10 +18,6 @@ When building a security proof, they can be assumed to have the following proper
     same output) are possible, but uniformity ensures this is an unlikely scenario.
 \end{description}
 
-\subsection{Symmetric key cryptography}
-
-% TODO will i need this
-
 \subsection{Public Key Cryptography}\label{subsec:crypto:pubkey}
 
 In public key cryptography, two communicating parties (say Alice and Bob) can communicate privately by using pairs of
@@ -379,7 +375,6 @@ Recent applications of zkSNARKs include privacy preserving blockchains (see~\ref
 verify a participant does not spend more funds that their balance without leaking any knowledge about the amount being
 spent, the balance itself, or the identities of payer and payee~\cite{zerocash_whitepaper}.\\
 
-% TODO would be nice to talk about ETH costs which are so so high
 Complex smart contracts (see~\ref{sec:ethereum}) quickly result in high costs for callers due to gas costs that increase with complexity of the
 contract's computation (see~\nameref{subsec:eth:gas}).
 zkSNARKs allow to verify a computation for a fraction of the cost of running it~\cite{zokrates_intro}.
@@ -393,12 +388,10 @@ The programs can also be exported as Solidity programs~(see~\ref{subsec:eth:cont
 can then be deployed to the Ethereum network.
 %TODO zokrates 1.6m gas ouch
 
-% TODO STARKS??
-
 
 \section{Licensing}\label{sec:licensing}
 
-A legal agreement is a fairly broad definition wich varies with each country's legal system.
+A legal agreement is a fairly broad definition which varies with each country's legal system.
 Most generally, it involves~\cite{contractDef2018precedent}:
 \begin{itemize}
     \item An offer by a party
@@ -542,3 +535,11 @@ Fabric}~\cite{hyperledgerFabric_repo, accordFabricDeployDocs} or to a NodeJS ser
 While the Accord project does also aim to represent machine-readable contracts, its representation
 cannot be easily written by a non-software developer (unlike Juro's~\ref{subsec:juro}).
 
+\subsection{Proof of Existence}\label{subsec:proof-of-existence}
+
+Among other contributions that ease the process (not unlike Juro~\ref{subsec:juro}) of negotiating
+and drafting a contract,~\cite[Express Agreement]{expressAgreement} implemented Proof of Existence,
+where parties put a hash of a signed copy of a contract in the Bitcoin~(see~\ref{sec:bitcoin})
+blockchain.
+
+This allows irrevocable proof of agreement verifiable by third parties.

@@ -24,29 +24,29 @@
 
 \addbibresource{biblio.bib}
 
-    \usepackage[autostyle=true]{csquotes}
-    \usepackage{tikz}
-    \usepackage{amsmath}
-    \usepackage{listings}
-    \usepackage{textcomp}
+\usepackage[autostyle=true]{csquotes}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{textcomp}
 \usetikzlibrary{arrows,positioning}
 \tikzset{
-    %Define standard arrow tip
+%Define standard arrow tip
     >=stealth',
-    %Define style for boxes
+%Define style for boxes
     punkt/.style={
-           rectangle,
-           rounded corners,
-           draw=black, thick,
-           text width=6.5em,
-           minimum height=2em,
-           text centered},
-    % Define arrow style
+        rectangle,
+        rounded corners,
+        draw=black, thick,
+        text width=6.5em,
+        minimum height=2em,
+        text centered},
+% Define arrow style
     pil/.style={
-           ->,
-           thick,
-           shorten <=2pt,
-           shorten >=2pt,}
+        ->,
+        thick,
+        shorten <=2pt,
+        shorten >=2pt,}
 }
 \geometry{
     paper=a4paper,
@@ -74,7 +74,7 @@
 
 \thesistitle{Exploring Trustless Licensing} % print with \ttitle
 \supervisor{Prof. William J. \textsc{Knottenbelt}} % print with \supname
-\examiner{} % TODO print with \examname?
+\marker{Dr. Paul A. \textsc{Bilokon}}
 \degree{MEng Computing} % print with \degreename
 \author{Nicolás \textsc{D'Cotta}} % print with \authorname
 \addresses{} % print with \addressname
@@ -106,7 +106,8 @@
 
             \vspace*{.06\textheight}
             {\scshape\LARGE \univname\par}\vspace{1.5cm}
-            \textsc{\Large MEng Final Year Project}\\[0.5cm]
+            % TODO restore for report
+            \textsc{\Large MEng Final Year Project (Interim Report)}\\[0.5cm]
 
             \HRule \\[0.4cm]
             {\huge \bfseries \ttitle\par}\vspace{0.4cm} % Thesis title
@@ -123,15 +124,17 @@
                 \begin{flushright}
                     \large
                     \emph{Supervisor:} \\
-                    \href{https://www.doc.ic.ac.uk/~wjk/}{\supname}
+                    \href{https://www.doc.ic.ac.uk/~wjk/}{\supname} \\[0.4 cm]
+                    \emph{Second Marker:} \\
+                    \href{https://www.imperial.ac.uk/people/paul.bilokon01}{\markername}
                 \end{flushright}
             \end{minipage}\\[3cm]
 
             \vfill
-
-            \large \textit{A thesis submitted in fulfillment of the requirements\\ for the degree of \degreename}\\[0.3cm] % University requirement text
-            \textit{in the}\\[0.4cm]
-            \facname \\ \deptname\\[2cm]
+% TODO restore for report
+%            \large \textit{A thesis submitted in fulfillment of the requirements\\ for the degree of \degreename}\\[0.3cm] % University requirement text
+%            \textit{in the}\\[0.4 cm]
+            \facname \\ \deptname\\[2 cm]
 
             \vfill
 
