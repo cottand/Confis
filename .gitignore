@@ -1,19 +1,19 @@
-.idea
-out
-.idea
-chapters/background.aux
-interim-blx.bib
-interim.toc
-interim.synctex.gz
-ignore
-interim.out
-interim.fls
-interim.lof
-interim.log
-interim.fdb_latexmk
-interim.bbl
-interim.run.xml
-interim.blg
-interim.lot
-interim.aux
-**/*.aux
+.gradle
+build/
+out/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+# Cache of project
+.gradletasknamecache
+
+# # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
+# gradle/wrapper/gradle-wrapper.properties
+
+# IDE
+.idea/
+*.iml
