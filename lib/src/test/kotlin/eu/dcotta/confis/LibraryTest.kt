@@ -6,7 +6,7 @@ package eu.dcotta.confis
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 
-class LibraryTest: StringSpec({
+class LibraryTest : StringSpec({
     "someLibraryMethodReturnsTrue" {
         val classUnderTest = Library()
         classUnderTest.someLibraryMethod() shouldBe true

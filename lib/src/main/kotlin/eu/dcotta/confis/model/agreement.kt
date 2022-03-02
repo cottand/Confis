@@ -6,14 +6,12 @@ data class Agreement(
 
 sealed interface Clause {
     @JvmInline
-   value class Text(val string: String): Clause
-
+    value class Text(val string: String) : Clause
 }
 
 enum class Purpose { Commercial, Research }
 
+sealed interface PurposePolicy : Clause {
 
-sealed interface PurposePolicy: Clause {
-
-    data class Allow(val purpose: Purpose): PurposePolicy
+    data class Allow(val purpose: Purpose) : PurposePolicy
 }

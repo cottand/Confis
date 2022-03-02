@@ -14,19 +14,15 @@ class LicenseTest : StringSpec({
             -"This is a freetext clause"
         }
 
-
         l.clauses.first() shouldBe Clause.Text("This is a freetext clause")
     }
-
 
     "can allow commercial purpose in clause" {
         val l = LicenseBuilder {
 
             o { purposes allowed include(Commercial) }
-
         }
 
         l.clauses.first() shouldBe PurposePolicy.Allow(Commercial)
     }
-
 })
