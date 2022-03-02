@@ -3,12 +3,12 @@
  */
 package eu.dcotta.confis
 
-import kotlin.test.Test
-import kotlin.test.assertTrue
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 
-class LibraryTest {
-    @Test fun someLibraryMethodReturnsTrue() {
+class LibraryTest: StringSpec({
+    "someLibraryMethodReturnsTrue" {
         val classUnderTest = Library()
-        assertTrue(classUnderTest.someLibraryMethod(), "someLibraryMethod should return 'true'")
+        classUnderTest.someLibraryMethod() shouldBe true
     }
-}
+})
