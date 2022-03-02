@@ -1,11 +1,18 @@
+
 plugins {
     kotlin("jvm")
-    id("org.jlleitschuh.gradle.ktlint") version "10.2.1"
-    `java-library`
 }
+
+val kotlinVersion: String by rootProject.extra
 
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
+    implementation(project(":script"))
+
+
+    implementation("org.jetbrains.kotlin:kotlin-scripting-common:$kotlinVersion")
+    implementation("org.jetbrains.kotlin:kotlin-scripting-jvm:$kotlinVersion")
+    implementation("org.jetbrains.kotlin:kotlin-scripting-jvm-host:$kotlinVersion")
 
     val kotestVersion = "5.1.0"
     testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
