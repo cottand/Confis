@@ -1,5 +1,8 @@
+import org.gradle.kotlin.dsl.support.kotlinScriptTypeFor
+
 plugins {
-    kotlin("jvm") version "1.5.31" apply false
+    kotlin("jvm") version "1.6.10" apply false
+    idea
 }
 
 allprojects {

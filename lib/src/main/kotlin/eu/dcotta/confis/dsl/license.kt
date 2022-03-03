@@ -8,7 +8,7 @@ import eu.dcotta.confis.model.Purpose
 import eu.dcotta.confis.model.PurposePolicy
 
 @ConfisDsl
-class LicenseBuilder {
+open class LicenseBuilder {
 
     private val clauses = mutableListOf<ClauseBuilder>()
     private val freeTextClauses = mutableListOf<Clause.Text>()
@@ -33,6 +33,7 @@ class LicenseBuilder {
 
     companion object Builder {
         operator fun invoke(builder: LicenseBuilder.() -> Unit) = LicenseBuilder().apply(builder).build()
+        fun assemble(builder: LicenseBuilder) = builder.build()
     }
 }
 

@@ -1,6 +1,7 @@
 package eu.dcotta.confis.scripting
 
 
+import eu.dcotta.confis.dsl.LicenseBuilder
 import kotlin.script.experimental.annotations.KotlinScript
 
 // The KotlinScript annotation marks a class that can serve as a reference to the script definition for
@@ -10,10 +11,12 @@ import kotlin.script.experimental.annotations.KotlinScript
     // file name extension by which this script type is recognized by mechanisms built into scripting compiler plugin
     // and IDE support, it is recommendend to use double extension with the last one being "kts", so some non-specific
     // scripting support could be used, e.g. in IDE, if the specific support is not installed.
+    displayName = "Confis Agreement",
     fileExtension = "confis.kts",
     compilationConfiguration = CompilationConfig::class,
+    evaluationConfiguration = EvaluationConfig::class,
 )
 // the class is used as the script base class, therefore it should be open or abstract
-abstract class SimpleScript {
+abstract class Definition : LicenseBuilder() {
     val hello = 2
 }
