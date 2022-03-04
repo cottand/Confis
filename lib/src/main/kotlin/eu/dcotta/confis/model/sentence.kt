@@ -14,4 +14,10 @@ data class Action(val name: String)
 
 data class Party(override val name: String) : Subject, Obj
 
-data class Sentence(val subject: Subject, val allowance: Allowance, val action: Action, val obj: Obj) : Clause
+data class Rule(val allowance: Allowance, val sentence: Sentence) {
+    val subject by sentence::subject
+    val obj by sentence::obj
+    val action by sentence::action
+}
+
+data class Sentence(val subject: Subject, val action: Action, val obj: Obj)

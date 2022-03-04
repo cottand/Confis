@@ -5,9 +5,9 @@ data class Agreement(
     val parties: List<Party>,
 )
 
-sealed interface LegalException {
+sealed interface Circumstance {
 
-    object ForceMajeure : LegalException
+    object ForceMajeure : Circumstance
 }
 
 sealed interface Clause {
@@ -15,9 +15,9 @@ sealed interface Clause {
     value class Text(val string: String) : Clause
 
     data class Encoded(
-        val sentence: Sentence,
+        val rule: Rule,
         val purposes: List<PurposePolicy> = emptyList(),
-        val exceptions: List<LegalException> = emptyList(),
+        val exceptions: List<Circumstance> = emptyList(),
     ) : Clause
 }
 

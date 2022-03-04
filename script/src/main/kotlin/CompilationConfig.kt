@@ -1,5 +1,6 @@
 package eu.dcotta.confis.scripting
 
+import eu.dcotta.confis.dsl.LicenseBuilder
 import eu.dcotta.confis.model.Purpose
 import kotlin.script.experimental.api.ScriptAcceptedLocation.Everywhere
 import kotlin.script.experimental.api.ScriptCompilationConfiguration
@@ -10,10 +11,18 @@ import kotlin.script.experimental.api.ide
 import kotlin.script.experimental.api.scriptsInstancesSharing
 import kotlin.script.experimental.jvm.dependenciesFromCurrentContext
 import kotlin.script.experimental.jvm.jvm
-import java.io.File
 
 object CompilationConfig : ScriptCompilationConfiguration({
-    defaultImports(File::class, Purpose.Commercial::class)
+    defaultImports(
+        Purpose.Commercial::class,
+    )
+
+    defaultImports(
+        Purpose::class.qualifiedName + ".*",
+        LicenseBuilder::class.java.packageName + ".*",
+    )
+
+    println("Using default imports:\n  " + this[defaultImports]?.joinToString("\n  "))
 
     jvm {
         // the dependenciesFromCurrentContext helper function extracts the classpath from current thread classloader

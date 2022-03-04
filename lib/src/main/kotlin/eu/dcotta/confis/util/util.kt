@@ -1,4 +1,4 @@
-package eu.dcotta.confis.dsl
+package eu.dcotta.confis.util
 
 import kotlin.properties.PropertyDelegateProvider
 import kotlin.properties.ReadOnlyProperty

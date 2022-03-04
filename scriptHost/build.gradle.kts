@@ -18,6 +18,7 @@ dependencies {
     testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
 
     kotlinScriptDef(project(":script"))
+    testKotlinScriptDef(project(":script"))
 
 }
 

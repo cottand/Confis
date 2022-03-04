@@ -2,18 +2,20 @@ package eu.dcotta.confis.dsl
 
 import eu.dcotta.confis.model.Action
 import eu.dcotta.confis.model.Agreement
-import eu.dcotta.confis.model.Allowance
 import eu.dcotta.confis.model.Allowance.Allow
 import eu.dcotta.confis.model.Allowance.Forbid
+import eu.dcotta.confis.model.Circumstance
+import eu.dcotta.confis.model.Circumstance.ForceMajeure
 import eu.dcotta.confis.model.Clause
-import eu.dcotta.confis.model.LegalException
-import eu.dcotta.confis.model.LegalException.ForceMajeure
+import eu.dcotta.confis.model.Clause.Encoded
 import eu.dcotta.confis.model.Obj
 import eu.dcotta.confis.model.Party
 import eu.dcotta.confis.model.Purpose
 import eu.dcotta.confis.model.PurposePolicy
+import eu.dcotta.confis.model.Rule
 import eu.dcotta.confis.model.Sentence
 import eu.dcotta.confis.model.Subject
+import eu.dcotta.confis.util.oneTimeProperty
 import kotlin.properties.ReadOnlyProperty
 
 @ConfisDsl
@@ -24,17 +26,17 @@ open class LicenseBuilder {
     internal val parties = mutableListOf<Party>()
 
     operator fun String.unaryMinus() {
-        freeTextClauses += Clause.Text(this)
+        freeTextClauses += Clause.Text(this.trimIndent())
     }
 
-    infix fun Subject.may(init: SentenceBuilder.() -> Sentence): ClauseBuilder {
-        val clause = ClauseBuilder(init(SentenceBuilder(this, Allow)))
+    infix fun Subject.may(init: SentenceBuilder.() -> Sentence): ClauseBuilderAllowed {
+        val clause = ClauseBuilderAllowed(init(SentenceBuilder(this)))
         clauses += clause
         return clause
     }
 
-    infix fun Subject.mayNot(init: SentenceBuilder.() -> Sentence): ClauseBuilder {
-        val clause = ClauseBuilder(init(SentenceBuilder(this, Forbid)))
+    infix fun Subject.mayNot(init: SentenceBuilder.() -> Sentence): ClauseBuilderForbidden {
+        val clause = ClauseBuilderForbidden(init(SentenceBuilder(this)))
         clauses += clause
         return clause
     }
@@ -45,7 +47,8 @@ open class LicenseBuilder {
         return this
     }
 
-    infix fun ClauseBuilder.additionally(init: ClauseBuilder.() -> Unit): ClauseBuilder = also(init)
+    infix fun ClauseBuilderAllowed.additionally(init: ClauseBuilderAllowed.() -> Unit): ClauseBuilderAllowed =
+        also(init)
 
     private fun build(): Agreement = Agreement(
         clauses = clauses.map(ClauseBuilder::build) + freeTextClauses,
@@ -58,28 +61,29 @@ open class LicenseBuilder {
     }
 }
 
-fun LicenseBuilder.declareParty(name: String) = oneTimeProperty<Nothing?, Party> {
+fun LicenseBuilder.declareParty(name: String) = oneTimeProperty<Any?, Party> {
     val party = Party(name)
     parties.add(party)
     party
 }
 
-val LicenseBuilder.declareParty get() = oneTimeProperty<Nothing?, Party> {
-    val party = Party(it.name)
-    parties.add(party)
-    party
-}
+val LicenseBuilder.declareParty
+    get() = oneTimeProperty<Any?, Party> {
+        val party = Party(it.name)
+        parties.add(party)
+        party
+    }
 
 @Suppress("unused")
 val LicenseBuilder.declareAction
-    get() = ReadOnlyProperty<Nothing?, Action> { _, prop ->
+    get() = ReadOnlyProperty<Any?, Action> { _, prop ->
         Action(prop.name)
     }
 
 @ConfisDsl
 class ExceptionBuilder {
 
-    internal var cause: LegalException? = null
+    internal var cause: Circumstance? = null
 
     val forceMajeure: Unit
         get() {
@@ -87,15 +91,16 @@ class ExceptionBuilder {
         }
 }
 
-class SentenceBuilder(private val subject: Subject, private val allowance: Allowance) {
-    infix operator fun Action.invoke(obj: Obj) = Sentence(subject, allowance, this, obj)
+class SentenceBuilder(private val subject: Subject) {
+    infix operator fun Action.invoke(obj: Obj) = Sentence(subject, this, obj)
 }
 
+/**
+ * Accepts exceptions and purposes
+ */
 @ConfisDsl
-class ClauseBuilder(private val sentence: Sentence) {
-    private val purposePolicies = mutableListOf<PurposePolicy>()
-
-    internal val exceptions = mutableListOf<LegalException>()
+class ClauseBuilderAllowed(private val sentence: Sentence) : ClauseBuilder(Rule(Allow, sentence)) {
+    internal val purposePolicies = mutableListOf<PurposePolicy>()
 
     data class PurposeNarrower(val purposes: List<Purpose>)
 
@@ -112,8 +117,26 @@ class ClauseBuilder(private val sentence: Sentence) {
     }
 
     val purposes = PurposeReceiver()
+}
 
-    internal fun build() = Clause.Encoded(sentence, purposePolicies.toList(), exceptions.toList())
+/**
+ * Only accepts exceptions
+ */
+@ConfisDsl
+class ClauseBuilderForbidden(sentence: Sentence) : ClauseBuilder(Rule(Forbid, sentence))
+
+@ConfisDsl
+sealed class ClauseBuilder(private val rule: Rule) {
+
+    internal val exceptions = mutableListOf<Circumstance>()
+
+    internal fun build(): Encoded {
+        val purposes = when (this) {
+            is ClauseBuilderAllowed -> purposePolicies
+            is ClauseBuilderForbidden -> emptyList()
+        }
+        return Clause.Encoded(rule, purposes, exceptions.toList())
+    }
 }
 
 @DslMarker

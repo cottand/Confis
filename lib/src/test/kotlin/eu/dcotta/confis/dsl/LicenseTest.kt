@@ -1,8 +1,8 @@
 package eu.dcotta.confis.dsl
 
 import eu.dcotta.confis.model.Allowance
+import eu.dcotta.confis.model.Circumstance.ForceMajeure
 import eu.dcotta.confis.model.Clause
-import eu.dcotta.confis.model.LegalException.ForceMajeure
 import eu.dcotta.confis.model.Party
 import eu.dcotta.confis.model.Purpose.Commercial
 import eu.dcotta.confis.model.Purpose.Research
@@ -17,8 +17,6 @@ import io.kotest.matchers.shouldBe
 inline fun <reified M> Any.narrowedTo() = if (this is M) this else fail("$this should be of type ${M::class}")
 
 class LicenseTest : StringSpec({
-
-    @Suppress("UNCHECKED_CAST")
 
     "can define freetext clause" {
 
@@ -57,7 +55,7 @@ class LicenseTest : StringSpec({
             alice may { hug(bob) }
         }
 
-        val sentence = l.clauses.first().narrowedTo<Clause.Encoded>().sentence
+        val sentence = l.clauses.first().narrowedTo<Clause.Encoded>().rule
 
         sentence should {
             it.action.name shouldBe "hug"
@@ -78,7 +76,7 @@ class LicenseTest : StringSpec({
             alice mayNot { hug(bob) }
         }
 
-        val sentence = l.clauses.first().narrowedTo<Clause.Encoded>().sentence
+        val sentence = l.clauses.first().narrowedTo<Clause.Encoded>().rule
 
         sentence should {
             it.action.name shouldBe "hug"
@@ -104,7 +102,7 @@ class LicenseTest : StringSpec({
 
         clause.exceptions.first() shouldBe ForceMajeure
 
-        clause.sentence should {
+        clause.rule should {
             it.action.name shouldBe "hug"
             it.subject shouldBe Party("alice")
             it.obj shouldBe Party("bob")
@@ -133,7 +131,7 @@ class LicenseTest : StringSpec({
 
     "can chain additionally clauses" {
         val l = LicenseBuilder {
-            val alice by declareParty("alice")
+            val alice by declareParty
             val bob by declareParty("bob")
             val hug by declareAction
             alice may { hug(bob) } additionally {
