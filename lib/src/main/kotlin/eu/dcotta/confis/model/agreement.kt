@@ -2,6 +2,7 @@ package eu.dcotta.confis.model
 
 data class Agreement(
     val clauses: List<Clause>,
+    val parties: List<Party>,
 )
 
 sealed interface LegalException {
@@ -13,12 +14,11 @@ sealed interface Clause {
     @JvmInline
     value class Text(val string: String) : Clause
 
-    data class WithExceptions(val clause: Clause, val exception: List<LegalException>) : Clause
-
-    @JvmInline
-    value class PurposePolicies(val policies: List<PurposePolicy>) : Clause {
-        constructor(vararg policies: PurposePolicy) : this(policies.asList())
-    }
+    data class Encoded(
+        val sentence: Sentence,
+        val purposes: List<PurposePolicy> = emptyList(),
+        val exceptions: List<LegalException> = emptyList(),
+    ) : Clause
 }
 
 enum class Purpose { Commercial, Research }

@@ -1,26 +1,42 @@
 package eu.dcotta.confis.dsl
 
+import eu.dcotta.confis.model.Action
 import eu.dcotta.confis.model.Agreement
+import eu.dcotta.confis.model.Allowance
+import eu.dcotta.confis.model.Allowance.Allow
+import eu.dcotta.confis.model.Allowance.Forbid
 import eu.dcotta.confis.model.Clause
 import eu.dcotta.confis.model.LegalException
 import eu.dcotta.confis.model.LegalException.ForceMajeure
+import eu.dcotta.confis.model.Obj
+import eu.dcotta.confis.model.Party
 import eu.dcotta.confis.model.Purpose
 import eu.dcotta.confis.model.PurposePolicy
+import eu.dcotta.confis.model.Sentence
+import eu.dcotta.confis.model.Subject
+import kotlin.properties.ReadOnlyProperty
 
 @ConfisDsl
 open class LicenseBuilder {
 
     private val clauses = mutableListOf<ClauseBuilder>()
     private val freeTextClauses = mutableListOf<Clause.Text>()
+    internal val parties = mutableListOf<Party>()
 
     operator fun String.unaryMinus() {
         freeTextClauses += Clause.Text(this)
     }
 
-    fun o(init: ClauseBuilder.() -> Unit): ClauseBuilder {
-        val built = ClauseBuilder().apply(init)
-        clauses += built
-        return built
+    infix fun Subject.may(init: SentenceBuilder.() -> Sentence): ClauseBuilder {
+        val clause = ClauseBuilder(init(SentenceBuilder(this, Allow)))
+        clauses += clause
+        return clause
+    }
+
+    infix fun Subject.mayNot(init: SentenceBuilder.() -> Sentence): ClauseBuilder {
+        val clause = ClauseBuilder(init(SentenceBuilder(this, Forbid)))
+        clauses += clause
+        return clause
     }
 
     infix fun ClauseBuilder.unless(init: ExceptionBuilder.() -> Unit): ClauseBuilder {
@@ -29,13 +45,36 @@ open class LicenseBuilder {
         return this
     }
 
-    private fun build(): Agreement = Agreement(clauses.map(ClauseBuilder::build) + freeTextClauses)
+    infix fun ClauseBuilder.additionally(init: ClauseBuilder.() -> Unit): ClauseBuilder = also(init)
+
+    private fun build(): Agreement = Agreement(
+        clauses = clauses.map(ClauseBuilder::build) + freeTextClauses,
+        parties = parties
+    )
 
     companion object Builder {
         operator fun invoke(builder: LicenseBuilder.() -> Unit) = LicenseBuilder().apply(builder).build()
         fun assemble(builder: LicenseBuilder) = builder.build()
     }
 }
+
+fun LicenseBuilder.declareParty(name: String) = oneTimeProperty<Nothing?, Party> {
+    val party = Party(name)
+    parties.add(party)
+    party
+}
+
+val LicenseBuilder.declareParty get() = oneTimeProperty<Nothing?, Party> {
+    val party = Party(it.name)
+    parties.add(party)
+    party
+}
+
+@Suppress("unused")
+val LicenseBuilder.declareAction
+    get() = ReadOnlyProperty<Nothing?, Action> { _, prop ->
+        Action(prop.name)
+    }
 
 @ConfisDsl
 class ExceptionBuilder {
@@ -45,15 +84,18 @@ class ExceptionBuilder {
     val forceMajeure: Unit
         get() {
             cause = ForceMajeure
-            return Unit
         }
 }
 
-@ConfisDsl
-class ClauseBuilder {
-    internal val purposePolicies = mutableListOf<PurposePolicy>()
+class SentenceBuilder(private val subject: Subject, private val allowance: Allowance) {
+    infix operator fun Action.invoke(obj: Obj) = Sentence(subject, allowance, this, obj)
+}
 
-    internal var exceptions = mutableListOf<LegalException>()
+@ConfisDsl
+class ClauseBuilder(private val sentence: Sentence) {
+    private val purposePolicies = mutableListOf<PurposePolicy>()
+
+    internal val exceptions = mutableListOf<LegalException>()
 
     data class PurposeNarrower(val purposes: List<Purpose>)
 
@@ -71,13 +113,7 @@ class ClauseBuilder {
 
     val purposes = PurposeReceiver()
 
-    internal fun build(): Clause {
-        val clauseWithoutExceptions = Clause.PurposePolicies(purposePolicies)
-        return when {
-            exceptions.isNotEmpty() -> Clause.WithExceptions(clauseWithoutExceptions, exceptions.toList())
-            else -> clauseWithoutExceptions
-        }
-    }
+    internal fun build() = Clause.Encoded(sentence, purposePolicies.toList(), exceptions.toList())
 }
 
 @DslMarker
