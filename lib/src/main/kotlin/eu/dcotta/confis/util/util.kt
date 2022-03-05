@@ -9,3 +9,7 @@ fun <C, V> oneTimeProperty(instantiate: (prop: KProperty<*>) -> V) =
         val v = instantiate(prop)
         ReadOnlyProperty { _, _ -> v }
     }
+
+fun <K, V> Map<K, V?>.filterValuesNotNull(): Map<K, V> =
+    mapNotNull { (k, v) -> if (v == null) null else (k to v) }
+        .toMap()

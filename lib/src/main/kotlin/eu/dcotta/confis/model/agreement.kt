@@ -25,11 +25,16 @@ enum class Purpose { Commercial, Research }
 
 sealed interface PurposePolicy {
 
-    data class Allow(val purposes: List<Purpose>) : PurposePolicy {
+    val purposes: List<Purpose>
+    val allowance: Allowance
+
+    data class Allow(override val purposes: List<Purpose>) : PurposePolicy {
+        override val allowance get() = Allowance.Allow
         constructor(vararg purposes: Purpose) : this(purposes.asList())
     }
 
-    data class Forbid(val purposes: List<Purpose>) : PurposePolicy {
+    data class Forbid(override val purposes: List<Purpose>) : PurposePolicy {
+        override val allowance get() = Allowance.Forbid
         constructor(vararg purposes: Purpose) : this(purposes.asList())
     }
 }
