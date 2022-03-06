@@ -16,6 +16,7 @@ import io.kotest.matchers.shouldBe
 
 inline fun <reified M> Any.narrowedTo() = if (this is M) this else fail("$this should be of type ${M::class}")
 
+@Suppress("UNUSED_VARIABLE")
 class LicenseTest : StringSpec({
 
     "can define freetext clause" {

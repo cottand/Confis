@@ -3,10 +3,35 @@ package eu.dcotta.confis.model
 enum class Allowance {
     Allow, Forbid;
 
-    val result get() = AllowanceResult.valueOf(name)
+    val asResult get() = if (this == Allow) AllowanceResult.Allow else AllowanceResult.Forbid
 }
 
-enum class AllowanceResult { Allow, Forbid, Unspecified }
+sealed interface AllowanceResult {
+    object Allow : AllowanceResult
+    object Forbid : AllowanceResult
+    object Unspecified: AllowanceResult
+    data class AllowForPurposes(val purposes: List<Purpose>) : AllowanceResult
+
+    // operator fun minus(others: List<Purpose>) = when(this) {
+    //    Allow -> this
+    //    is AllowForPurposes -> copy(purposes - others)
+    //    Forbid -> AllowForPurposes(others)
+    // }
+
+    // not commutative - the RHS allows more freedom
+    // TODO decide semantics of contract and which queries we will support
+    infix fun with(other: AllowanceResult) =  when (this) {
+        Allow -> Allow
+        is AllowForPurposes -> TODO()
+        Forbid -> when (other) {
+            Allow -> TODO()
+            is AllowForPurposes -> TODO()
+            Forbid -> TODO()
+            Unspecified -> TODO()
+        }
+        Unspecified -> TODO()
+    }
+}
 
 interface Obj {
     data class Named(val name: String) : Obj

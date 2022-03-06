@@ -68,6 +68,8 @@ fun AgreementBuilder.declareParty(name: String) = oneTimeProperty<Any?, Party> {
     party
 }
 
+val AgreementBuilder.declareObject get() = oneTimeProperty<Any?, Obj> { Obj.Named(it.name) }
+
 val AgreementBuilder.declareParty
     get() = oneTimeProperty<Any?, Party> {
         val party = Party(it.name)

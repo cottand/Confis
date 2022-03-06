@@ -21,7 +21,9 @@ sealed interface Clause {
     ) : Clause
 }
 
-enum class Purpose { Commercial, Research }
+enum class Purpose {
+    Commercial, Research;
+}
 
 sealed interface PurposePolicy {
 

@@ -1,70 +1,88 @@
 package eu.dcotta.confis.eval
 
+import com.deliveredtechnologies.rulebook.Fact
+import com.deliveredtechnologies.rulebook.FactMap
 import com.deliveredtechnologies.rulebook.Result
 import com.deliveredtechnologies.rulebook.lang.RuleBookBuilder
 import com.deliveredtechnologies.rulebook.lang.RuleBuilder
-import com.deliveredtechnologies.rulebook.model.rulechain.cor.CoRRuleBook
-import eu.dcotta.confis.model.Action
+import eu.dcotta.confis.dsl.AgreementBuilder
 import eu.dcotta.confis.model.Agreement
+import eu.dcotta.confis.model.Allowance
 import eu.dcotta.confis.model.AllowanceResult
 import eu.dcotta.confis.model.Clause
 import eu.dcotta.confis.model.Clause.EncodedSentence
 import eu.dcotta.confis.model.Clause.Text
-import eu.dcotta.confis.model.Obj
+import eu.dcotta.confis.model.Obj.Anything
 import eu.dcotta.confis.model.Purpose
-import eu.dcotta.confis.model.Subject
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
+import eu.dcotta.confis.model.Sentence
 
-data class Question(
-    val subject: Subject,
-    val action: Action,
-    val obj: Obj,
+data class AllowanceQuestion(
+    val sentence: Sentence,
     val purpose: Purpose? = null,
 )
 
-data class FactAndQuestion(val q: Question)
+data class FactAndQuestion(val q: AllowanceQuestion)
 
 class QueryableAgreement(val agreement: Agreement) {
-    private val ruleBook = object : CoRRuleBook<AllowanceResult>() {
-        override fun defineRules() {
-            for (clause in agreement.clauses.map { it.asRule() })
-                addRule(
-                    RuleBuilder.create()
-                        .withFactType(FactAndQuestion::class.java)
-                        .withResultType(AllowanceResult::class.java)
-                        .`when` {
-                            clause.pred(it.one)
-                        }
-                        .then { facts, result -> ThenBuilder(result, facts.one) }
-                        .build()
-                )
-        }
-    }
 
-    val rb = RuleBookBuilder.create(ruleBook::class.java)
+    constructor(init: AgreementBuilder.() -> Unit) : this(AgreementBuilder(init))
+
+    private val rb = RuleBookBuilder.create()
         .withResultType(AllowanceResult::class.java)
         .withDefaultResult(AllowanceResult.Unspecified)
         .build()
+
+    init {
+        for (clause in agreement.clauses.flatMap { it.asRules() })
+            rb.addRule(
+                RuleBuilder.create()
+                    .withFactType(FactAndQuestion::class.java)
+                    .withResultType(AllowanceResult::class.java)
+                    .`when` { clause.case(it.one) }
+                    .then { facts, result -> clause.then(ThenBuilder(result, facts.one)) }
+                    .build()
+            )
+    }
+
+    fun ask(q: AllowanceQuestion): AllowanceResult {
+        rb.run(FactMap(Fact(FactAndQuestion(q))))
+        return rb.result.orElse(null)?.value ?: error("Should contain a result")
+    }
 }
 
-class ThenBuilder(allowanceResult: Result<AllowanceResult>, var factAndQuestion: FactAndQuestion) {
-    val result = object : ReadWriteProperty<ThenBuilder, AllowanceResult> {
-        override fun setValue(thisRef: ThenBuilder, property: KProperty<*>, value: AllowanceResult) {
+class ThenBuilder(private val allowanceResult: Result<AllowanceResult>, var factAndQuestion: FactAndQuestion) {
+    var result: AllowanceResult
+        get() = allowanceResult.value
+        set(value) {
             allowanceResult.value = value
         }
-
-        override fun getValue(thisRef: ThenBuilder, property: KProperty<*>): AllowanceResult = allowanceResult.value
-    }
 }
 
-data class ConfisRule(val pred: FactAndQuestion.() -> Boolean, val then: ThenBuilder.() -> Unit) {
-    companion object {
-        val empty = ConfisRule({ false }) { }
-    }
+data class ConfisRule(val case: FactAndQuestion.() -> Boolean, val then: ThenBuilder.() -> Unit)
+
+fun Clause.asRules(): List<ConfisRule> = when (this) {
+    is EncodedSentence -> canonifyClause(this).flatMap { (a, at) -> at.asRule(a) }
+    is Text -> emptyList()
 }
 
-fun Clause.asRule(): ConfisRule = when (this) {
-    is EncodedSentence -> TODO()
-    is Text -> ConfisRule.empty
+fun Atom.asRule(allowance: Allowance): List<ConfisRule> = when {
+    purpose == null && sentence.obj == Anything -> listOf(ConfisRule(
+        case = { sentence.subject == q.sentence.subject && sentence.action == q.sentence.action },
+        then = { result = allowance.asResult },
+    ))
+    purpose == null -> listOf(
+        ConfisRule(
+            // neither clause nor question specify purpose
+            case = { sentence == q.sentence && q.purpose == null },
+            then = { result = allowance.asResult },
+        ),
+        ConfisRule(
+            case = { sentence == q.sentence },
+            then = { result = allowance.asResult },
+        ),
+    )
+    else -> listOf(ConfisRule(
+        case = { sentence == q.sentence && purpose == q.purpose },
+        then = { result = allowance.asResult },
+    ))
 }
