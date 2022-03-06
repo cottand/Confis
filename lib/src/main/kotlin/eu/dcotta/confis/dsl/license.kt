@@ -7,8 +7,9 @@ import eu.dcotta.confis.model.Allowance.Forbid
 import eu.dcotta.confis.model.Circumstance
 import eu.dcotta.confis.model.Circumstance.ForceMajeure
 import eu.dcotta.confis.model.Clause
-import eu.dcotta.confis.model.Clause.Encoded
+import eu.dcotta.confis.model.Clause.EncodedSentence
 import eu.dcotta.confis.model.Obj
+import eu.dcotta.confis.model.Obj.Anything
 import eu.dcotta.confis.model.Party
 import eu.dcotta.confis.model.Purpose
 import eu.dcotta.confis.model.PurposePolicy
@@ -19,7 +20,7 @@ import eu.dcotta.confis.util.oneTimeProperty
 import kotlin.properties.ReadOnlyProperty
 
 @ConfisDsl
-open class LicenseBuilder {
+open class AgreementBuilder {
 
     private val clauses = mutableListOf<ClauseBuilder>()
     private val freeTextClauses = mutableListOf<Clause.Text>()
@@ -56,18 +57,18 @@ open class LicenseBuilder {
     )
 
     companion object Builder {
-        operator fun invoke(builder: LicenseBuilder.() -> Unit) = LicenseBuilder().apply(builder).build()
-        fun assemble(builder: LicenseBuilder) = builder.build()
+        operator fun invoke(builder: AgreementBuilder.() -> Unit) = AgreementBuilder().apply(builder).build()
+        fun assemble(builder: AgreementBuilder) = builder.build()
     }
 }
 
-fun LicenseBuilder.declareParty(name: String) = oneTimeProperty<Any?, Party> {
+fun AgreementBuilder.declareParty(name: String) = oneTimeProperty<Any?, Party> {
     val party = Party(name)
     parties.add(party)
     party
 }
 
-val LicenseBuilder.declareParty
+val AgreementBuilder.declareParty
     get() = oneTimeProperty<Any?, Party> {
         val party = Party(it.name)
         parties.add(party)
@@ -75,7 +76,7 @@ val LicenseBuilder.declareParty
     }
 
 @Suppress("unused")
-val LicenseBuilder.declareAction
+val AgreementBuilder.declareAction
     get() = ReadOnlyProperty<Any?, Action> { _, prop ->
         Action(prop.name)
     }
@@ -93,6 +94,7 @@ class ExceptionBuilder {
 
 class SentenceBuilder(private val subject: Subject) {
     infix operator fun Action.invoke(obj: Obj) = Sentence(subject, this, obj)
+    operator fun Action.invoke() = Sentence(subject, this, Anything)
 }
 
 /**
@@ -130,12 +132,12 @@ sealed class ClauseBuilder(private val rule: Rule) {
 
     internal val exceptions = mutableListOf<Circumstance>()
 
-    internal fun build(): Encoded {
+    internal fun build(): EncodedSentence {
         val purposes = when (this) {
             is ClauseBuilderAllowed -> purposePolicies
             is ClauseBuilderForbidden -> emptyList()
         }
-        return Clause.Encoded(rule, purposes, exceptions.toList())
+        return Clause.EncodedSentence(rule, purposes, exceptions.toList())
     }
 }
 

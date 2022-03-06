@@ -1,14 +1,16 @@
 package eu.dcotta.confis.eval
 
-import eu.dcotta.confis.dsl.LicenseBuilder
+import eu.dcotta.confis.dsl.AgreementBuilder
 import eu.dcotta.confis.dsl.declareAction
 import eu.dcotta.confis.dsl.declareParty
-import eu.dcotta.confis.eval.CanonicalAgreement.Atom
 import eu.dcotta.confis.eval.CanonisationResult.ContradictionError
 import eu.dcotta.confis.eval.CanonisationResult.Success
 import eu.dcotta.confis.model.Action
+import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.model.Allowance.Allow
 import eu.dcotta.confis.model.Allowance.Forbid
+import eu.dcotta.confis.model.Clause
+import eu.dcotta.confis.model.Clause.EncodedSentence
 import eu.dcotta.confis.model.Party
 import eu.dcotta.confis.model.Purpose.Commercial
 import eu.dcotta.confis.model.Purpose.Research
@@ -26,8 +28,10 @@ class CanonicalAgreementTest : StringSpec({
     val anaHugsBobForResearch = Atom(anaHugsBob, Research, exception = null)
     val anaHugsBobForProfit = Atom(anaHugsBob, Commercial, exception = null)
 
+    fun build(a: Agreement) = canoniseSentences(a.clauses.filterIsInstance<EncodedSentence>())
+
     "detects contradiction in separate clauses" {
-        val bad = LicenseBuilder {
+        val bad = AgreementBuilder {
             val ana by declareParty
             val bob by declareParty
             val hug by declareAction
@@ -36,7 +40,7 @@ class CanonicalAgreementTest : StringSpec({
             ana mayNot { hug(bob) }
         }
 
-        val result = CanonicalAgreement.build(bad) as? ContradictionError
+        val result = build(bad) as? ContradictionError
             ?: fail("Expected failure")
 
         result.contradictions should { atoms ->
@@ -52,7 +56,7 @@ class CanonicalAgreementTest : StringSpec({
     }
 
     "contradiction in purposes" {
-        val bad = LicenseBuilder {
+        val bad = AgreementBuilder {
             val ana by declareParty
             val bob by declareParty
             val hug by declareAction
@@ -62,7 +66,7 @@ class CanonicalAgreementTest : StringSpec({
                 purposes forbidden include(Commercial)
             }
         }
-        val result = CanonicalAgreement.build(bad) as? ContradictionError
+        val result = build(bad) as? ContradictionError
             ?: fail("Expected failure")
 
         result.contradictions[anaHugsBobForProfit] should {
@@ -73,9 +77,9 @@ class CanonicalAgreementTest : StringSpec({
         }
     }
 
-    // TODO decide on semantics of this stuff
-    "contradiction in purposes vs other clause" {
-        val bad = LicenseBuilder {
+    // TODO decide on semantics of this stuff - will we even detect it
+    "contradiction in purposes vs other clause".config(enabled = false) {
+        val bad = AgreementBuilder {
             val ana by declareParty
             val bob by declareParty
             val hug by declareAction
@@ -85,7 +89,7 @@ class CanonicalAgreementTest : StringSpec({
             }
             ana mayNot { hug(bob) }
         }
-        val result = CanonicalAgreement.build(bad) as? ContradictionError
+        val result = build(bad) as? ContradictionError
             ?: fail("Expected failure")
 
         result.contradictions should { atoms ->
@@ -94,7 +98,7 @@ class CanonicalAgreementTest : StringSpec({
     }
 
     "simple agreement" {
-        val good = LicenseBuilder {
+        val good = AgreementBuilder {
             val ana by declareParty
             val bob by declareParty
             val hug by declareAction
@@ -103,7 +107,7 @@ class CanonicalAgreementTest : StringSpec({
             bob may { hug(ana) }
         }
 
-        val result = CanonicalAgreement.build(good) as? Success
+        val result = build(good) as? Success
             ?: fail("Should succeed")
 
         result.atoms shouldHaveSize 2
@@ -113,7 +117,7 @@ class CanonicalAgreementTest : StringSpec({
     }
 
     "can deal with purposes" {
-        val good = LicenseBuilder {
+        val good = AgreementBuilder {
             val ana by declareParty
             val bob by declareParty
             val hug by declareAction
@@ -124,7 +128,7 @@ class CanonicalAgreementTest : StringSpec({
             }
         }
 
-        val result = CanonicalAgreement.build(good) as? Success
+        val result = build(good) as? Success
             ?: fail("Should succeed")
 
         result.atoms shouldHaveSize 2
@@ -132,5 +136,35 @@ class CanonicalAgreementTest : StringSpec({
 
         result.atoms[anaHugsBobForResearch] shouldBe Allow
         result.atoms[anaHugsBobForProfit] shouldBe Forbid
+    }
+
+    "canonify returns correct atoms for a simple sentence" {
+        val a = AgreementBuilder {
+            val ana by declareParty
+            val bob by declareParty
+            val hug by declareAction
+
+            ana may { hug(bob) } additionally {
+                purposes allowed include(Research)
+                purposes forbidden include(Commercial)
+            }
+        }
+
+        a.clauses shouldHaveSize 1
+
+        val clause = a.clauses.firstOrNull() as? Clause.EncodedSentence
+            ?: fail("Should be an encoded sentence")
+
+        val atoms = canonifyClause(clause)
+
+        atoms shouldHaveSize 2
+
+        atoms.first { it.first == Allow } should { (_, atom) ->
+            atom shouldBe anaHugsBobForResearch
+        }
+
+        atoms.first { it.first == Forbid } should { (_, atom) ->
+            atom shouldBe anaHugsBobForProfit
+        }
     }
 })

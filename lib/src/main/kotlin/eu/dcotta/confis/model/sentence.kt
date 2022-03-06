@@ -1,18 +1,23 @@
 package eu.dcotta.confis.model
 
-enum class Allowance { Allow, Forbid }
+enum class Allowance {
+    Allow, Forbid;
 
-interface Obj {
-    val name: String
+    val result get() = AllowanceResult.valueOf(name)
 }
 
-data class NamedObject(override val name: String) : Obj
+enum class AllowanceResult { Allow, Forbid, Unspecified }
+
+interface Obj {
+    data class Named(val name: String) : Obj
+    object Anything : Obj
+}
 
 interface Subject
 
 data class Action(val name: String)
 
-data class Party(override val name: String) : Subject, Obj
+data class Party(val name: String) : Subject, Obj
 
 data class Rule(val allowance: Allowance, val sentence: Sentence) {
     val subject by sentence::subject

@@ -14,7 +14,7 @@ sealed interface Clause {
     @JvmInline
     value class Text(val string: String) : Clause
 
-    data class Encoded(
+    data class EncodedSentence(
         val rule: Rule,
         val purposes: List<PurposePolicy> = emptyList(),
         val exceptions: List<Circumstance> = emptyList(),

@@ -20,7 +20,7 @@ class LicenseTest : StringSpec({
 
     "can define freetext clause" {
 
-        val l = LicenseBuilder {
+        val l = AgreementBuilder {
             -"This is a freetext clause"
         }
 
@@ -28,14 +28,14 @@ class LicenseTest : StringSpec({
     }
 
     "can declare actions" {
-        LicenseBuilder {
+        AgreementBuilder {
 
             val copy by declareAction
         }
     }
 
     "can declare parties" {
-        val l = LicenseBuilder {
+        val l = AgreementBuilder {
 
             val alice by declareParty
             val bob by declareParty(name = "You!")
@@ -45,7 +45,7 @@ class LicenseTest : StringSpec({
     }
 
     "can allow a declared action to a party" {
-        val l = LicenseBuilder {
+        val l = AgreementBuilder {
             val alice by declareParty("alice")
 
             val bob by declareParty("bob")
@@ -55,7 +55,7 @@ class LicenseTest : StringSpec({
             alice may { hug(bob) }
         }
 
-        val sentence = l.clauses.first().narrowedTo<Clause.Encoded>().rule
+        val sentence = l.clauses.first().narrowedTo<Clause.EncodedSentence>().rule
 
         sentence should {
             it.action.name shouldBe "hug"
@@ -66,7 +66,7 @@ class LicenseTest : StringSpec({
     }
 
     "can forbid a declared action to a party" {
-        val l = LicenseBuilder {
+        val l = AgreementBuilder {
             val alice by declareParty("alice")
 
             val bob by declareParty("bob")
@@ -76,7 +76,7 @@ class LicenseTest : StringSpec({
             alice mayNot { hug(bob) }
         }
 
-        val sentence = l.clauses.first().narrowedTo<Clause.Encoded>().rule
+        val sentence = l.clauses.first().narrowedTo<Clause.EncodedSentence>().rule
 
         sentence should {
             it.action.name shouldBe "hug"
@@ -87,7 +87,7 @@ class LicenseTest : StringSpec({
     }
 
     "can add a forceManejeure exception to a sentence" {
-        val l = LicenseBuilder {
+        val l = AgreementBuilder {
             val alice by declareParty("alice")
 
             val bob by declareParty("bob")
@@ -98,7 +98,7 @@ class LicenseTest : StringSpec({
         }
         val clause = l.clauses.first()
 
-        (clause as? Clause.Encoded) ?: fail("clause should have exceptions")
+        (clause as? Clause.EncodedSentence) ?: fail("clause should have exceptions")
 
         clause.exceptions.first() shouldBe ForceMajeure
 
@@ -111,7 +111,7 @@ class LicenseTest : StringSpec({
     }
 
     "add purposes to a sentence" {
-        val l = LicenseBuilder {
+        val l = AgreementBuilder {
             val alice by declareParty("alice")
 
             val bob by declareParty("bob")
@@ -124,13 +124,13 @@ class LicenseTest : StringSpec({
             }
         }
 
-        val clause = l.clauses.first().narrowedTo<Clause.Encoded>()
+        val clause = l.clauses.first().narrowedTo<Clause.EncodedSentence>()
 
         clause.purposes shouldContainAll listOf(Allow(Research), Forbid(Commercial))
     }
 
     "can chain additionally clauses" {
-        val l = LicenseBuilder {
+        val l = AgreementBuilder {
             val alice by declareParty
             val bob by declareParty("bob")
             val hug by declareAction
@@ -140,7 +140,7 @@ class LicenseTest : StringSpec({
             }
         }
 
-        val l2 = LicenseBuilder {
+        val l2 = AgreementBuilder {
             val alice by declareParty("alice")
             val bob by declareParty("bob")
             val hug by declareAction

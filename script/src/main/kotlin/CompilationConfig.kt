@@ -1,6 +1,6 @@
 package eu.dcotta.confis.scripting
 
-import eu.dcotta.confis.dsl.LicenseBuilder
+import eu.dcotta.confis.dsl.AgreementBuilder
 import eu.dcotta.confis.model.Purpose
 import kotlin.script.experimental.api.ScriptAcceptedLocation.Everywhere
 import kotlin.script.experimental.api.ScriptCompilationConfiguration
@@ -19,7 +19,7 @@ object CompilationConfig : ScriptCompilationConfiguration({
 
     defaultImports(
         Purpose::class.qualifiedName + ".*",
-        LicenseBuilder::class.java.packageName + ".*",
+        AgreementBuilder::class.java.packageName + ".*",
     )
 
     println("Using default imports:\n  " + this[defaultImports]?.joinToString("\n  "))

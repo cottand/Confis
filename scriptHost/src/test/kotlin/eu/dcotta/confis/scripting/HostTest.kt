@@ -1,6 +1,6 @@
 package eu.dcotta.confis.scripting
 
-import eu.dcotta.confis.dsl.LicenseBuilder
+import eu.dcotta.confis.dsl.AgreementBuilder
 import eu.dcotta.confis.model.Clause
 import io.kotest.assertions.fail
 import io.kotest.core.spec.style.StringSpec
@@ -20,7 +20,7 @@ class HostTest : StringSpec({
 
         val i = (res.value.returnValue.scriptInstance as Definition)
 
-        val assembled = LicenseBuilder.assemble(i)
+        val assembled = AgreementBuilder.assemble(i)
         println(assembled)
 
         assembled.clauses shouldNotBe emptyList<Clause>()

@@ -1,7 +1,7 @@
 package eu.dcotta.confis.scripting
 
 
-import eu.dcotta.confis.dsl.LicenseBuilder
+import eu.dcotta.confis.dsl.AgreementBuilder
 import kotlin.script.experimental.annotations.KotlinScript
 
 // The KotlinScript annotation marks a class that can serve as a reference to the script definition for
@@ -17,6 +17,6 @@ import kotlin.script.experimental.annotations.KotlinScript
     evaluationConfiguration = EvaluationConfig::class,
 )
 // the class is used as the script base class, therefore it should be open or abstract
-abstract class Definition : LicenseBuilder() {
+abstract class Definition : AgreementBuilder() {
     val hello = 2
 }
