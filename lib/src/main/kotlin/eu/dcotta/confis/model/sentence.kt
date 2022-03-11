@@ -1,41 +1,35 @@
 package eu.dcotta.confis.model
 
+import eu.dcotta.confis.model.Obj.Anything
+
 enum class Allowance {
     Allow, Forbid;
 
     val asResult get() = if (this == Allow) AllowanceResult.Allow else AllowanceResult.Forbid
 }
 
-sealed interface AllowanceResult {
-    object Allow : AllowanceResult
-    object Forbid : AllowanceResult
-    object Unspecified: AllowanceResult
-    data class AllowForPurposes(val purposes: List<Purpose>) : AllowanceResult
+enum class AllowanceResult {
+    Allow, Forbid, Unspecified;
 
-    // operator fun minus(others: List<Purpose>) = when(this) {
-    //    Allow -> this
-    //    is AllowForPurposes -> copy(purposes - others)
-    //    Forbid -> AllowForPurposes(others)
-    // }
-
-    // not commutative - the RHS allows more freedom
-    // TODO decide semantics of contract and which queries we will support
-    infix fun with(other: AllowanceResult) =  when (this) {
-        Allow -> Allow
-        is AllowForPurposes -> TODO()
-        Forbid -> when (other) {
-            Allow -> TODO()
-            is AllowForPurposes -> TODO()
-            Forbid -> TODO()
-            Unspecified -> TODO()
+    // takes the least permissive
+    infix fun and(other: AllowanceResult): AllowanceResult = when (this) {
+        Allow -> when (other) {
+            Allow -> Allow
+            Forbid -> Forbid
+            Unspecified -> Allow
         }
-        Unspecified -> TODO()
+        Forbid -> this
+        Unspecified -> other
     }
 }
 
 interface Obj {
     data class Named(val name: String) : Obj
     object Anything : Obj
+
+    companion object {
+        operator fun invoke(name: String) = Named(name)
+    }
 }
 
 interface Subject
@@ -44,10 +38,10 @@ data class Action(val name: String)
 
 data class Party(val name: String) : Subject, Obj
 
-data class Rule(val allowance: Allowance, val sentence: Sentence) {
-    val subject by sentence::subject
-    val obj by sentence::obj
-    val action by sentence::action
+data class Sentence(val subject: Subject, val action: Action, val obj: Obj) {
+    /**
+     * whether [this] is a more general version of [other]
+     */
+    operator fun contains(other: Sentence): Boolean = this == other ||
+        (subject == other.subject && action == other.action && obj == Anything)
 }
-
-data class Sentence(val subject: Subject, val action: Action, val obj: Obj)

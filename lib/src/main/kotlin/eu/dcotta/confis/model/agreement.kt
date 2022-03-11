@@ -5,38 +5,19 @@ data class Agreement(
     val parties: List<Party>,
 )
 
-sealed interface Circumstance {
-
-    object ForceMajeure : Circumstance
-}
-
 sealed interface Clause {
     @JvmInline
     value class Text(val string: String) : Clause
 
-    data class EncodedSentence(
+    data class SentenceWithCircumstances(
         val rule: Rule,
-        val purposes: List<PurposePolicy> = emptyList(),
-        val exceptions: List<Circumstance> = emptyList(),
+        val circumstanceAllowance: Allowance,
+        val circumstances: CircumstanceMap,
     ) : Clause
-}
 
-enum class Purpose {
-    Commercial, Research;
-}
-
-sealed interface PurposePolicy {
-
-    val purposes: List<Purpose>
-    val allowance: Allowance
-
-    data class Allow(override val purposes: List<Purpose>) : PurposePolicy {
-        override val allowance get() = Allowance.Allow
-        constructor(vararg purposes: Purpose) : this(purposes.asList())
-    }
-
-    data class Forbid(override val purposes: List<Purpose>) : PurposePolicy {
-        override val allowance get() = Allowance.Forbid
-        constructor(vararg purposes: Purpose) : this(purposes.asList())
+    data class Rule(val allowance: Allowance, val sentence: Sentence) : Clause {
+        val subject by sentence::subject
+        val obj by sentence::obj
+        val action by sentence::action
     }
 }

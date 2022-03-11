@@ -1,13 +1,14 @@
 package eu.dcotta.confis.dsl
 
 import eu.dcotta.confis.model.Allowance
-import eu.dcotta.confis.model.Circumstance.ForceMajeure
+import eu.dcotta.confis.model.Allowance.Allow
+import eu.dcotta.confis.model.Allowance.Forbid
+import eu.dcotta.confis.model.CircumstanceMap
 import eu.dcotta.confis.model.Clause
 import eu.dcotta.confis.model.Party
 import eu.dcotta.confis.model.Purpose.Commercial
 import eu.dcotta.confis.model.Purpose.Research
-import eu.dcotta.confis.model.PurposePolicy.Allow
-import eu.dcotta.confis.model.PurposePolicy.Forbid
+import eu.dcotta.confis.model.PurposePolicy
 import io.kotest.assertions.fail
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldContainAll
@@ -56,7 +57,7 @@ class LicenseTest : StringSpec({
             alice may { hug(bob) }
         }
 
-        val sentence = l.clauses.first().narrowedTo<Clause.EncodedSentence>().rule
+        val sentence = l.clauses.first().narrowedTo<Clause.Rule>()
 
         sentence should {
             it.action.name shouldBe "hug"
@@ -77,33 +78,9 @@ class LicenseTest : StringSpec({
             alice mayNot { hug(bob) }
         }
 
-        val sentence = l.clauses.first().narrowedTo<Clause.EncodedSentence>().rule
+        val sentence = l.clauses.first().narrowedTo<Clause.Rule>()
 
         sentence should {
-            it.action.name shouldBe "hug"
-            it.subject shouldBe Party("alice")
-            it.obj shouldBe Party("bob")
-            it.allowance shouldBe Allowance.Forbid
-        }
-    }
-
-    "can add a forceManejeure exception to a sentence" {
-        val l = AgreementBuilder {
-            val alice by declareParty("alice")
-
-            val bob by declareParty("bob")
-
-            val hug by declareAction
-
-            alice mayNot { hug(bob) } unless { forceMajeure }
-        }
-        val clause = l.clauses.first()
-
-        (clause as? Clause.EncodedSentence) ?: fail("clause should have exceptions")
-
-        clause.exceptions.first() shouldBe ForceMajeure
-
-        clause.rule should {
             it.action.name shouldBe "hug"
             it.subject shouldBe Party("alice")
             it.obj shouldBe Party("bob")
@@ -119,41 +96,29 @@ class LicenseTest : StringSpec({
 
             val hug by declareAction
 
-            alice may { hug(bob) } additionally {
-                purposes allowed include(Research)
-                purposes forbidden include(Commercial)
+            alice may { hug(bob) } asLongAs {
+                with purpose (Research)
+            }
+
+            alice mayNot { hug(bob) } asLongAs {
+                with purpose Commercial
             }
         }
 
-        val clause = l.clauses.first().narrowedTo<Clause.EncodedSentence>()
+        val clauses = l.clauses.filterIsInstance<Clause.SentenceWithCircumstances>()
 
-        clause.purposes shouldContainAll listOf(Allow(Research), Forbid(Commercial))
-    }
+        val (research, commercial) = clauses
 
-    "can chain additionally clauses" {
-        val l = AgreementBuilder {
-            val alice by declareParty
-            val bob by declareParty("bob")
-            val hug by declareAction
-            alice may { hug(bob) } additionally {
-                purposes allowed include(Research)
-                purposes forbidden include(Commercial)
-            }
+        research should {
+            it.circumstances shouldBe CircumstanceMap.of(PurposePolicy(Research))
+            it.rule.allowance shouldBe Allow
+            it.circumstanceAllowance shouldBe Allow
         }
 
-        val l2 = AgreementBuilder {
-            val alice by declareParty("alice")
-            val bob by declareParty("bob")
-            val hug by declareAction
-            alice may {
-                hug(bob)
-            } additionally {
-                purposes allowed include(Research)
-            } additionally {
-                purposes forbidden include(Commercial)
-            }
+        commercial should {
+            it.circumstances shouldBe CircumstanceMap.of(PurposePolicy(Commercial))
+            it.rule.allowance shouldBe Forbid
+            it.circumstanceAllowance shouldBe Allow
         }
-
-        l shouldBe l2
     }
 })

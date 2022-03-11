@@ -17,9 +17,9 @@ import io.kotest.matchers.shouldBe
 
 class QueryableAgreementTest : StringSpec({
 
-    val aliceEatsCake = Sentence(Party("alice"), Action("eat"), Obj.Named("cake"))
-    val bobEatsCake = Sentence(Party("bob"), Action("eat"), Obj.Named("cake"))
-    val aliceEatsCookie = Sentence(Party("alice"), Action("eat"), Obj.Named("cookie"))
+    val aliceEatsCake = Sentence(Party("alice"), Action("eat"), Obj("cake"))
+    val bobEatsCake = Sentence(Party("bob"), Action("eat"), Obj("cake"))
+    val aliceEatsCookie = Sentence(Party("alice"), Action("eat"), Obj("cookie"))
 
     "can answer simple sentence query" {
         val a = QueryableAgreement {
@@ -46,12 +46,12 @@ class QueryableAgreementTest : StringSpec({
             val cake by declareObject
             val cookie by declareObject
 
-            alice may { eat(cake) } additionally {
-                purposes forbidden include(Commercial)
+            alice may { eat(cake) } unless {
+                with purpose Commercial
             }
 
-            alice may { eat(cookie) } additionally {
-                purposes allowed include(Research)
+            alice may { eat(cookie) } asLongAs {
+                with purpose (Research)
             }
         }
 
@@ -69,18 +69,17 @@ class QueryableAgreementTest : StringSpec({
             val cake by declareObject
             val cookie by declareObject
 
-            alice may { eat(cake) } additionally {
-                purposes forbidden include(Commercial)
+            alice may { eat(cake) } unless {
+                with purpose Commercial
             }
 
             // alice cannot eat cookies unless it is for research
             alice mayNot { eat(cookie) }
-            alice may { eat(cookie) } additionally {
-                purposes allowed include(Research)
+            alice may { eat(cookie) } asLongAs {
+                with purpose Research
             }
         }
 
-        // we cannot say for sure for the general case
         a.ask(AllowanceQuestion(aliceEatsCake)) shouldBe Unspecified
         a.ask(AllowanceQuestion(aliceEatsCake, purpose = Commercial)) shouldBe Forbid
         a.ask(AllowanceQuestion(aliceEatsCake, purpose = Research)) shouldBe Allow

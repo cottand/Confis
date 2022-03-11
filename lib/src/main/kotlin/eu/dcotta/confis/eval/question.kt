@@ -7,23 +7,29 @@ import com.deliveredtechnologies.rulebook.lang.RuleBookBuilder
 import com.deliveredtechnologies.rulebook.lang.RuleBuilder
 import eu.dcotta.confis.dsl.AgreementBuilder
 import eu.dcotta.confis.model.Agreement
-import eu.dcotta.confis.model.Allowance
+import eu.dcotta.confis.model.Allowance.Allow
+import eu.dcotta.confis.model.Allowance.Forbid
 import eu.dcotta.confis.model.AllowanceResult
+import eu.dcotta.confis.model.CircumstanceMap
 import eu.dcotta.confis.model.Clause
-import eu.dcotta.confis.model.Clause.EncodedSentence
+import eu.dcotta.confis.model.Clause.Rule
+import eu.dcotta.confis.model.Clause.SentenceWithCircumstances
 import eu.dcotta.confis.model.Clause.Text
-import eu.dcotta.confis.model.Obj.Anything
 import eu.dcotta.confis.model.Purpose
+import eu.dcotta.confis.model.PurposePolicy
 import eu.dcotta.confis.model.Sentence
 
 data class AllowanceQuestion(
     val sentence: Sentence,
-    val purpose: Purpose? = null,
-)
+    val circumstances: CircumstanceMap = CircumstanceMap.empty,
+) {
+    constructor(sentence: Sentence, purpose: Purpose) :
+        this(sentence, CircumstanceMap.of(PurposePolicy(purpose)))
+}
 
 data class FactAndQuestion(val q: AllowanceQuestion)
 
-class QueryableAgreement(val agreement: Agreement) {
+data class QueryableAgreement(val agreement: Agreement) {
 
     constructor(init: AgreementBuilder.() -> Unit) : this(AgreementBuilder(init))
 
@@ -33,13 +39,14 @@ class QueryableAgreement(val agreement: Agreement) {
         .build()
 
     init {
-        for (clause in agreement.clauses.flatMap { it.asRules() })
+        for ((clause, confisRule) in agreement.clauses zip agreement.clauses.flatMap { it.asRules() })
             rb.addRule(
                 RuleBuilder.create()
+                    .withName(clause.toString())
                     .withFactType(FactAndQuestion::class.java)
                     .withResultType(AllowanceResult::class.java)
-                    .`when` { clause.case(it.one) }
-                    .then { facts, result -> clause.then(ThenBuilder(result, facts.one)) }
+                    .`when` { confisRule.case(it.one) }
+                    .then { facts, result -> confisRule.then(ThenBuilder(result, facts.one)) }
                     .build()
             )
     }
@@ -48,41 +55,69 @@ class QueryableAgreement(val agreement: Agreement) {
         rb.run(FactMap(Fact(FactAndQuestion(q))))
         return rb.result.orElse(null)?.value ?: error("Should contain a result")
     }
-}
 
-class ThenBuilder(private val allowanceResult: Result<AllowanceResult>, var factAndQuestion: FactAndQuestion) {
-    var result: AllowanceResult
-        get() = allowanceResult.value
-        set(value) {
-            allowanceResult.value = value
-        }
-}
+    private class ThenBuilder(
+        private val allowanceResult: Result<AllowanceResult>,
+        var factAndQuestion: FactAndQuestion,
+    ) {
+        var result: AllowanceResult
+            get() = allowanceResult.value
+            set(value) {
+                allowanceResult.value = value
+            }
+    }
 
-data class ConfisRule(val case: FactAndQuestion.() -> Boolean, val then: ThenBuilder.() -> Unit)
+    private data class ConfisRule(val case: FactAndQuestion.() -> Boolean, val then: ThenBuilder.() -> Unit)
 
-fun Clause.asRules(): List<ConfisRule> = when (this) {
-    is EncodedSentence -> canonifyClause(this).flatMap { (a, at) -> at.asRule(a) }
-    is Text -> emptyList()
-}
+    private fun Clause.asRules(): List<ConfisRule> = when (this) {
+        is Rule -> asRules(this)
+        is SentenceWithCircumstances -> asRules(this)
+        is Text -> emptyList()
+    }
 
-fun Atom.asRule(allowance: Allowance): List<ConfisRule> = when {
-    purpose == null && sentence.obj == Anything -> listOf(ConfisRule(
-        case = { sentence.subject == q.sentence.subject && sentence.action == q.sentence.action },
-        then = { result = allowance.asResult },
-    ))
-    purpose == null -> listOf(
+    // TODO revise if these should really be the semantics but it looks alright
+    private fun asRules(r: Rule): List<ConfisRule> = listOf(
         ConfisRule(
-            // neither clause nor question specify purpose
-            case = { sentence == q.sentence && q.purpose == null },
-            then = { result = allowance.asResult },
-        ),
-        ConfisRule(
-            case = { sentence == q.sentence },
-            then = { result = allowance.asResult },
-        ),
+            case = { r.sentence in q.sentence },
+            then = { result = r.allowance.asResult }
+        )
     )
-    else -> listOf(ConfisRule(
-        case = { sentence == q.sentence && purpose == q.purpose },
-        then = { result = allowance.asResult },
-    ))
+
+    private fun asRules(c: SentenceWithCircumstances): List<ConfisRule> = when (c.rule.allowance) {
+        Allow -> when (c.circumstanceAllowance) {
+            // C -> S
+            Allow -> listOf(
+                ConfisRule(
+                    case = { c.rule.sentence in q.sentence && c.circumstances in q.circumstances },
+                    then = { result = Allow.asResult },
+                )
+            )
+            // may - unless
+            Forbid -> listOf(
+                ConfisRule(
+                    case = { c.rule.sentence in q.sentence && c.circumstances in q.circumstances },
+                    then = { result = Forbid.asResult },
+                ),
+                ConfisRule(
+                    case = { c.rule.sentence in q.sentence && c.circumstances disjoint q.circumstances },
+                    // allows only if no one else forbid
+                    then = { result = result and Allow.asResult },
+                )
+            )
+        }
+        Forbid -> when (c.circumstanceAllowance) {
+            Allow -> listOf(
+                ConfisRule(
+                    case = { c.rule.sentence in q.sentence && c.circumstances in q.circumstances },
+                    then = { result = Forbid.asResult }
+                )
+            )
+            Forbid -> listOf(
+                ConfisRule(
+                    case = { c.rule.sentence in q.sentence && c.circumstances in q.circumstances },
+                    then = { result = Allow.asResult },
+                )
+            )
+        }
+    }
 }
