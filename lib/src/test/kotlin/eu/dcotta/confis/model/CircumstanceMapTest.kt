@@ -3,14 +3,18 @@ package eu.dcotta.confis.model
 import eu.dcotta.confis.model.Circumstance.Key
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+
 data class IntCircumstance(val i: Int) : Circumstance {
     override val key = Companion
-    override fun contains(other: Circumstance) = other is IntCircumstance && i >= other.i
+    override fun generalises(other: Circumstance) = other is IntCircumstance && i >= other.i
+
     companion object : Key<IntCircumstance>
 }
+
 data class StrCircumstance(val i: String) : Circumstance {
     override val key = Companion
-    override fun contains(other: Circumstance) = other is StrCircumstance && i.contains(other.i)
+    override fun generalises(other: Circumstance) = other is StrCircumstance && i in other.i
+
     companion object : Key<StrCircumstance>
 }
 
@@ -23,24 +27,28 @@ class CircumstanceMapTest : StringSpec({
         val intKey = IntCircumstance
         val strKey = StrCircumstance
 
-        int.contains(intKey) shouldBe true
-        str.contains(strKey) shouldBe true
+        int.generalises(intKey) shouldBe true
+        str.generalises(strKey) shouldBe true
 
-        int.contains(strKey) shouldBe false
-        str.contains(intKey) shouldBe false
+        int.generalises(strKey) shouldBe false
+        str.generalises(intKey) shouldBe false
 
-        int.contains(str) shouldBe false
-        str.contains(int) shouldBe false
+        int.generalises(str) shouldBe false
+        str.generalises(int) shouldBe false
 
         val new = int + str
 
-        new.contains(intKey) shouldBe true
-        new.contains(strKey) shouldBe true
+        new.generalises(intKey) shouldBe true
+        new.generalises(strKey) shouldBe true
 
-        new.contains(strKey) shouldBe true
-        new.contains(intKey) shouldBe true
+        new.generalises(strKey) shouldBe true
+        new.generalises(intKey) shouldBe true
 
-        new.contains(str) shouldBe true
-        new.contains(int) shouldBe true
+        new.generalises(str) shouldBe false
+        new.generalises(int) shouldBe false
+    }
+
+    "empty generalises all" {
+        CircumstanceMap.empty generalises CircumstanceMap.of(IntCircumstance(2)) shouldBe true
     }
 })

@@ -11,6 +11,6 @@ class PurposePolicyTest : StringSpec({
         val query = PurposePolicy(Commercial, Research)
         val clause = PurposePolicy(Commercial)
 
-        query.contains(clause) shouldBe true
+        (clause generalises query) shouldBe true
     }
 })

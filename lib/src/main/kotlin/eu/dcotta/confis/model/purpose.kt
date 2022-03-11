@@ -13,5 +13,7 @@ data class PurposePolicy(val purposes: List<Purpose>) : Circumstance {
 
     companion object : Key<PurposePolicy>
 
-    override fun contains(other: Circumstance) = other is PurposePolicy && purposes.containsAll(other.purposes)
+    override fun generalises(other: Circumstance) = other is PurposePolicy && other.purposes.containsAll(purposes)
+
+    override fun toString(): String = "Policies$purposes"
 }

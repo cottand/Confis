@@ -25,7 +25,8 @@ data class QueryableAgreement(val agreement: Agreement, val defaultResult: Allow
 
     constructor(init: AgreementBuilder.() -> Unit) : this(AgreementBuilder(init))
 
-    inner class Builder(private val facts: Facts) : RuleContext {
+    @JvmInline
+    value class Builder(private val facts: Facts) : RuleContext {
         override var result: AllowanceResult
             get() = facts.get(Companion.mutableResultKey)
                 ?: error("fact should be present")
@@ -37,10 +38,11 @@ data class QueryableAgreement(val agreement: Agreement, val defaultResult: Allow
                 ?: error("fact should be present")
     }
 
-    private val rs = (agreement.clauses zip agreement.clauses.flatMap { it.asRules() })
-        .map { (clause, confisRule) ->
+    private val rs = agreement.clauses.flatMap { c -> c.asRules().map { r -> c to r } }
+        .mapIndexed { index, (clause, confisRule) ->
             RuleBuilder()
-                .name(clause.toString())
+                .name("${clause::class.simpleName}#$index")
+                .description(clause.toString())
                 .`when` { fs -> confisRule.case(Builder(fs)) }
                 .then { fs -> confisRule.then(Builder(fs)) }
                 .build()

@@ -7,7 +7,7 @@ interface Circumstance {
      *
      * Ie, does this [Circumstance] generalise the [other] circumstance
      */
-    operator fun contains(other: Circumstance): Boolean
+    infix fun generalises(other: Circumstance): Boolean
 
     interface Key<T : Circumstance>
 

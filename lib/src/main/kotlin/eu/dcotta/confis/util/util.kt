@@ -13,3 +13,5 @@ fun <C, V> oneTimeProperty(instantiate: (prop: KProperty<*>) -> V) =
 fun <K, V> Map<K, V?>.filterValuesNotNull(): Map<K, V> =
     mapNotNull { (k, v) -> if (v == null) null else (k to v) }
         .toMap()
+
+fun <T> MutableList<T>.removeLastOccurrence(item: T) = removeAt(lastIndexOf(item))

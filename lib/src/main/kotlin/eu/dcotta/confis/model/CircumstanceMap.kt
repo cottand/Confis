@@ -6,32 +6,34 @@ import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.plus
 import kotlinx.collections.immutable.toPersistentMap
 
-@JvmInline
-value class CircumstanceMap private constructor(
-    private val initial: PersistentMap<Key<*>, Circumstance>,
+class CircumstanceMap private constructor(
+    private val map: PersistentMap<Key<*>, Circumstance>,
 ) {
 
     @Suppress("UNCHECKED_CAST")
-    operator fun <C : Circumstance> get(key: Circumstance.Key<C>): C? = initial[key] as C?
+    operator fun <C : Circumstance> get(key: Circumstance.Key<C>): C? = map[key] as C?
 
     operator fun <T : Any> plus(value: Circumstance): CircumstanceMap =
-        CircumstanceMap(initial + (value.key to value))
+        CircumstanceMap(map + (value.key to value))
 
-    operator fun plus(other: CircumstanceMap) = CircumstanceMap(initial + other.initial)
+    operator fun plus(other: CircumstanceMap) = CircumstanceMap(map + other.map)
 
-    operator fun contains(key: Circumstance.Key<*>) = key in initial
+    fun generalises(key: Key<*>) = key in map
 
     @Suppress("UNCHECKED_CAST")
-    operator fun contains(otherCircumstances: CircumstanceMap): Boolean =
-        initial.entries.containsAll(otherCircumstances.initial.entries) &&
-            otherCircumstances.initial.entries.all { (k: Circumstance.Key<*>, otherCircumstance: Circumstance) ->
-                val thisCircumstance = initial[k] ?: error("Concurrent access error")
-                otherCircumstance.contains(thisCircumstance)
+    infix fun generalises(otherCircumstances: CircumstanceMap): Boolean {
+
+        val otherMap = otherCircumstances.map
+
+        return otherMap.keys.containsAll(map.keys) &&
+            map.entries.all { (thisKey, thisCircumstance) ->
+                thisCircumstance generalises (otherMap[thisKey] ?: error("Concurrent access error"))
             }
+    }
 
-    infix fun disjoint(other: CircumstanceMap) = this !in other && other !in this
+    infix fun disjoint(other: CircumstanceMap) = !other.generalises(this) && !this.generalises(other)
 
-    override fun toString(): String = "CircumstanceMap{${initial.values.joinToString()}}"
+    override fun toString(): String = "CircumstanceMap{${map.values.joinToString()}}"
 
     companion object {
         val empty = CircumstanceMap(persistentMapOf())

@@ -17,6 +17,7 @@ import eu.dcotta.confis.model.PurposePolicy
 import eu.dcotta.confis.model.Sentence
 import eu.dcotta.confis.model.Subject
 import eu.dcotta.confis.util.oneTimeProperty
+import eu.dcotta.confis.util.removeLastOccurrence
 import kotlin.properties.ReadOnlyProperty
 
 @ConfisDsl
@@ -45,13 +46,13 @@ open class AgreementBuilder {
 
     infix fun Rule.asLongAs(init: CircumstanceBuilder.() -> Unit) {
         val b = CircumstanceBuilder(this, Allow).also(init)
-        sentencesWithoutCircumstances.remove(this)
+        sentencesWithoutCircumstances.removeLastOccurrence(this)
         clausesWithCircumstances += b
     }
 
     infix fun Rule.unless(init: CircumstanceBuilder.() -> Unit) {
         val b = CircumstanceBuilder(this, Forbid).also(init)
-        sentencesWithoutCircumstances.remove(this)
+        sentencesWithoutCircumstances.removeLastOccurrence(this)
         clausesWithCircumstances += b
     }
 

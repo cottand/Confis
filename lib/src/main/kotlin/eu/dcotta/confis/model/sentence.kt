@@ -1,5 +1,9 @@
 package eu.dcotta.confis.model
 
+import eu.dcotta.confis.model.AllowanceResult.Allow
+import eu.dcotta.confis.model.AllowanceResult.Depends
+import eu.dcotta.confis.model.AllowanceResult.Forbid
+import eu.dcotta.confis.model.AllowanceResult.Unspecified
 import eu.dcotta.confis.model.Obj.Anything
 
 enum class Allowance {
@@ -9,18 +13,25 @@ enum class Allowance {
 }
 
 enum class AllowanceResult {
-    Allow, Forbid, Unspecified;
+    Allow, Forbid, Unspecified, Depends;
+}
 
-    // takes the least permissive
-    infix fun and(other: AllowanceResult): AllowanceResult = when (this) {
-        Allow -> when (other) {
-            Allow -> Allow
-            Forbid -> Forbid
-            Unspecified -> Allow
-        }
+// takes the least permissive
+infix fun AllowanceResult.leastPermissive(other: AllowanceResult): AllowanceResult = when (this) {
+    Allow -> when (other) {
+        Allow -> Allow
         Forbid -> Forbid
-        Unspecified -> other
+        Unspecified, Depends -> Allow
     }
+    Forbid -> Forbid
+    Unspecified, Depends -> other
+}
+
+fun computeAmbiguous(l: AllowanceResult, r: AllowanceResult) = when {
+    l == r -> l
+    l == Unspecified -> Depends
+    r == Unspecified -> Depends
+    else -> Depends
 }
 
 interface Obj {
@@ -48,7 +59,7 @@ data class Sentence(val subject: Subject, val action: Action, val obj: Obj) {
     /**
      * whether [this] is a more general version of [other]
      */
-    operator fun contains(other: Sentence): Boolean = this == other ||
+    infix fun generalises(other: Sentence): Boolean = this == other ||
         (subject == other.subject && action == other.action && obj == Anything)
 
     override fun toString(): String = "$subject $action $obj"

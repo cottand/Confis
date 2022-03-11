@@ -19,5 +19,7 @@ sealed interface Clause {
         val subject by sentence::subject
         val obj by sentence::obj
         val action by sentence::action
+
+        override fun toString() = "Rule($allowance $sentence)"
     }
 }

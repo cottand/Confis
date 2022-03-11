@@ -5,6 +5,7 @@ import eu.dcotta.confis.dsl.declareObject
 import eu.dcotta.confis.dsl.declareParty
 import eu.dcotta.confis.model.Action
 import eu.dcotta.confis.model.AllowanceResult.Allow
+import eu.dcotta.confis.model.AllowanceResult.Depends
 import eu.dcotta.confis.model.AllowanceResult.Forbid
 import eu.dcotta.confis.model.AllowanceResult.Unspecified
 import eu.dcotta.confis.model.Obj
@@ -49,7 +50,7 @@ class QueryableAgreementTest : StringSpec({
                 with purpose (Research)
             }
         }
-        a.ask(AllowanceQuestion(aliceEatsCookie)) shouldBe Unspecified
+        a.ask(AllowanceQuestion(aliceEatsCookie)) shouldBe Depends
         a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Research)) shouldBe Allow
     }
 
@@ -70,10 +71,10 @@ class QueryableAgreementTest : StringSpec({
             }
         }
 
-        a.ask(AllowanceQuestion(aliceEatsCake)) shouldBe Unspecified
+        a.ask(AllowanceQuestion(aliceEatsCake)) shouldBe Depends
         a.ask(AllowanceQuestion(aliceEatsCake, purpose = Commercial)) shouldBe Forbid
 
-        a.ask(AllowanceQuestion(aliceEatsCookie)) shouldBe Unspecified
+        a.ask(AllowanceQuestion(aliceEatsCookie)) shouldBe Depends
         a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Research)) shouldBe Allow
     }
 
@@ -96,12 +97,64 @@ class QueryableAgreementTest : StringSpec({
             }
         }
 
-        a.ask(AllowanceQuestion(aliceEatsCake)) shouldBe Unspecified
+        a.ask(AllowanceQuestion(aliceEatsCake)) shouldBe Depends
         a.ask(AllowanceQuestion(aliceEatsCake, purpose = Commercial)) shouldBe Forbid
         a.ask(AllowanceQuestion(aliceEatsCake, purpose = Research)) shouldBe Allow
 
-        // we cannot say for sure for the general case
-        a.ask(AllowanceQuestion(aliceEatsCookie)) shouldBe Unspecified
+        a.ask(AllowanceQuestion(aliceEatsCookie)) shouldBe Depends
         a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Research)) shouldBe Allow
+    }
+
+    "double negation well handled" {
+        val a = QueryableAgreement {
+
+            val alice by declareParty
+            val eat by declareAction
+            val cookie by declareObject
+
+            alice mayNot { eat(cookie) } unless {
+                with purpose Research
+            }
+        }
+
+        a.ask(AllowanceQuestion(aliceEatsCookie)) shouldBe Depends
+        a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Research)) shouldBe Allow
+        a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Commercial)) shouldBe Forbid
+    }
+
+    "negation overruled because it precedes some exception" {
+        val a = QueryableAgreement {
+
+            val alice by declareParty
+            val eat by declareAction
+            val cookie by declareObject
+
+            alice mayNot { eat(cookie) }
+            alice mayNot { eat(cookie) } unless {
+                with purpose Research
+            }
+        }
+
+        a.ask(AllowanceQuestion(aliceEatsCookie)) shouldBe Depends
+        a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Research)) shouldBe Allow
+    }
+
+    "can handle mayNot asLongAs" {
+        val a = QueryableAgreement {
+
+            val alice by declareParty
+            val eat by declareAction
+            val cookie by declareObject
+
+            alice mayNot { eat(cookie) } asLongAs {
+                with purpose Research
+            }
+        }
+
+        a.ask(AllowanceQuestion(aliceEatsCookie)) shouldBe Depends
+        a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Research)) shouldBe Forbid
+
+        // TODO should this one be Allow or Unspecified?
+        a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Commercial)) shouldBe Allow
     }
 })
