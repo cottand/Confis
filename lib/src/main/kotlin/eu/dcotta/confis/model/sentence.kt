@@ -18,13 +18,15 @@ enum class AllowanceResult {
             Forbid -> Forbid
             Unspecified -> Allow
         }
-        Forbid -> this
+        Forbid -> Forbid
         Unspecified -> other
     }
 }
 
 interface Obj {
-    data class Named(val name: String) : Obj
+    data class Named(val name: String) : Obj {
+        override fun toString() = "Obj($name)"
+    }
     object Anything : Obj
 
     companion object {
@@ -34,9 +36,13 @@ interface Obj {
 
 interface Subject
 
-data class Action(val name: String)
+data class Action(val name: String) {
+    override fun toString() = "Action($name)"
+}
 
-data class Party(val name: String) : Subject, Obj
+data class Party(val name: String) : Subject, Obj {
+    override fun toString() = "Party($name)"
+}
 
 data class Sentence(val subject: Subject, val action: Action, val obj: Obj) {
     /**
@@ -44,4 +50,6 @@ data class Sentence(val subject: Subject, val action: Action, val obj: Obj) {
      */
     operator fun contains(other: Sentence): Boolean = this == other ||
         (subject == other.subject && action == other.action && obj == Anything)
+
+    override fun toString(): String = "$subject $action $obj"
 }

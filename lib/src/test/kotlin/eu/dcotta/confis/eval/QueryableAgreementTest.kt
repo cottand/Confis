@@ -38,6 +38,21 @@ class QueryableAgreementTest : StringSpec({
         a.ask(AllowanceQuestion(bobEatsCake)) shouldBe Unspecified
     }
 
+    "can answer on puroses simple" {
+        val a = QueryableAgreement {
+
+            val alice by declareParty
+            val eat by declareAction
+            val cookie by declareObject
+
+            alice may { eat(cookie) } asLongAs {
+                with purpose (Research)
+            }
+        }
+        a.ask(AllowanceQuestion(aliceEatsCookie)) shouldBe Unspecified
+        a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Research)) shouldBe Allow
+    }
+
     "can answer on purposes" {
         val a = QueryableAgreement {
 
@@ -61,6 +76,7 @@ class QueryableAgreementTest : StringSpec({
         a.ask(AllowanceQuestion(aliceEatsCookie)) shouldBe Unspecified
         a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Research)) shouldBe Allow
     }
+
     "purposes in rules create precedence between them" {
         val a = QueryableAgreement {
 
