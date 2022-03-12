@@ -15,9 +15,8 @@ class TimeCircumstanceBuilderTest : StringSpec({
                 within { (1 of May year 2022)..(3 of May year 2022) }
             }
         }
-        //c as? Clause.SentenceWithCircumstances ?: fail("should be clause")
+        // c as? Clause.SentenceWithCircumstances ?: fail("should be clause")
         //
-        ////c.circumstances[TimeRange] shouldBe Date(1, May, 2022)..Date(3, May, 2022)
+        // //c.circumstances[TimeRange] shouldBe Date(1, May, 2022)..Date(3, May, 2022)
     }
-
 })

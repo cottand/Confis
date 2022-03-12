@@ -41,4 +41,3 @@ data class Date(val day: Int, val month: Month, val year: Int) : Comparable<Date
         else -> 0
     }
 }
-
