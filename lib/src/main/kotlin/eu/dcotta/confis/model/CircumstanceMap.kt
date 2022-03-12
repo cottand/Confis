@@ -10,6 +10,9 @@ class CircumstanceMap private constructor(
     private val map: PersistentMap<Key<*>, Circumstance>,
 ) {
 
+    override fun hashCode(): Int = 31 * map.hashCode()
+    override fun equals(other: Any?): Boolean = other is CircumstanceMap && other.map == map
+
     @Suppress("UNCHECKED_CAST")
     operator fun <C : Circumstance> get(key: Circumstance.Key<C>): C? = map[key] as C?
 

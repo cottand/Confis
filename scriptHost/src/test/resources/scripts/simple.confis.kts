@@ -23,30 +23,3 @@ Bob may { hug(Alice) } additionally { purposes forbidden include(Commercial) } u
 
 Bob mayNot { text(Alice) } unless { forceMajeure }
 
-// C -> A
-a may { a(o) } asLongAs {
-    with purpose P
-    //after time T
-    //within times T1..T2
-}
-
-// C -> !A && !C -> A
-a may { a(o) } unless {
-    with purpose P
-    //within times T1..T2
-}
-
-// C -> A
-a mayNot { a(o) } unless {
-    with purpose P
-    //at time T
-    //within times T1..T2
-}
-
-// C -> !A
-a mayNot { a(o) } asLongAs {
-    with purpose P
-    //at time T
-    //within times T1..T2
-}
-

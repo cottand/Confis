@@ -39,8 +39,8 @@ class LicenseTest : StringSpec({
     "can declare parties" {
         val l = AgreementBuilder {
 
-            val alice by declareParty
-            val bob by declareParty(name = "You!")
+            val alice by party
+            val bob by party(named = "You!")
         }
 
         l.parties.shouldContainAll(Party("alice"), Party("You!"))
@@ -48,9 +48,9 @@ class LicenseTest : StringSpec({
 
     "can allow a declared action to a party" {
         val l = AgreementBuilder {
-            val alice by declareParty("alice")
+            val alice by party("alice")
 
-            val bob by declareParty("bob")
+            val bob by party("bob")
 
             val hug by declareAction
 
@@ -69,9 +69,9 @@ class LicenseTest : StringSpec({
 
     "can forbid a declared action to a party" {
         val l = AgreementBuilder {
-            val alice by declareParty("alice")
+            val alice by party("alice")
 
-            val bob by declareParty("bob")
+            val bob by party("bob")
 
             val hug by declareAction
 
@@ -90,9 +90,9 @@ class LicenseTest : StringSpec({
 
     "add purposes to a sentence" {
         val l = AgreementBuilder {
-            val alice by declareParty("alice")
+            val alice by party("alice")
 
-            val bob by declareParty("bob")
+            val bob by party("bob")
 
             val hug by declareAction
 

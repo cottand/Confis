@@ -9,6 +9,7 @@ import eu.dcotta.confis.model.Clause.SentenceWithCircumstances
 import eu.dcotta.confis.model.Clause.Text
 import eu.dcotta.confis.model.computeAmbiguous
 import eu.dcotta.confis.model.leastPermissive
+import eu.dcotta.confis.model.mostPermissive
 
 interface RuleContext {
     val q: AllowanceQuestion
@@ -39,6 +40,11 @@ fun asRules(c: SentenceWithCircumstances): List<ConfisRule> = when (c.rule.allow
             ConfisRule(
                 case = { c.rule.sentence generalises q.sentence && c.circumstances generalises q.circumstances },
                 then = { result = Allow.asResult },
+            ),
+            // allows disjoint case
+            ConfisRule(
+                case = { c.rule.sentence generalises q.sentence && c.circumstances disjoint q.circumstances },
+                then = { result = mostPermissive(result, Forbid.asResult) },
             ),
             // question too general case
             ConfisRule(
@@ -85,7 +91,7 @@ fun asRules(c: SentenceWithCircumstances): List<ConfisRule> = when (c.rule.allow
             ),
             ConfisRule(
                 case = { c.rule.sentence generalises q.sentence && c.circumstances disjoint q.circumstances },
-                then = { result = result leastPermissive Forbid.asResult },
+                then = { result = mostPermissive(result, Forbid.asResult) },
             ),
             // we made an exception to a generality, so let's make clear more general questions cannot be answered
             ConfisRule(

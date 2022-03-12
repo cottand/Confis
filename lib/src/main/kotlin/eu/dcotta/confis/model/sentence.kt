@@ -27,6 +27,16 @@ infix fun AllowanceResult.leastPermissive(other: AllowanceResult): AllowanceResu
     Unspecified, Depends -> other
 }
 
+fun mostPermissive(left: AllowanceResult, other: AllowanceResult): AllowanceResult = when (left) {
+    Forbid -> when (other) {
+        Allow -> Allow
+        Forbid -> Forbid
+        Unspecified, Depends -> Allow
+    }
+    Allow -> Allow
+    Unspecified, Depends -> other
+}
+
 fun computeAmbiguous(l: AllowanceResult, r: AllowanceResult) = when {
     l == r -> l
     l == Unspecified -> Depends
@@ -38,6 +48,7 @@ interface Obj {
     data class Named(val name: String) : Obj {
         override fun toString() = "Obj($name)"
     }
+
     object Anything : Obj
 
     companion object {

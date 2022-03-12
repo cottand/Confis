@@ -7,7 +7,7 @@ val kotlinVersion: String by rootProject.extra
 
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-    implementation(project(":script"))
+    api(project(":script"))
 
     api("org.jetbrains.kotlin:kotlin-scripting-common:$kotlinVersion")
     implementation("org.jetbrains.kotlin:kotlin-scripting-jvm:$kotlinVersion")

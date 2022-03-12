@@ -1,8 +1,5 @@
 package eu.dcotta.confis.eval
 
-import eu.dcotta.confis.dsl.declareAction
-import eu.dcotta.confis.dsl.declareObject
-import eu.dcotta.confis.dsl.declareParty
 import eu.dcotta.confis.model.Action
 import eu.dcotta.confis.model.AllowanceResult.Allow
 import eu.dcotta.confis.model.AllowanceResult.Depends
@@ -25,10 +22,10 @@ class QueryableAgreementTest : StringSpec({
     "can answer simple sentence query" {
         val a = QueryableAgreement {
 
-            val alice by declareParty
+            val alice by party
             val eat by declareAction
-            val cake by declareObject
-            val cookie by declareObject
+            val cake by thing
+            val cookie by thing
 
             alice may { eat(cake) }
             alice mayNot { eat(cookie) }
@@ -42,9 +39,9 @@ class QueryableAgreementTest : StringSpec({
     "can answer on puroses simple" {
         val a = QueryableAgreement {
 
-            val alice by declareParty
+            val alice by party
             val eat by declareAction
-            val cookie by declareObject
+            val cookie by thing
 
             alice may { eat(cookie) } asLongAs {
                 with purpose (Research)
@@ -52,15 +49,16 @@ class QueryableAgreementTest : StringSpec({
         }
         a.ask(AllowanceQuestion(aliceEatsCookie)) shouldBe Depends
         a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Research)) shouldBe Allow
+        a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Commercial)) shouldBe Forbid
     }
 
     "can answer on purposes" {
         val a = QueryableAgreement {
 
-            val alice by declareParty
+            val alice by party
             val eat by declareAction
-            val cake by declareObject
-            val cookie by declareObject
+            val cake by thing
+            val cookie by thing
 
             alice may { eat(cake) } unless {
                 with purpose Commercial
@@ -73,6 +71,7 @@ class QueryableAgreementTest : StringSpec({
 
         a.ask(AllowanceQuestion(aliceEatsCake)) shouldBe Depends
         a.ask(AllowanceQuestion(aliceEatsCake, purpose = Commercial)) shouldBe Forbid
+        a.ask(AllowanceQuestion(aliceEatsCake, purpose = Research)) shouldBe Allow
 
         a.ask(AllowanceQuestion(aliceEatsCookie)) shouldBe Depends
         a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Research)) shouldBe Allow
@@ -81,10 +80,10 @@ class QueryableAgreementTest : StringSpec({
     "purposes in rules create precedence between them" {
         val a = QueryableAgreement {
 
-            val alice by declareParty
+            val alice by party
             val eat by declareAction
-            val cake by declareObject
-            val cookie by declareObject
+            val cake by thing
+            val cookie by thing
 
             alice may { eat(cake) } unless {
                 with purpose Commercial
@@ -108,9 +107,9 @@ class QueryableAgreementTest : StringSpec({
     "double negation well handled" {
         val a = QueryableAgreement {
 
-            val alice by declareParty
+            val alice by party
             val eat by declareAction
-            val cookie by declareObject
+            val cookie by thing
 
             alice mayNot { eat(cookie) } unless {
                 with purpose Research
@@ -125,9 +124,9 @@ class QueryableAgreementTest : StringSpec({
     "negation overruled because it precedes some exception" {
         val a = QueryableAgreement {
 
-            val alice by declareParty
+            val alice by party
             val eat by declareAction
-            val cookie by declareObject
+            val cookie by thing
 
             alice mayNot { eat(cookie) }
             alice mayNot { eat(cookie) } unless {
@@ -142,9 +141,9 @@ class QueryableAgreementTest : StringSpec({
     "can handle mayNot asLongAs" {
         val a = QueryableAgreement {
 
-            val alice by declareParty
+            val alice by party
             val eat by declareAction
-            val cookie by declareObject
+            val cookie by thing
 
             alice mayNot { eat(cookie) } asLongAs {
                 with purpose Research
@@ -155,6 +154,6 @@ class QueryableAgreementTest : StringSpec({
         a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Research)) shouldBe Forbid
 
         // TODO should this one be Allow or Unspecified?
-        a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Commercial)) shouldBe Allow
+        a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Commercial)) shouldBe Unspecified
     }
 })
