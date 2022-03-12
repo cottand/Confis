@@ -32,7 +32,7 @@ class LicenseTest : StringSpec({
     "can declare actions" {
         AgreementBuilder {
 
-            val copy by declareAction
+            val copy by action
         }
     }
 
@@ -52,7 +52,7 @@ class LicenseTest : StringSpec({
 
             val bob by party("bob")
 
-            val hug by declareAction
+            val hug by action
 
             alice may { hug(bob) }
         }
@@ -73,7 +73,7 @@ class LicenseTest : StringSpec({
 
             val bob by party("bob")
 
-            val hug by declareAction
+            val hug by action
 
             alice mayNot { hug(bob) }
         }
@@ -94,7 +94,7 @@ class LicenseTest : StringSpec({
 
             val bob by party("bob")
 
-            val hug by declareAction
+            val hug by action
 
             alice may { hug(bob) } asLongAs {
                 with purpose (Research)

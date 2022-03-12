@@ -1,7 +1,20 @@
 package eu.dcotta.confis.model
 
-sealed interface TimeRange {
-    data class Range(override val start: Date, override val endInclusive: Date) : ClosedRange<Date>
+sealed interface TimeRange : Circumstance {
+
+    data class Range(override val start: Date, override val endInclusive: Date) : ClosedRange<Date>, TimeRange {
+        override fun generalises(other: Circumstance) = other is TimeRange && when (other) {
+            is Range -> other in this
+        }
+
+        override val key: Circumstance.Key<*> get() = Key
+
+        override fun contains(other: TimeRange) = other is Range && other.start in this && other.endInclusive in this
+    }
+
+    operator fun contains(other: TimeRange): Boolean
+
+    companion object Key : Circumstance.Key<TimeRange>
 }
 
 enum class Month {
@@ -29,12 +42,3 @@ data class Date(val day: Int, val month: Month, val year: Int) : Comparable<Date
     }
 }
 
-object DateBuilder {
-
-    infix fun Int.of(month: Month) = MonthDate(this, month)
-    infix fun MonthDate.year(year: Int) = Date(day, month, year)
-    infix fun Pair<MonthDate, MonthDate>.year(year: Int) = 2
-
-    operator fun Date.rangeTo(end: Date) = this to end
-    operator fun MonthDate.rangeTo(end: MonthDate) = this to end
-}

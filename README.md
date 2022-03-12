@@ -76,6 +76,7 @@ the agreement just does not say) or `Depends` (circumstances are too general for
 [//]: # (    - A is unspecified if C is true)
 
 [//]: # (    - A is forbidden if C is false)
+
 - `mayNot A unless C` - same as `may A asLongAs C`:
     - A is allowed if C is true
     - A is forbidden if C is false
@@ -83,13 +84,21 @@ the agreement just does not say) or `Depends` (circumstances are too general for
 ### Circumstances
 
 Circumstances supported are
-```kotlin
-// purpose
-with purpose Commercial
 
-// within time range
-between (10 of april)..(10 of july) year 2022
-between (10 of april year 2022)..(10 of july year 2022)
+```kotlin
+// for purpose
+with purpose Commercial
+with purpose Research
+
+// within time range (always inclusive)
+within { (10 of april)..(10 of july) year 2022 }
+within { (10 of april year 2019)..(10 of july year 2022) }
+
+// after a date (exclusive)
+after { 2 of may year 2022 }
+
+// before a date (exclusive)
+before { 3 of may year 2024 }
 ```
 
 ## Implementation

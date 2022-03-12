@@ -23,7 +23,7 @@ class QueryableAgreementTest : StringSpec({
         val a = QueryableAgreement {
 
             val alice by party
-            val eat by declareAction
+            val eat by action
             val cake by thing
             val cookie by thing
 
@@ -40,7 +40,7 @@ class QueryableAgreementTest : StringSpec({
         val a = QueryableAgreement {
 
             val alice by party
-            val eat by declareAction
+            val eat by action
             val cookie by thing
 
             alice may { eat(cookie) } asLongAs {
@@ -56,7 +56,7 @@ class QueryableAgreementTest : StringSpec({
         val a = QueryableAgreement {
 
             val alice by party
-            val eat by declareAction
+            val eat by action
             val cake by thing
             val cookie by thing
 
@@ -81,7 +81,7 @@ class QueryableAgreementTest : StringSpec({
         val a = QueryableAgreement {
 
             val alice by party
-            val eat by declareAction
+            val eat by action
             val cake by thing
             val cookie by thing
 
@@ -108,7 +108,7 @@ class QueryableAgreementTest : StringSpec({
         val a = QueryableAgreement {
 
             val alice by party
-            val eat by declareAction
+            val eat by action
             val cookie by thing
 
             alice mayNot { eat(cookie) } unless {
@@ -125,7 +125,7 @@ class QueryableAgreementTest : StringSpec({
         val a = QueryableAgreement {
 
             val alice by party
-            val eat by declareAction
+            val eat by action
             val cookie by thing
 
             alice mayNot { eat(cookie) }
@@ -142,7 +142,7 @@ class QueryableAgreementTest : StringSpec({
         val a = QueryableAgreement {
 
             val alice by party
-            val eat by declareAction
+            val eat by action
             val cookie by thing
 
             alice mayNot { eat(cookie) } asLongAs {

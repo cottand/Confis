@@ -6,21 +6,26 @@ import eu.dcotta.confis.model.Clause.Rule
 import eu.dcotta.confis.model.Clause.SentenceWithCircumstances
 import eu.dcotta.confis.model.Purpose
 import eu.dcotta.confis.model.PurposePolicy
+import eu.dcotta.confis.model.TimeRange
 
 @ConfisDsl
 class CircumstanceBuilder(private val rule: Rule, private val circumstanceAllowance: Allowance) {
     private val purposePolicies = mutableListOf<Purpose>()
-    data class PurposeNarrower(val purposes: List<Purpose>)
+    private var time: TimeRange? = null
 
-    fun include(vararg purposes: Purpose) = PurposeNarrower(purposes.asList())
-
+    // purposes
     object PurposeReceiver
+
+    val with = PurposeReceiver
 
     infix fun PurposeReceiver.purpose(purpose: Purpose) {
         purposePolicies += purpose
     }
 
-    val with = PurposeReceiver
+    // time
+    fun within(init: () -> TimeRange.Range) {
+        time = init()
+    }
 
     internal fun build(): SentenceWithCircumstances =
         SentenceWithCircumstances(rule, circumstanceAllowance, CircumstanceMap.of(PurposePolicy(purposePolicies)))

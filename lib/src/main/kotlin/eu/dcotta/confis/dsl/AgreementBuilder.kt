@@ -72,7 +72,7 @@ open class AgreementBuilder {
         }
 
     @Suppress("unused")
-    val declareAction = ReadOnlyProperty<Any?, Action> { _, prop ->
+    val action = ReadOnlyProperty<Any?, Action> { _, prop ->
         Action(prop.name)
     }
 
