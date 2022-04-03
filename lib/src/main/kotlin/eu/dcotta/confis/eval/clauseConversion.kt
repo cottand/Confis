@@ -34,17 +34,13 @@ fun asRules(r: Rule): List<ConfisRule> = listOf(
 
 fun asRules(c: SentenceWithCircumstances): List<ConfisRule> = when (c.rule.allowance) {
     Allow -> when (c.circumstanceAllowance) {
-        // C -> S
+        // allow asLongAs:
         Allow -> listOf(
-            // specific case
+            // !C -> A unspecified
+            // C -> A allowed
             ConfisRule(
                 case = { c.rule.sentence generalises q.sentence && c.circumstances generalises q.circumstances },
                 then = { result = Allow.asResult },
-            ),
-            // allows disjoint case
-            ConfisRule(
-                case = { c.rule.sentence generalises q.sentence && c.circumstances disjoint q.circumstances },
-                then = { result = mostPermissive(result, Forbid.asResult) },
             ),
             // question too general case
             ConfisRule(

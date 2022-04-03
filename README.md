@@ -63,21 +63,14 @@ the agreement just does not say) or `Depends` (circumstances are too general for
 
 - `may A asLongAs C`:
     - A is allowed if C is true
-    - A is forbidden if C is false
+    - A is unspecified if C is false
 - `may A unless C`:
     - A is forbidden if C is true
     - A is allowed if C is false
 - `mayNot A asLongAs C`:
     - A is forbidden if C is true
     - A is unspecified if C is false
-
-[//]: # (- `mayNot A whenNot C`:)
-
-[//]: # (    - A is unspecified if C is true)
-
-[//]: # (    - A is forbidden if C is false)
-
-- `mayNot A unless C` - same as `may A asLongAs C`:
+- `mayNot A unless C`:
     - A is allowed if C is true
     - A is forbidden if C is false
 

@@ -49,7 +49,7 @@ class QueryableAgreementTest : StringSpec({
         }
         a.ask(AllowanceQuestion(aliceEatsCookie)) shouldBe Depends
         a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Research)) shouldBe Allow
-        a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Commercial)) shouldBe Forbid
+        a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Commercial)) shouldBe Unspecified
     }
 
     "can answer on purposes" {
@@ -153,7 +153,6 @@ class QueryableAgreementTest : StringSpec({
         a.ask(AllowanceQuestion(aliceEatsCookie)) shouldBe Depends
         a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Research)) shouldBe Forbid
 
-        // TODO should this one be Allow or Unspecified?
         a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Commercial)) shouldBe Unspecified
     }
 })
