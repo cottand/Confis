@@ -1,12 +1,7 @@
 package eu.dcotta.confis.scripting
 
-
 import eu.dcotta.confis.dsl.AgreementBuilder
-import eu.dcotta.confis.dsl.ConfisDsl
 import kotlin.script.experimental.annotations.KotlinScript
-import kotlin.script.experimental.host.ScriptingHostConfiguration
-import kotlin.script.experimental.jvm.jvm
-import kotlin.script.experimental.jvmhost.jsr223.jsr223
 
 // The KotlinScript annotation marks a class that can serve as a reference to the script definition for
 // `createJvmCompilationConfigurationFromTemplate` call as well as for the discovery mechanism
@@ -21,6 +16,6 @@ import kotlin.script.experimental.jvmhost.jsr223.jsr223
     evaluationConfiguration = EvaluationConfig::class,
 )
 // the class is used as the script base class, therefore it should be open or abstract
-open class ConfisScriptDefinition: AgreementBuilder() {
+open class ConfisScriptDefinition : AgreementBuilder() {
     val hello = 2
 }

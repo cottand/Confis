@@ -11,13 +11,9 @@ import kotlin.script.experimental.api.defaultIdentifier
 import kotlin.script.experimental.api.defaultImports
 import kotlin.script.experimental.api.displayName
 import kotlin.script.experimental.api.fileExtension
-import kotlin.script.experimental.api.filePathPattern
-import kotlin.script.experimental.api.hostConfiguration
 import kotlin.script.experimental.api.ide
-import kotlin.script.experimental.api.implicitReceivers
 import kotlin.script.experimental.api.scriptsInstancesSharing
 import kotlin.script.experimental.jvm.dependenciesFromCurrentContext
-import kotlin.script.experimental.jvm.impl.scriptMetadataPath
 import kotlin.script.experimental.jvm.jvm
 
 object CompilationConfig : ScriptCompilationConfiguration({
@@ -44,7 +40,7 @@ object CompilationConfig : ScriptCompilationConfiguration({
         // and take jars with mentioned names to the compilation classpath via `dependencies` key.
         // to add the whole classpath for the classloader without check for jar presense, use
         // `dependenciesFromCurrentContext(wholeClasspath = true)`
-        //dependenciesFromCurrentContext(wholeClasspath = true)
+        // dependenciesFromCurrentContext(wholeClasspath = true)
         dependenciesFromCurrentContext("script", "lib")
     }
 

@@ -1,0 +1,33 @@
+name: Check
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ "*" ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: burrunan/gradle-cache-action@v1
+        name: Gradle check
+        env:
+          VARIABLE: VALUE
+        with:
+          job-id: jdk8
+          arguments: --no-daemon build
+          gradle-version: wrapper
+
+      - uses: codecov/codecov-action@v2
+        name: Upload Coverage
+        with:
+          files: ./build/reports/jacoco/report.xml
+          name: codecov-confis
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos

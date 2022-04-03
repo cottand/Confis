@@ -1,5 +1,6 @@
 package eu.dcotta.confis.scripting
 
+import java.io.File
 import kotlin.script.experimental.api.EvaluationResult
 import kotlin.script.experimental.api.ResultWithDiagnostics
 import kotlin.script.experimental.api.ScriptDiagnostic
@@ -8,13 +9,12 @@ import kotlin.script.experimental.jvm.dependenciesFromCurrentContext
 import kotlin.script.experimental.jvm.jvm
 import kotlin.script.experimental.jvmhost.BasicJvmScriptingHost
 import kotlin.script.experimental.jvmhost.createJvmCompilationConfigurationFromTemplate
-import java.io.File
 
 fun evalFile(scriptFile: File): ResultWithDiagnostics<EvaluationResult> {
     val compilationConfiguration = createJvmCompilationConfigurationFromTemplate<ConfisScriptDefinition> {
         jvm {
             dependenciesFromCurrentContext(
-                "lib","script"
+                "lib", "script"
             )
         }
     }

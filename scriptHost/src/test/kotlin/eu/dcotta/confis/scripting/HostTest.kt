@@ -13,9 +13,9 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.beOfType
+import java.io.File
 import kotlin.script.experimental.api.EvaluationResult
 import kotlin.script.experimental.api.ResultWithDiagnostics
-import java.io.File
 
 class HostTest : StringSpec({
     "compile well-formed script" {
@@ -59,9 +59,8 @@ class HostTest : StringSpec({
         (assembled.clauses.first() as Clause.SentenceWithCircumstances)
             .circumstances[TimeRange]
             .shouldBe(Date(1, May, 2022)..Date(13, April, 2023))
-
     }
 })
 
-private fun failAndPrint(res: ResultWithDiagnostics<EvaluationResult>):Nothing =
+private fun failAndPrint(res: ResultWithDiagnostics<EvaluationResult>): Nothing =
     fail("test failed:\n  ${res.reports.joinToString("\n  ") { it.message + if (it.exception == null) "" else ": ${it.exception}" }}")

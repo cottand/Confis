@@ -1,6 +1,6 @@
 plugins {
     kotlin("jvm")
-    id("org.jlleitschuh.gradle.ktlint") version "10.2.1"
+    // id("org.jlleitschuh.gradle.ktlint") version "10.2.1"
     `java-library`
 }
 

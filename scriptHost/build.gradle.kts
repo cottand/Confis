@@ -19,7 +19,6 @@ dependencies {
 
     kotlinScriptDef(project(":script"))
     testKotlinScriptDef(project(":script"))
-
 }
 
 testing {
