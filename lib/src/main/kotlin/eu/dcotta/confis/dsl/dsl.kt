@@ -9,8 +9,13 @@ import eu.dcotta.confis.model.Subject
 @DslMarker
 annotation class ConfisDsl
 
+// @DslMarker
+// annotation class SentenceDsl
+
 @ConfisDsl
 class SentenceBuilder(private val subject: Subject) {
+    // @SentenceDsl
     infix operator fun Action.invoke(obj: Obj) = Sentence(subject, this, obj)
+    // @SentenceDsl
     operator fun Action.invoke() = Sentence(subject, this, Anything)
 }

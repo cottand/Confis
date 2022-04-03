@@ -1,16 +1,8 @@
-val Alice by declareParty
+val alice by party("alice")
 
-val Bob by declareParty
+val bob by party("bob")
 
-val hug by declareAction
-
-val text by declareAction
-
-// the `additionally` modifier allows appending "purpose policies"
-Alice may { hug(Bob) } additionally {
-    purposes allowed include(Research)
-    purposes forbidden include(Commercial)
-}
+val hug by action
 
 // a plaintext clause that we do not wish to try to encode
 -"""
@@ -18,8 +10,10 @@ Alice may { hug(Bob) } additionally {
     accordance with the law of England and Wales.
 """
 
-// exceptions can be added at the end of clauses with `unless`
-Bob may { hug(Alice) } additionally { purposes forbidden include(Commercial) } unless { forceMajeure }
+alice may { hug(bob) } asLongAs {
+    with purpose (Research)
+}
 
-Bob mayNot { text(Alice) } unless { forceMajeure }
-
+alice mayNot { hug(bob) } asLongAs {
+    with purpose Commercial
+}

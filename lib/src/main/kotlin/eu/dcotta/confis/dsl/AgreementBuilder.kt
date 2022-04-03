@@ -15,7 +15,7 @@ import eu.dcotta.confis.util.oneTimeProperty
 import eu.dcotta.confis.util.removeLastOccurrence
 import kotlin.properties.ReadOnlyProperty
 
-@ConfisDsl
+// @ConfisDsl
 open class AgreementBuilder {
 
     private val freeTextClauses = mutableListOf<Text>()
@@ -27,24 +27,28 @@ open class AgreementBuilder {
         freeTextClauses += Text(this.trimIndent())
     }
 
+    @CircumstanceDsl
     infix fun Subject.may(init: SentenceBuilder.() -> Sentence): Rule {
         val rule = Rule(Allow, init(SentenceBuilder(this)))
         sentencesWithoutCircumstances += rule
         return rule
     }
 
+    @CircumstanceDsl
     infix fun Subject.mayNot(init: SentenceBuilder.() -> Sentence): Rule {
         val rule = Rule(Forbid, init(SentenceBuilder(this)))
         sentencesWithoutCircumstances += rule
         return rule
     }
 
+    @CircumstanceDsl
     infix fun Rule.asLongAs(init: CircumstanceBuilder.() -> Unit) {
         val b = CircumstanceBuilder(this, Allow).also(init)
         sentencesWithoutCircumstances.removeLastOccurrence(this)
         clausesWithCircumstances += b
     }
 
+    @ConfisDsl
     infix fun Rule.unless(init: CircumstanceBuilder.() -> Unit) {
         val b = CircumstanceBuilder(this, Forbid).also(init)
         sentencesWithoutCircumstances.removeLastOccurrence(this)
@@ -56,14 +60,17 @@ open class AgreementBuilder {
         parties = parties
     )
 
+    @ConfisDsl
     fun party(named: String) = oneTimeProperty<Any?, Party> {
         val party = Party(named)
         parties.add(party)
         party
     }
 
+    @ConfisDsl
     val thing get() = oneTimeProperty<Any?, Obj> { Named(it.name) }
 
+    @ConfisDsl
     val party
         get() = oneTimeProperty<Any?, Party> {
             val party = Party(it.name)

@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm")
         `java-library`
+    idea
 }
 
 val kotlinVersion: String by rootProject.extra

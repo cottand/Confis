@@ -11,9 +11,8 @@ import kotlin.script.experimental.jvmhost.createJvmCompilationConfigurationFromT
 import java.io.File
 
 fun evalFile(scriptFile: File): ResultWithDiagnostics<EvaluationResult> {
-    val compilationConfiguration = createJvmCompilationConfigurationFromTemplate<Definition> {
+    val compilationConfiguration = createJvmCompilationConfigurationFromTemplate<ConfisScriptDefinition> {
         jvm {
-
             dependenciesFromCurrentContext(
                 "lib","script"
             )

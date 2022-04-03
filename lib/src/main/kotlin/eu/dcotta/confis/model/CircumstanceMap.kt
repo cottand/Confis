@@ -16,7 +16,7 @@ class CircumstanceMap private constructor(
     @Suppress("UNCHECKED_CAST")
     operator fun <C : Circumstance> get(key: Circumstance.Key<C>): C? = map[key] as C?
 
-    operator fun <T : Any> plus(value: Circumstance): CircumstanceMap =
+    operator fun plus(value: Circumstance): CircumstanceMap =
         CircumstanceMap(map + (value.key to value))
 
     operator fun plus(other: CircumstanceMap) = CircumstanceMap(map + other.map)

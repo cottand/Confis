@@ -5,6 +5,11 @@ plugins {
     idea
 }
 
+allprojects {
+    group = "eu.dcotta.confis"
+}
+
+
 subprojects {
 
     repositories {
