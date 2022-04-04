@@ -1,6 +1,7 @@
 package eu.dcotta.confis.scripting
 
 import eu.dcotta.confis.dsl.AgreementBuilder
+import eu.dcotta.confis.model.Month
 import eu.dcotta.confis.model.Purpose
 import kotlin.script.experimental.api.ScriptAcceptedLocation.Everywhere
 import kotlin.script.experimental.api.ScriptCompilationConfiguration
@@ -23,9 +24,9 @@ object CompilationConfig : ScriptCompilationConfiguration({
 
     defaultImports(
         Purpose::class.qualifiedName + ".*",
+        Month::class.qualifiedName + ".*",
         AgreementBuilder::class.java.packageName + ".*",
         "eu.dcotta.confis.dsl.*",
-        "import eu.dcotta.confis.model.Month.*"
     )
 
     baseClass(AgreementBuilder::class)

@@ -1,8 +1,3 @@
-import eu.dcotta.confis.dsl.of
-import eu.dcotta.confis.dsl.year
-import eu.dcotta.confis.model.Month.April
-import eu.dcotta.confis.model.Month.May
-
 val ana by party
 val bob by party
 

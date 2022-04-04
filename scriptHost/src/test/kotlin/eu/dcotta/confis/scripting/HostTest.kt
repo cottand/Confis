@@ -41,6 +41,18 @@ class HostTest : StringSpec({
         res should beOfType<ResultWithDiagnostics.Failure>()
     }
 
+    "fails on unknown subject" {
+        val res = evalFile(File("src/test/resources/scripts/unknownSubject.confis.kts"))
+
+        res should beOfType<ResultWithDiagnostics.Failure>()
+    }
+
+    "fails on unknown object" {
+        val res = evalFile(File("src/test/resources/scripts/unknownObject.confis.kts"))
+
+        res should beOfType<ResultWithDiagnostics.Failure>()
+    }
+
     "can define dates wihtout additional imports" {
         val res = evalFile(File("src/test/resources/scripts/dates.confis.kts"))
 
