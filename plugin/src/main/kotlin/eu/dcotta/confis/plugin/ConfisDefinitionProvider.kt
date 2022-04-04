@@ -1,32 +1,37 @@
 package eu.dcotta.confis.plugin
 
-import eu.dcotta.confis.scripting.CompilationConfig
-import eu.dcotta.confis.scripting.EvaluationConfig
-import kotlin.script.experimental.host.ScriptDefinition
-import kotlin.script.experimental.host.ScriptingHostConfiguration
-import kotlin.script.experimental.intellij.ScriptDefinitionsProvider
+import eu.dcotta.confis.dsl.AgreementBuilder
+import eu.dcotta.confis.scripting.ConfisScriptDefinition
+import org.jetbrains.kotlin.utils.PathUtil
 import java.io.File
+import kotlin.script.experimental.intellij.ScriptDefinitionsProvider
 
 class ConfisDefinitionProvider : ScriptDefinitionsProvider {
 
     override val id: String get() = "eu.dcotta.confis"
 
     override fun getDefinitionClasses(): Iterable<String> = listOf(
-        "eu.dcotta.confis.scripting.Definition"
+        ConfisScriptDefinition::class.qualifiedName!!
     )
 
-    override fun getDefinitionsClassPath(): Iterable<File> = listOf(File("lib/script"))
+    private inline fun <reified T> jarOf() = PathUtil.getResourcePathForClass(T::class.java)
 
-    override fun useDiscovery(): Boolean = true
+    override fun getDefinitionsClassPath(): Iterable<File> =
+        listOf(
+            jarOf<ConfisScriptDefinition>(),
+            jarOf<AgreementBuilder>(),
+        )
 
-    val def = ScriptDefinition(
-        CompilationConfig,
-        EvaluationConfig,
-    )
+    override fun useDiscovery(): Boolean = false
 
-    override fun provideDefinitions(
-        baseHostConfiguration: ScriptingHostConfiguration,
-        loadedScriptDefinitions: List<ScriptDefinition>,
-    ): Iterable<ScriptDefinition> =
-        loadedScriptDefinitions.plus(def)
+    // val def = ScriptDefinition(
+    //    CompilationConfig,
+    //    EvaluationConfig,
+    // )
+
+    // override fun provideDefinitions(
+    //    baseHostConfiguration: ScriptingHostConfiguration,
+    //    loadedScriptDefinitions: List<ScriptDefinition>,
+    // ): Iterable<ScriptDefinition> =
+    //    loadedScriptDefinitions.plus(def)
 }

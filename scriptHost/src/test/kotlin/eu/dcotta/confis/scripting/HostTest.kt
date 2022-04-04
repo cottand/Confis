@@ -34,12 +34,6 @@ class HostTest : StringSpec({
         assembled.clauses shouldNotBe emptyList<Clause>()
     }
 
-    "fails when trying to specify purposes on a deny clause" {
-        val res = evalFile(File("src/test/resources/scripts/purposeOnForbid.confis.kts"))
-
-        res should beOfType<ResultWithDiagnostics.Failure>()
-    }
-
     // TODO FIXME
     "fails on nesting for top level clause building".config(enabled = false) {
         val res = evalFile(File("src/test/resources/scripts/nestedBad.confis.kts"))

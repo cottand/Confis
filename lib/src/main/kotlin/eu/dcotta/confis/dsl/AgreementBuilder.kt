@@ -27,20 +27,31 @@ open class AgreementBuilder {
         freeTextClauses += Text(this.trimIndent())
     }
 
+    /**
+     * Specifies that [Subject] may perform [sentence]
+     */
     @CircumstanceDsl
-    infix fun Subject.may(init: SentenceBuilder.() -> Sentence): Rule {
-        val rule = Rule(Allow, init(SentenceBuilder(this)))
+    infix fun Subject.may(sentence: SentenceBuilder.() -> Sentence): Rule {
+        val rule = Rule(Allow, sentence(SentenceBuilder(this)))
         sentencesWithoutCircumstances += rule
         return rule
     }
 
+    /**
+     * Specifies that [Subject] may not perform [sentence]
+     */
     @CircumstanceDsl
-    infix fun Subject.mayNot(init: SentenceBuilder.() -> Sentence): Rule {
-        val rule = Rule(Forbid, init(SentenceBuilder(this)))
+    infix fun Subject.mayNot(sentence: SentenceBuilder.() -> Sentence): Rule {
+        val rule = Rule(Forbid, sentence(SentenceBuilder(this)))
         sentencesWithoutCircumstances += rule
         return rule
     }
 
+    /**
+     * Constrains the previous [Rule] to [init]
+     *
+     *
+     */
     @CircumstanceDsl
     infix fun Rule.asLongAs(init: CircumstanceBuilder.() -> Unit) {
         val b = CircumstanceBuilder(this, Allow).also(init)

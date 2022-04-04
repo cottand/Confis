@@ -41,7 +41,7 @@ object CompilationConfig : ScriptCompilationConfiguration({
         // to add the whole classpath for the classloader without check for jar presense, use
         // `dependenciesFromCurrentContext(wholeClasspath = true)`
         // dependenciesFromCurrentContext(wholeClasspath = true)
-        dependenciesFromCurrentContext("script", "lib")
+        dependenciesFromCurrentContext(wholeClasspath = true)
     }
 
     ide {

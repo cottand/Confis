@@ -1,7 +1,7 @@
 import org.jlleitschuh.gradle.ktlint.KtlintPlugin
 
 plugins {
-    kotlin("jvm") version "1.6.10"
+    kotlin("jvm") version "1.6.20"
     idea
     id("org.jlleitschuh.gradle.ktlint") version "10.2.1" apply false
     jacoco

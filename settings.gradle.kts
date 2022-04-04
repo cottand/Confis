@@ -1,3 +1,7 @@
 rootProject.name = "confis"
-include("lib", "scriptHost", "script")
-//include("plugin")
+include(
+    "lib",
+    "scriptHost",
+    "script",
+    "plugin",
+)

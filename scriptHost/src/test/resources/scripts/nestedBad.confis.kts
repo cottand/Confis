@@ -5,8 +5,9 @@ val bob by party("bob")
 val hug by action
 
 alice may { hug(bob) } asLongAs {
+    // should be illegal!
     alice may { hug(bob) }
-    with purpose (Research)
+    with purpose Research
 }
 
 alice mayNot { hug(bob) } asLongAs {
