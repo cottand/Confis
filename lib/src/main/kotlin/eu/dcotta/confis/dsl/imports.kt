@@ -11,7 +11,7 @@ infix fun MonthDate.year(year: Int): Date = Date(day, month, year)
 //    setDate(year, month.ordinal, day)
 // }.build()
 
-infix fun Pair<MonthDate, MonthDate>.year(year: Int) = first.year(year) to second.year(year)
+infix fun Pair<MonthDate, MonthDate>.year(year: Int) = first.year(year)..second.year(year)
 
 operator fun Date.rangeTo(end: Date) = TimeRange.Range(this, end)
 operator fun MonthDate.rangeTo(end: MonthDate) = this to end

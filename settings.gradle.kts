@@ -4,4 +4,5 @@ include(
     "scriptHost",
     "script",
     "plugin",
+    "docs",
 )

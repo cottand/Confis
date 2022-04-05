@@ -46,34 +46,6 @@ Alice may { terminate(contract) } asLongAs {
 
 ```
 
-### Clauses
-
-Clauses have the following grammar:
-
-```kotlin
-Subject(may| mayNot) { action(thing) }(unless| asLongAs) {
-    circumstance
-}
-```
-
-Allowance has the following semantics:
-
-There are 4 possible results to a _"Can this happen"_ question: `Allow`, `Forbid`, `Unspecified` (
-the agreement just does not say) or `Depends` (circumstances are too general for a specific answer)
-
-- `may A asLongAs C`:
-    - A is allowed if C is true
-    - A is unspecified if C is false
-- `may A unless C`:
-    - A is forbidden if C is true
-    - A is allowed if C is false
-- `mayNot A asLongAs C`:
-    - A is forbidden if C is true
-    - A is unspecified if C is false
-- `mayNot A unless C`:
-    - A is allowed if C is true
-    - A is forbidden if C is false
-
 ### Circumstances
 
 Circumstances supported are

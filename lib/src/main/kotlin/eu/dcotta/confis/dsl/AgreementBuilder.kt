@@ -59,7 +59,7 @@ open class AgreementBuilder {
         clausesWithCircumstances += b
     }
 
-    @ConfisDsl
+    @CircumstanceDsl
     infix fun Rule.unless(init: CircumstanceBuilder.() -> Unit) {
         val b = CircumstanceBuilder(this, Forbid).also(init)
         sentencesWithoutCircumstances.removeLastOccurrence(this)

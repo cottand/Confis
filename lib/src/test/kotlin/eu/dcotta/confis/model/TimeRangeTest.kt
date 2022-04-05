@@ -34,4 +34,9 @@ class TimeRangeTest : StringSpec({
 
         (CircumstanceMap.of(may..sept) generalises CircumstanceMap.of(may..may)) shouldBe true
     }
+
+    "no circumstances is more general than a time range" {
+
+        (CircumstanceMap.empty generalises CircumstanceMap.of(may..may)) shouldBe true
+    }
 })

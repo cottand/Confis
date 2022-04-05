@@ -1,0 +1,64 @@
+site_name: Confis Documentation
+
+# Meta tags (placed in header)
+site_description: Confis is a framework for representing, querying, and verifying compliance of legal agreements
+site_author: Nico D'Cotta
+site_url: https://github.com/cottand/mengproject
+
+# Repository (add link to repository on each page)
+repo_name: Confis Repository
+repo_url: https://github.com/cottand/mengproject
+edit_uri: edit/master/docs/src/doc/docs/
+
+# Copyright (shown at the footer)
+copyright: "Copyright &copy; 2022 Nicolas D'Cotta"
+
+# Material theme
+theme:
+  name: 'material'
+  favicon: favicon.svg
+  palette:
+    - scheme: default
+      primary: orange
+      accent: orange
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+    - scheme: slate
+      primary: orange
+      accent: orange
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+  social:
+    - type: 'github'
+      link: 'https://github.com/cottand/mengproject'
+
+# Extensions
+markdown_extensions:
+  - admonition
+  - codehilite:
+      guess_lang: false
+  - footnotes
+  - meta
+  - def_list
+  - toc:
+      permalink: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.inlinehilite
+  - pymdownx.magiclink
+  - pymdownx.smartsymbols
+  - pymdownx.superfences
+
+#nav:
+#  - Home: index.md
+#  - API Reference: "generated/index.html"
+
+
+#extra_javascript:
+#  - api_reference_button.js
+#
+extra_css:
+  - colours.css
