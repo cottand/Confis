@@ -1,4 +1,4 @@
-package eu.dcotta.confis.eval
+package eu.dcotta.confis.eval.allowance
 
 import eu.dcotta.confis.model.Allowance.Allow
 import eu.dcotta.confis.model.Allowance.Forbid
@@ -11,39 +11,39 @@ import eu.dcotta.confis.model.computeAmbiguous
 import eu.dcotta.confis.model.leastPermissive
 import eu.dcotta.confis.model.mostPermissive
 
-interface RuleContext {
+interface AllowanceContext {
     val q: AllowanceQuestion
     var result: AllowanceResult
 }
 
-data class ConfisRule(val case: RuleContext.() -> Boolean, val then: RuleContext.() -> Unit)
+data class AllowanceRule(val case: AllowanceContext.() -> Boolean, val then: AllowanceContext.() -> Unit)
 
-fun Clause.asAllowanceRules(): List<ConfisRule> = when (this) {
+fun Clause.asAllowanceRules(): List<AllowanceRule> = when (this) {
     is Rule -> asAllowanceRules(this)
     is SentenceWithCircumstances -> asAllowanceRules(this)
     is Text -> emptyList()
 }
 
 // TODO revise if these should really be the semantics but it looks alright
-private fun asAllowanceRules(r: Rule): List<ConfisRule> = listOf(
-    ConfisRule(
+private fun asAllowanceRules(r: Rule): List<AllowanceRule> = listOf(
+    AllowanceRule(
         case = { r.sentence generalises q.sentence },
         then = { result = r.allowance.asResult }
     )
 )
 
-private fun asAllowanceRules(c: SentenceWithCircumstances): List<ConfisRule> = when (c.rule.allowance) {
+private fun asAllowanceRules(c: SentenceWithCircumstances): List<AllowanceRule> = when (c.rule.allowance) {
     Allow -> when (c.circumstanceAllowance) {
         // allow asLongAs:
         Allow -> listOf(
             // !C -> A unspecified
             // C -> A allowed
-            ConfisRule(
+            AllowanceRule(
                 case = { c.rule.sentence generalises q.sentence && c.circumstances generalises q.circumstances },
                 then = { result = Allow.asResult },
             ),
             // question too general case
-            ConfisRule(
+            AllowanceRule(
                 case = { c.rule.sentence.generalises(q.sentence) && q.circumstances generalises c.circumstances },
                 then = { result = computeAmbiguous(result, Allow.asResult) },
             ),
@@ -51,17 +51,17 @@ private fun asAllowanceRules(c: SentenceWithCircumstances): List<ConfisRule> = w
         // may - unless
         Forbid -> listOf(
             // specific case
-            ConfisRule(
+            AllowanceRule(
                 case = { c.rule.sentence.generalises(q.sentence) && c.circumstances.generalises(q.circumstances) },
                 then = { result = Forbid.asResult },
             ),
-            ConfisRule(
+            AllowanceRule(
                 case = { c.rule.sentence generalises q.sentence && c.circumstances disjoint q.circumstances },
                 // allows only if no one else forbid
                 then = { result = result leastPermissive Allow.asResult },
             ),
             // question too general case
-            ConfisRule(
+            AllowanceRule(
                 case = { c.rule.sentence.generalises(q.sentence) && q.circumstances generalises c.circumstances },
                 then = { result = computeAmbiguous(result, Forbid.asResult) },
             ),
@@ -69,28 +69,28 @@ private fun asAllowanceRules(c: SentenceWithCircumstances): List<ConfisRule> = w
     }
     Forbid -> when (c.circumstanceAllowance) {
         Allow -> listOf(
-            ConfisRule(
+            AllowanceRule(
                 case = { c.rule.sentence generalises q.sentence && c.circumstances generalises q.circumstances },
                 then = { result = Forbid.asResult }
             ),
             // question too general case
-            ConfisRule(
+            AllowanceRule(
                 case = { c.rule.sentence.generalises(q.sentence) && q.circumstances generalises c.circumstances },
                 then = { result = computeAmbiguous(result, Forbid.asResult) },
             ),
         )
         Forbid -> listOf(
             // specific case
-            ConfisRule(
+            AllowanceRule(
                 case = { c.rule.sentence.generalises(q.sentence) && c.circumstances.generalises(q.circumstances) },
                 then = { result = Allow.asResult },
             ),
-            ConfisRule(
+            AllowanceRule(
                 case = { c.rule.sentence generalises q.sentence && c.circumstances disjoint q.circumstances },
                 then = { result = mostPermissive(result, Forbid.asResult) },
             ),
             // we made an exception to a generality, so let's make clear more general questions cannot be answered
-            ConfisRule(
+            AllowanceRule(
                 case = { c.rule.sentence.generalises(q.sentence) && q.circumstances generalises c.circumstances },
                 then = { result = computeAmbiguous(result, Allow.asResult) },
             ),
