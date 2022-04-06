@@ -11,6 +11,7 @@ class QueryablePricesTest : StringSpec({
             val shareDataWith by action
 
             alice may { shareDataWith(bob) } asLongAs {
+                // TODO
             }
         }
     }

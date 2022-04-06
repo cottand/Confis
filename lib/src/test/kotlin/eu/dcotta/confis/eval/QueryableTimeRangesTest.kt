@@ -5,7 +5,9 @@ import eu.dcotta.confis.dsl.rangeTo
 import eu.dcotta.confis.dsl.year
 import eu.dcotta.confis.model.Action
 import eu.dcotta.confis.model.Agreement
+import eu.dcotta.confis.model.AllowanceResult.Allow
 import eu.dcotta.confis.model.AllowanceResult.Depends
+import eu.dcotta.confis.model.AllowanceResult.Unspecified
 import eu.dcotta.confis.model.CircumstanceMap
 import eu.dcotta.confis.model.Date
 import eu.dcotta.confis.model.Month.June
@@ -40,7 +42,7 @@ class QueryableTimeRangesTest : StringSpec({
         }
 
         a.ask(AllowanceQuestion(aliceEatsCake)) shouldBe Depends
-        // a.ask(aliceEatsCake, may) shouldBe Allow
-        // a.ask(aliceEatsCake, sept) shouldBe Unspecified
+        a.ask(aliceEatsCake, may) shouldBe Allow
+        a.ask(aliceEatsCake, sept) shouldBe Unspecified
     }
 })
