@@ -1,4 +1,4 @@
-name: Check
+name: "Publish Docs"
 
 on:
   push:
