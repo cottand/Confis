@@ -1,6 +1,7 @@
 package eu.dcotta.confis.eval
 
 import eu.dcotta.confis.model.Action
+import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.model.AllowanceResult.Allow
 import eu.dcotta.confis.model.AllowanceResult.Depends
 import eu.dcotta.confis.model.AllowanceResult.Forbid
@@ -20,7 +21,7 @@ class QueryableAgreementTest : StringSpec({
     val aliceEatsCookie = Sentence(Party("alice"), Action("eat"), Obj("cookie"))
 
     "can answer simple sentence query" {
-        val a = QueryableAgreement {
+        val a = Agreement {
 
             val alice by party
             val eat by action
@@ -37,7 +38,7 @@ class QueryableAgreementTest : StringSpec({
     }
 
     "can answer on puroses simple" {
-        val a = QueryableAgreement {
+        val a = Agreement {
 
             val alice by party
             val eat by action
@@ -53,7 +54,7 @@ class QueryableAgreementTest : StringSpec({
     }
 
     "can answer on purposes" {
-        val a = QueryableAgreement {
+        val a = Agreement {
 
             val alice by party
             val eat by action
@@ -78,7 +79,7 @@ class QueryableAgreementTest : StringSpec({
     }
 
     "purposes in rules create precedence between them" {
-        val a = QueryableAgreement {
+        val a = Agreement {
 
             val alice by party
             val eat by action
@@ -105,7 +106,7 @@ class QueryableAgreementTest : StringSpec({
     }
 
     "double negation well handled" {
-        val a = QueryableAgreement {
+        val a = Agreement {
 
             val alice by party
             val eat by action
@@ -122,7 +123,7 @@ class QueryableAgreementTest : StringSpec({
     }
 
     "negation overruled because it precedes some exception" {
-        val a = QueryableAgreement {
+        val a = Agreement {
 
             val alice by party
             val eat by action
@@ -139,7 +140,7 @@ class QueryableAgreementTest : StringSpec({
     }
 
     "can handle mayNot asLongAs" {
-        val a = QueryableAgreement {
+        val a = Agreement {
 
             val alice by party
             val eat by action

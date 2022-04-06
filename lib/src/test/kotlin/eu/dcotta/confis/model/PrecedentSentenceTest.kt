@@ -4,7 +4,7 @@ import eu.dcotta.confis.dsl.of
 import eu.dcotta.confis.dsl.rangeTo
 import eu.dcotta.confis.dsl.year
 import eu.dcotta.confis.eval.AllowanceQuestion
-import eu.dcotta.confis.eval.QueryableAgreement
+import eu.dcotta.confis.eval.ask
 import eu.dcotta.confis.model.AllowanceResult.Allow
 import eu.dcotta.confis.model.AllowanceResult.Depends
 import eu.dcotta.confis.model.Clause.SentenceWithCircumstances
@@ -27,7 +27,7 @@ class PrecedentSentenceTest : StringSpec({
     }
 
     "can write agreements with precedent sentences" {
-        val a = QueryableAgreement {
+        val a = Agreement {
             val alice by party
             val pay by action
             val bob by party
@@ -44,7 +44,7 @@ class PrecedentSentenceTest : StringSpec({
             }
         }
 
-        val agreementSentence = (a.agreement.clauses[1] as SentenceWithCircumstances).rule.sentence
+        val agreementSentence = (a.clauses[1] as SentenceWithCircumstances).rule.sentence
         (bobPaysAlice generalises agreementSentence) shouldBe true
         (agreementSentence generalises bobPaysAlice) shouldBe true
 

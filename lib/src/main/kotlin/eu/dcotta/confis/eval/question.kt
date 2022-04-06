@@ -1,6 +1,5 @@
 package eu.dcotta.confis.eval
 
-import eu.dcotta.confis.dsl.AgreementBuilder
 import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.model.AllowanceResult
 import eu.dcotta.confis.model.AllowanceResult.Unspecified
@@ -21,24 +20,23 @@ data class AllowanceQuestion(
         this(sentence, CircumstanceMap.of(PurposePolicy(purpose)))
 }
 
-data class QueryableAgreement(val agreement: Agreement, val defaultResult: AllowanceResult = Unspecified) {
+@JvmInline
+private value class Builder(private val facts: Facts) : RuleContext {
+    override var result: AllowanceResult
+        get() = facts.get(mutableResultKey)
+            ?: error("fact should be present")
+        set(value) {
+            facts.put(mutableResultKey, value)
+        }
+    override val q: AllowanceQuestion
+        get() = facts.get(questionKey)
+            ?: error("fact should be present")
+}
 
-    constructor(init: AgreementBuilder.() -> Unit) : this(AgreementBuilder(init))
-
-    @JvmInline
-    value class Builder(private val facts: Facts) : RuleContext {
-        override var result: AllowanceResult
-            get() = facts.get(Companion.mutableResultKey)
-                ?: error("fact should be present")
-            set(value) {
-                facts.put(Companion.mutableResultKey, value)
-            }
-        override val q: AllowanceQuestion
-            get() = facts.get(questionKey)
-                ?: error("fact should be present")
-    }
-
-    private val rs = agreement.clauses.flatMap { c -> c.asRules().map { r -> c to r } }
+private const val mutableResultKey = "mutableResult"
+private const val questionKey = "question"
+fun Agreement.ask(q: AllowanceQuestion, defaultResult: AllowanceResult = Unspecified): AllowanceResult {
+    val rs = clauses.flatMap { c -> c.asAllowanceRules().map { r -> c to r } }
         .mapIndexed { index, (clause, confisRule) ->
             RuleBuilder()
                 .name("${clause::class.simpleName}#$index")
@@ -50,18 +48,11 @@ data class QueryableAgreement(val agreement: Agreement, val defaultResult: Allow
         .toSet()
         .let(::Rules)
 
-    fun ask(q: AllowanceQuestion): AllowanceResult {
-        val facts = Facts().apply {
-            put(mutableResultKey, defaultResult)
-            put(questionKey, q)
-        }
-        DefaultRulesEngine().fire(rs, facts)
-
-        return Builder(facts).result
+    val facts = Facts().apply {
+        put(mutableResultKey, defaultResult)
+        put(questionKey, q)
     }
+    DefaultRulesEngine().fire(rs, facts)
 
-    companion object {
-        private const val mutableResultKey = "mutableResult"
-        private const val questionKey = "question"
-    }
+    return Builder(facts).result
 }

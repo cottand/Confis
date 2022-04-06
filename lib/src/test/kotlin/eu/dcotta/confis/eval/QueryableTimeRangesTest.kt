@@ -4,6 +4,7 @@ import eu.dcotta.confis.dsl.of
 import eu.dcotta.confis.dsl.rangeTo
 import eu.dcotta.confis.dsl.year
 import eu.dcotta.confis.model.Action
+import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.model.AllowanceResult.Depends
 import eu.dcotta.confis.model.CircumstanceMap
 import eu.dcotta.confis.model.Date
@@ -23,11 +24,11 @@ class QueryableTimeRangesTest : StringSpec({
     val june = 1 of June year 2020
     val sept = 1 of September year 2020
 
-    fun QueryableAgreement.ask(s: Sentence, time: Date) =
+    fun Agreement.ask(s: Sentence, time: Date) =
         ask(AllowanceQuestion(s, CircumstanceMap.of(time..time)))
 
     "allow asLongAs" {
-        val a = QueryableAgreement {
+        val a = Agreement {
 
             val alice by party
             val eat by action

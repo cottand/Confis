@@ -18,21 +18,21 @@ interface RuleContext {
 
 data class ConfisRule(val case: RuleContext.() -> Boolean, val then: RuleContext.() -> Unit)
 
-fun Clause.asRules(): List<ConfisRule> = when (this) {
-    is Rule -> asRules(this)
-    is SentenceWithCircumstances -> asRules(this)
+fun Clause.asAllowanceRules(): List<ConfisRule> = when (this) {
+    is Rule -> asAllowanceRules(this)
+    is SentenceWithCircumstances -> asAllowanceRules(this)
     is Text -> emptyList()
 }
 
 // TODO revise if these should really be the semantics but it looks alright
-fun asRules(r: Rule): List<ConfisRule> = listOf(
+private fun asAllowanceRules(r: Rule): List<ConfisRule> = listOf(
     ConfisRule(
         case = { r.sentence generalises q.sentence },
         then = { result = r.allowance.asResult }
     )
 )
 
-fun asRules(c: SentenceWithCircumstances): List<ConfisRule> = when (c.rule.allowance) {
+private fun asAllowanceRules(c: SentenceWithCircumstances): List<ConfisRule> = when (c.rule.allowance) {
     Allow -> when (c.circumstanceAllowance) {
         // allow asLongAs:
         Allow -> listOf(
