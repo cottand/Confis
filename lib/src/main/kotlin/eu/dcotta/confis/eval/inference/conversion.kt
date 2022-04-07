@@ -39,7 +39,12 @@ fun Clause.asCircumstanceRules(): List<CircumstanceRule> =
 fun asCircumstanceRules(r: SentenceWithCircumstances): List<CircumstanceRule> = when (r.rule.allowance) {
     Allow -> when (r.circumstanceAllowance) {
         // may .. asLongAs
-        Allow -> TODO()
+        Allow -> listOf(
+            CircumstanceRule(
+                case = { r.rule.sentence generalises q.s && r.circumstances !in circumstances },
+                then = { circumstances += (r.circumstances to mutableListOf(r)) },
+            ),
+        )
         Forbid -> TODO()
     }
     Forbid -> TODO()
