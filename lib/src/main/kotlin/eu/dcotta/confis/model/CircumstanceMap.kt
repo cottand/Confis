@@ -38,6 +38,8 @@ class CircumstanceMap private constructor(
 
     override fun toString(): String = "CircumstanceMap{${map.values.joinToString()}}"
 
+    fun isEmpty(): Boolean = map.isEmpty()
+
     companion object {
         val empty = CircumstanceMap(persistentMapOf())
         fun of(vararg elems: Circumstance) = CircumstanceMap(elems.associateBy { it.key }.toPersistentMap())

@@ -1,7 +1,7 @@
 package eu.dcotta.confis.eval.inference
 
 import eu.dcotta.confis.model.Agreement
-import eu.dcotta.confis.model.CircumstanceMap
+import eu.dcotta.confis.model.Clause
 import eu.dcotta.confis.model.Sentence
 import org.jeasy.rules.api.Facts
 import org.jeasy.rules.api.Rules
@@ -17,26 +17,32 @@ value class CircumstanceQuestion(val s: Sentence)
 
 @JvmInline
 private value class Builder(private val facts: Facts) : CircumstanceContext {
-    override var result: CircumstanceMap
-        get() = facts.get(mutableResultKey)
-            ?: error("fact should be present")
-        set(value) {
-            facts.put(mutableResultKey, value)
-        }
+
+    override var circumstances: CircumstancesToClauses
+        get() = facts.get(mutableResultKey) ?: emptyMap()
+        set(value) = facts.put(mutableResultKey, value)
+
+    override var contradictions: Set<List<Clause>>
+        get() = facts.get(contradictionsKey) ?: emptySet()
+        set(value) = facts.put(contradictionsKey, value)
+
     override val q: CircumstanceQuestion
-        get() = facts.get(questionKey)
-            ?: error("fact should be present")
+        get() = facts.get(questionKey) ?: error("fact should be present")
 }
 
 private const val mutableResultKey = "mutableResult"
 private const val questionKey = "question"
+private const val contradictionsKey = "contradictions"
+private const val impossibilityKey = "impossible"
 
-fun Agreement.ask(q: CircumstanceQuestion): CircumstanceMap {
+fun Agreement.ask(q: CircumstanceQuestion): CircumstanceResult {
     val rs = clauses.flatMap { c -> c.asCircumstanceRules().map { r -> c to r } }
         .mapIndexed { index, (clause, confisRule) ->
             RuleBuilder()
                 .name("${clause::class.simpleName}#$index")
                 .description(clause.toString())
+                // rules have ordering as written in the contract - later -> higher priority (low number)
+                .priority(-index)
                 .`when` { fs -> confisRule.case(Builder(fs)) }
                 .then { fs -> confisRule.then(Builder(fs)) }
                 .build()
@@ -45,7 +51,6 @@ fun Agreement.ask(q: CircumstanceQuestion): CircumstanceMap {
         .let(::Rules)
 
     val facts = Facts().apply {
-        put(mutableResultKey, CircumstanceMap.empty)
         put(questionKey, q)
     }
 
@@ -54,5 +59,10 @@ fun Agreement.ask(q: CircumstanceQuestion): CircumstanceMap {
     }
     InferenceRulesEngine(options).fire(rs, facts)
 
-    return Builder(facts).result
+    val result = Builder(facts)
+    return when {
+        result.contradictions.isNotEmpty() -> CircumstanceResult.Contradictory(result.contradictions)
+        result.circumstances.isEmpty() -> CircumstanceResult.Forbidden
+        else -> CircumstanceResult.UnderCircumstances(result.circumstances.keys)
+    }
 }

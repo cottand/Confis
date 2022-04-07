@@ -37,6 +37,9 @@ fun mostPermissive(left: AllowanceResult, other: AllowanceResult): AllowanceResu
     Unspecified, Depends -> other
 }
 
+/**
+ * Returns [Depends] unless [l] equals [r]
+ */
 fun computeAmbiguous(l: AllowanceResult, r: AllowanceResult) = when {
     l == r -> l
     l == Unspecified -> Depends
