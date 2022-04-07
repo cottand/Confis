@@ -33,7 +33,6 @@ private value class Builder(private val facts: Facts) : CircumstanceContext {
 private const val mutableResultKey = "mutableResult"
 private const val questionKey = "question"
 private const val contradictionsKey = "contradictions"
-private const val impossibilityKey = "impossible"
 
 fun Agreement.ask(q: CircumstanceQuestion): CircumstanceResult {
     val rs = clauses.flatMap { c -> c.asCircumstanceRules().map { r -> c to r } }
