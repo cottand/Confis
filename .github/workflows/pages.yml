@@ -19,14 +19,6 @@ jobs:
           VARIABLE: VALUE
         with:
           job-id: jdk8
-          arguments: --no-daemon mkdocsBuild
+          arguments: --no-daemon mkdocsPublish
           gradle-version: wrapper
-      - uses: crazy-max/ghaction-github-pages@v2.6.0
-        name: Github pages depoy
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          target_branch: gh-pages
-          build_dir: docs/build/mkdocs
-          keep_history: true
 

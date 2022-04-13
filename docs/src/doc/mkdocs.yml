@@ -62,3 +62,7 @@ markdown_extensions:
 #
 extra_css:
   - colours.css
+
+extra:
+  version:
+    provider: mike
