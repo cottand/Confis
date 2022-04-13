@@ -1,0 +1,15 @@
+
+.md-api-ref {
+    font-weight: bold;
+    font-size: 0.65rem;
+    text-align: center;
+    padding-left: 40px;
+}
+
+.md-header__api-ref {
+    padding: 0.6rem;
+    /*width: 120px;*/
+    /*display: block;*/
+    display: flow;
+    word-wrap: normal;
+}
