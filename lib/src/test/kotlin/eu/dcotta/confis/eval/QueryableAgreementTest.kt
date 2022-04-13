@@ -33,6 +33,7 @@ class QueryableAgreementTest : StringSpec({
         }
 
         a.ask(AllowanceQuestion(aliceEatsCake)) shouldBe Allow
+        a.ask(AllowanceQuestion(aliceEatsCake, purpose = Research)) shouldBe Allow
         a.ask(AllowanceQuestion(aliceEatsCookie)) shouldBe Forbid
         a.ask(AllowanceQuestion(bobEatsCake)) shouldBe Unspecified
     }
@@ -71,11 +72,12 @@ class QueryableAgreementTest : StringSpec({
         }
 
         a.ask(AllowanceQuestion(aliceEatsCake)) shouldBe Depends
-        a.ask(AllowanceQuestion(aliceEatsCake, purpose = Commercial)) shouldBe Forbid
+        a.ask(AllowanceQuestion(aliceEatsCake, purpose = Commercial)) shouldBe Unspecified
         a.ask(AllowanceQuestion(aliceEatsCake, purpose = Research)) shouldBe Allow
 
         a.ask(AllowanceQuestion(aliceEatsCookie)) shouldBe Depends
         a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Research)) shouldBe Allow
+        a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Commercial)) shouldBe Unspecified
     }
 
     "purposes in rules create precedence between them" {
@@ -98,7 +100,7 @@ class QueryableAgreementTest : StringSpec({
         }
 
         a.ask(AllowanceQuestion(aliceEatsCake)) shouldBe Depends
-        a.ask(AllowanceQuestion(aliceEatsCake, purpose = Commercial)) shouldBe Forbid
+        a.ask(AllowanceQuestion(aliceEatsCake, purpose = Commercial)) shouldBe Unspecified
         a.ask(AllowanceQuestion(aliceEatsCake, purpose = Research)) shouldBe Allow
 
         a.ask(AllowanceQuestion(aliceEatsCookie)) shouldBe Depends
@@ -118,7 +120,7 @@ class QueryableAgreementTest : StringSpec({
         }
 
         a.ask(AllowanceQuestion(aliceEatsCookie)) shouldBe Depends
-        a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Research)) shouldBe Allow
+        a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Research)) shouldBe Unspecified
         a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Commercial)) shouldBe Forbid
     }
 
@@ -136,7 +138,7 @@ class QueryableAgreementTest : StringSpec({
         }
 
         a.ask(AllowanceQuestion(aliceEatsCookie)) shouldBe Depends
-        a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Research)) shouldBe Allow
+        a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Research)) shouldBe Unspecified
     }
 
     "can handle mayNot asLongAs" {
