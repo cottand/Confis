@@ -16,7 +16,7 @@ jobs:
       - uses: burrunan/gradle-cache-action@v1
         name: Gradle Dokka and MkDocs render
         env:
-          VARIABLE: VALUE
+          GRGIT_USER: ${{ secrets.GRGIT_USER }}
         with:
           job-id: jdk8
           arguments: --no-daemon mkdocsPublish
