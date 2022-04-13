@@ -19,7 +19,9 @@ sealed interface Clause {
         val rule: Rule,
         val circumstanceAllowance: Allowance,
         val circumstances: CircumstanceMap,
-    ) : Clause
+    ) : Clause {
+        val sentence by rule::sentence
+    }
 
     data class Rule(val allowance: Allowance, val sentence: Sentence) : Clause {
         val subject by sentence::subject

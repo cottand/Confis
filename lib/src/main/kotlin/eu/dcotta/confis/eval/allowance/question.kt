@@ -1,4 +1,4 @@
-package eu.dcotta.confis.eval
+package eu.dcotta.confis.eval.allowance
 
 import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.model.AllowanceResult
@@ -21,7 +21,7 @@ data class AllowanceQuestion(
 }
 
 @JvmInline
-private value class Builder(private val facts: Facts) : RuleContext {
+private value class AllowanceBuilder(private val facts: Facts) : AllowanceContext {
     override var result: AllowanceResult
         get() = facts.get(mutableResultKey)
             ?: error("fact should be present")
@@ -35,14 +35,15 @@ private value class Builder(private val facts: Facts) : RuleContext {
 
 private const val mutableResultKey = "mutableResult"
 private const val questionKey = "question"
+
 fun Agreement.ask(q: AllowanceQuestion, defaultResult: AllowanceResult = Unspecified): AllowanceResult {
     val rs = clauses.flatMap { c -> c.asAllowanceRules().map { r -> c to r } }
         .mapIndexed { index, (clause, confisRule) ->
             RuleBuilder()
                 .name("${clause::class.simpleName}#$index")
                 .description(clause.toString())
-                .`when` { fs -> confisRule.case(Builder(fs)) }
-                .then { fs -> confisRule.then(Builder(fs)) }
+                .`when` { fs -> confisRule.case(AllowanceBuilder(fs)) }
+                .then { fs -> confisRule.then(AllowanceBuilder(fs)) }
                 .build()
         }
         .toSet()
@@ -54,5 +55,5 @@ fun Agreement.ask(q: AllowanceQuestion, defaultResult: AllowanceResult = Unspeci
     }
     DefaultRulesEngine().fire(rs, facts)
 
-    return Builder(facts).result
+    return AllowanceBuilder(facts).result
 }

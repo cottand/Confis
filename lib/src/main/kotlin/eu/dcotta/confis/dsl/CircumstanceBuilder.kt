@@ -29,8 +29,10 @@ class CircumstanceBuilder(private val rule: Rule, private val circumstanceAllowa
      * with purpose Research
      * ```
      */
+    @ConfisDsl
     val with = PurposeReceiver
 
+    @ConfisDsl
     infix fun PurposeReceiver.purpose(purpose: Purpose) {
         purposePolicies += purpose
     }

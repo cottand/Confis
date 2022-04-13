@@ -3,8 +3,8 @@ package eu.dcotta.confis.model
 import eu.dcotta.confis.dsl.of
 import eu.dcotta.confis.dsl.rangeTo
 import eu.dcotta.confis.dsl.year
-import eu.dcotta.confis.eval.AllowanceQuestion
-import eu.dcotta.confis.eval.ask
+import eu.dcotta.confis.eval.allowance.AllowanceQuestion
+import eu.dcotta.confis.eval.allowance.ask
 import eu.dcotta.confis.model.AllowanceResult.Allow
 import eu.dcotta.confis.model.AllowanceResult.Depends
 import eu.dcotta.confis.model.Clause.SentenceWithCircumstances

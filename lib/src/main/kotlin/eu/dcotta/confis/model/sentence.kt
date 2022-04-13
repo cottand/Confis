@@ -37,12 +37,10 @@ fun mostPermissive(left: AllowanceResult, other: AllowanceResult): AllowanceResu
     Unspecified, Depends -> other
 }
 
-fun computeAmbiguous(l: AllowanceResult, r: AllowanceResult) = when {
-    l == r -> l
-    l == Unspecified -> Depends
-    r == Unspecified -> Depends
-    else -> Depends
-}
+/**
+ * Returns [Depends] unless [l] equals [r]
+ */
+fun computeAmbiguous(l: AllowanceResult, r: AllowanceResult) = if (l == r) l else Depends
 
 interface Obj {
     data class Named(val name: String) : Obj {

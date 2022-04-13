@@ -6,6 +6,14 @@ import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.plus
 import kotlinx.collections.immutable.toPersistentMap
 
+/**
+ * A [CircumstanceMap] functions a lot like a CoroutineContext: it is a collection of [Circumstance]s that can be
+ * narrowed down to their original type when extracting them, making this collection polymorphic.
+ *
+ * Two [Circumstance]s of the same type cannot coexist inside the same [CircumstanceMap]. This is ensured by the
+ * uniqueness of their [Circumstance.Key], which is what uniquely identifies a [Circumstance] within a [CircumstanceMap]
+ * (and what keeps track of its type).
+ */
 class CircumstanceMap private constructor(
     private val map: PersistentMap<Key<*>, Circumstance>,
 ) {
@@ -23,6 +31,10 @@ class CircumstanceMap private constructor(
 
     fun generalises(key: Key<*>) = key in map
 
+    /**
+     * This [CircumstanceMap] generalises [otherCircumstances] when for every [Circumstance] `c` in this,
+     * `c` generalises the [Circumstance] of the same type inside [otherCircumstances].
+     */
     @Suppress("UNCHECKED_CAST")
     infix fun generalises(otherCircumstances: CircumstanceMap): Boolean {
 
@@ -34,9 +46,23 @@ class CircumstanceMap private constructor(
             }
     }
 
-    infix fun disjoint(other: CircumstanceMap) = !other.generalises(this) && !this.generalises(other)
-
     override fun toString(): String = "CircumstanceMap{${map.values.joinToString()}}"
+
+    fun isEmpty(): Boolean = map.isEmpty()
+
+    infix fun overlapsWith(other: CircumstanceMap): Boolean {
+        val otherMap = other.map
+
+        return otherMap.isEmpty() || isEmpty() ||
+            otherMap.keys.containsAll(map.keys) &&
+            map.entries.any { (thisKey, thisCircumstance) ->
+                val otherCircumstance = otherMap[thisKey] ?: error("Concurrent access error")
+
+                !(thisCircumstance disjoint otherCircumstance)
+            }
+    }
+
+    infix fun disjoint(other: CircumstanceMap) = !overlapsWith(other)
 
     companion object {
         val empty = CircumstanceMap(persistentMapOf())
