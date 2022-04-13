@@ -1,6 +1,6 @@
 package eu.dcotta.confis.model
 
-sealed interface TimeRange : Circumstance {
+sealed interface TimeRange : OverlappingCircumstance {
 
     data class Range(override val start: Date, override val endInclusive: Date) : ClosedRange<Date>, TimeRange {
         override fun generalises(other: Circumstance) = other is TimeRange && when (other) {
@@ -10,6 +10,8 @@ sealed interface TimeRange : Circumstance {
         override val key: Circumstance.Key<*> get() = Key
 
         override fun contains(other: TimeRange) = other is Range && other.start in this && other.endInclusive in this
+
+        override fun overlapsWith(other: Circumstance) = other is Range && (start in other || endInclusive in other)
     }
 
     operator fun contains(other: TimeRange): Boolean
@@ -40,4 +42,5 @@ data class Date(val day: Int, val month: Month, val year: Int) : Comparable<Date
         day.compareTo(other.day) != 0 -> day.compareTo(other.day)
         else -> 0
     }
+    operator fun rangeTo(end: Date) = TimeRange.Range(this, end)
 }

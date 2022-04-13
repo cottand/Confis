@@ -1,8 +1,8 @@
 val alice by party("alice")
 
-val bob by party("bob")
+val bob by party
 
-val hug by action
+val pay by action
 
 // a plaintext clause that we do not wish to try to encode
 -"""
@@ -10,10 +10,13 @@ val hug by action
     accordance with the law of England and Wales.
 """
 
-alice may { hug(bob) } asLongAs {
-    with purpose (Research)
+alice may { pay(bob) } asLongAs {
+    with purpose Research
 }
 
-alice mayNot { hug(bob) } asLongAs {
+alice mayNot { pay(bob) } asLongAs {
     with purpose Commercial
+    alice did { pay(bob) }
 }
+
+

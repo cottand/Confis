@@ -7,19 +7,27 @@ import eu.dcotta.confis.model.Clause
 import eu.dcotta.confis.model.Clause.Rule
 import eu.dcotta.confis.model.Clause.SentenceWithCircumstances
 import eu.dcotta.confis.model.Clause.Text
+import kotlinx.collections.immutable.PersistentMap
+import kotlinx.collections.immutable.PersistentSet
+import kotlinx.collections.immutable.plus
 
 sealed interface CircumstanceResult {
     object Forbidden : CircumstanceResult
-    data class UnderCircumstances(val circumstances: Set<CircumstanceMap>) : CircumstanceResult
+    data class UnderCircumstances(
+        val circumstances: Set<CircumstanceMap>,
+        val forbidden: Set<CircumstanceMap> = emptySet(),
+    ) : CircumstanceResult
+
     data class Contradictory(val contradictions: Set<List<Clause>>) : CircumstanceResult
 }
 
-typealias CircumstancesToClauses = Map<CircumstanceMap, MutableList<out Clause>>
+typealias CircumstancesToClauses = PersistentMap<CircumstanceMap, Clause>
 
 interface CircumstanceContext {
     val q: CircumstanceQuestion
     var circumstances: CircumstancesToClauses
-    var contradictions: Set<List<Clause>>
+    var contradictions: PersistentSet<List<Clause>>
+    var forbidden: CircumstancesToClauses
 }
 
 /**
@@ -42,21 +50,57 @@ fun asCircumstanceRules(r: SentenceWithCircumstances): List<CircumstanceRule> = 
         Allow -> listOf(
             CircumstanceRule(
                 case = { r.rule.sentence generalises q.s && r.circumstances !in circumstances },
-                then = { circumstances += (r.circumstances to mutableListOf(r)) },
+                then = { circumstances += (r.circumstances to r) },
             ),
         )
+        // may .. unless
+        /**
+         * TODO many things need to happen here
+         * - probably need to enforce checking both allow and forbid sets every single time
+         *  - if I do that then we can start discussing unspecified again :D
+         * - decide if we reaaaly need all 4 variants.. it looks cool but we could accomplish the same with more
+         * complex circumstances no?
+         * -
+         */
+        Forbid -> listOf(
+            // forbid when circumstances hold
+            // contradiction detection
+            CircumstanceRule(
+                // if this forbid overlaps with any of the existing allowances
+                case = {
+                    r.sentence generalises q.s &&
+                        circumstances.keys.any { it overlapsWith r.circumstances } &&
+                        r !in contradictions.flatten()
+                },
+                then = {
+                    val dissidents = circumstances.values
+                    contradictions += setOf(dissidents + r)
+                },
+            ),
+            // add to forbid set
+            CircumstanceRule(
+                case = { r.sentence generalises q.s && r.circumstances !in forbidden.keys },
+                then = { forbidden += (r.circumstances to r) },
+            ),
+            //// allow any other time
+            //CircumstanceRule(
+            //    case = { r.sentence generalises q.s && CircumstanceMap.empty !in circumstances },
+            //    then = { circumstances += (CircumstanceMap.empty to r) },
+            //),
+        )
+    }
+    Forbid -> when (r.circumstanceAllowance) {
+        Allow -> TODO()
         Forbid -> TODO()
     }
-    Forbid -> TODO()
 }
 
-// FIXME - if allowance is no the should we take away circumstances? Or detect contradictions!?
 private fun asCircumstanceRules(r: Rule) = when (r.allowance) {
     Allow -> listOf(
         // TODO contradiction detection?
         CircumstanceRule(
             case = { r.sentence generalises q.s && CircumstanceMap.empty !in circumstances },
-            then = { circumstances += (CircumstanceMap.empty to mutableListOf(r)) },
+            then = { circumstances += (CircumstanceMap.empty to r) },
         ),
     )
     Forbid -> listOf(
@@ -65,8 +109,8 @@ private fun asCircumstanceRules(r: Rule) = when (r.allowance) {
             case = { r.sentence generalises q.s && circumstances.isNotEmpty() && r !in contradictions.flatten() },
             then = {
                 // find the other clauses that disagree with this one
-                val dissidents = circumstances.values.flatten()
-                contradictions = contradictions + setOf(dissidents + r)
+                val dissidents = circumstances.values
+                contradictions += setOf(dissidents + r)
             },
         ),
     )

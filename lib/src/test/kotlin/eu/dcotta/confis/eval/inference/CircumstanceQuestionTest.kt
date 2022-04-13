@@ -119,4 +119,53 @@ class CircumstanceQuestionTest : StringSpec({
             CircumstanceMap.of(PurposePolicy(Research)),
         )
     }
+
+    "contradiction detection for rule and circumstance clause allow-allow" {
+        val a = Agreement {
+            val alice by party
+            val bob by party
+            val pay by action
+
+            alice may { pay(bob) } asLongAs {
+                with purpose Commercial
+            }
+            alice mayNot { pay(bob) }
+        }
+
+        val r = a.ask(CircumstanceQuestion(alicePayBob))
+
+        r.asOrFail<CircumstanceResult.Contradictory>().should {
+            // 1 contradiction involving 2 clauses
+            it.contradictions shouldHaveSize 1
+            it.contradictions.first() shouldHaveSize 2
+            val (may, mayNot) = it.contradictions.first()
+
+            val mayClause = may.asOrFail<Clause.SentenceWithCircumstances>()
+            mayClause.circumstances shouldBe CircumstanceMap.of(PurposePolicy(Commercial))
+
+            val mayNotRule = mayNot.asOrFail<Clause.Rule>()
+
+            mayNotRule.sentence shouldBe mayClause.rule.sentence
+        }
+    }
+
+    "circumstance result for circumstance allow-forbid" {
+        val a = Agreement {
+            val alice by party
+            val bob by party
+            val pay by action
+
+            alice may { pay(bob) } unless { with purpose Commercial }
+        }
+
+        val r = a.ask(CircumstanceQuestion(alicePayBob)).asOrFail<CircumstanceResult.UnderCircumstances>()
+
+        r.circumstances shouldBe setOf(
+            //CircumstanceMap.empty,
+        )
+
+        r.forbidden shouldBe setOf(
+            CircumstanceMap.of(PurposePolicy(Commercial)),
+        )
+    }
 })
