@@ -126,23 +126,6 @@ class QueryableAgreementTest : StringSpec({
         a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Commercial)) shouldBe Forbid
     }
 
-    "negation overruled because it precedes some exception" {
-        val a = Agreement {
-
-            val alice by party
-            val eat by action
-            val cookie by thing
-
-            alice mayNot { eat(cookie) }
-            alice mayNot { eat(cookie) } unless {
-                with purpose Research
-            }
-        }
-
-        a.ask(AllowanceQuestion(aliceEatsCookie)) shouldBe Depends
-        a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Research)) shouldBe Unspecified
-    }
-
     "can handle mayNot asLongAs" {
         val a = Agreement {
 

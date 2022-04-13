@@ -149,7 +149,6 @@ class CircumstanceQuestionTest : StringSpec({
         }
     }
 
-
     // TODO FIXME
     "circumstance result for circumstance allow-forbid" {
         val a = Agreement {
@@ -163,7 +162,7 @@ class CircumstanceQuestionTest : StringSpec({
         val r = a.ask(CircumstanceQuestion(alicePayBob)).asOrFail<CircumstanceResult.UnderCircumstances>()
 
         r.circumstances shouldBe setOf(
-            //CircumstanceMap.empty,
+            // CircumstanceMap.empty,
         )
 
         r.forbidden shouldBe setOf(

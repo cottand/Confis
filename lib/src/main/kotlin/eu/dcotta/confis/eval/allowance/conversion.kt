@@ -8,8 +8,6 @@ import eu.dcotta.confis.model.Clause.Rule
 import eu.dcotta.confis.model.Clause.SentenceWithCircumstances
 import eu.dcotta.confis.model.Clause.Text
 import eu.dcotta.confis.model.computeAmbiguous
-import eu.dcotta.confis.model.leastPermissive
-import eu.dcotta.confis.model.mostPermissive
 
 interface AllowanceContext {
     val q: AllowanceQuestion
@@ -42,9 +40,13 @@ private fun asAllowanceRules(c: SentenceWithCircumstances): List<AllowanceRule> 
                 case = { c.rule.sentence generalises q.sentence && c.circumstances generalises q.circumstances },
                 then = { result = Allow.asResult },
             ),
-            // question too general case
+            // question general enough to concern us but not narrow enough to meet clause
             AllowanceRule(
-                case = { c.rule.sentence.generalises(q.sentence) && q.circumstances generalises c.circumstances },
+                case = {
+                    c.rule.sentence generalises q.sentence &&
+                        !(c.circumstances generalises q.circumstances) &&
+                        c.circumstances overlapsWith q.circumstances
+                },
                 then = { result = computeAmbiguous(result, Allow.asResult) },
             ),
         )
@@ -52,47 +54,55 @@ private fun asAllowanceRules(c: SentenceWithCircumstances): List<AllowanceRule> 
         Forbid -> listOf(
             // specific case
             AllowanceRule(
-                case = { c.rule.sentence.generalises(q.sentence) && c.circumstances.generalises(q.circumstances) },
-                then = { result = Forbid.asResult },
-            ),
-            AllowanceRule(
                 case = { c.rule.sentence generalises q.sentence && c.circumstances disjoint q.circumstances },
-                // allows only if no one else forbid
-                then = { result = result leastPermissive Allow.asResult },
+                then = { result = Allow.asResult },
             ),
-            // question too general case
+            // question general enough to concern us but not narrow enough to meet clause
             AllowanceRule(
-                case = { c.rule.sentence.generalises(q.sentence) && q.circumstances generalises c.circumstances },
+                case = {
+                    c.rule.sentence generalises q.sentence &&
+                        !(c.circumstances generalises q.circumstances) &&
+                        c.circumstances overlapsWith q.circumstances
+                },
                 then = { result = computeAmbiguous(result, Forbid.asResult) },
             ),
         )
     }
     Forbid -> when (c.circumstanceAllowance) {
         Allow -> listOf(
+            // specific case
             AllowanceRule(
                 case = { c.rule.sentence generalises q.sentence && c.circumstances generalises q.circumstances },
                 then = { result = Forbid.asResult }
             ),
-            // question too general case
+            // question general enough to concern us but not narrow enough to meet clause
             AllowanceRule(
-                case = { c.rule.sentence.generalises(q.sentence) && q.circumstances generalises c.circumstances },
+                case = {
+                    c.rule.sentence generalises q.sentence &&
+                        !(c.circumstances generalises q.circumstances) &&
+                        c.circumstances overlapsWith q.circumstances
+                },
                 then = { result = computeAmbiguous(result, Forbid.asResult) },
             ),
         )
         Forbid -> listOf(
             // specific case
-            AllowanceRule(
-                case = { c.rule.sentence.generalises(q.sentence) && c.circumstances.generalises(q.circumstances) },
-                then = { result = Allow.asResult },
-            ),
+            // AllowanceRule(
+            //    case = { c.rule.sentence.generalises(q.sentence) && c.circumstances.generalises(q.circumstances) },
+            //    then = { result = Allow.asResult },
+            // ),
             AllowanceRule(
                 case = { c.rule.sentence generalises q.sentence && c.circumstances disjoint q.circumstances },
-                then = { result = mostPermissive(result, Forbid.asResult) },
+                then = { result = Forbid.asResult },
             ),
-            // we made an exception to a generality, so let's make clear more general questions cannot be answered
+            // question general enough to concern us but not narrow enough to meet clause
             AllowanceRule(
-                case = { c.rule.sentence.generalises(q.sentence) && q.circumstances generalises c.circumstances },
-                then = { result = computeAmbiguous(result, Allow.asResult) },
+                case = {
+                    c.rule.sentence generalises q.sentence &&
+                        !(c.circumstances generalises q.circumstances) &&
+                        c.circumstances overlapsWith q.circumstances
+                },
+                then = { result = computeAmbiguous(result, Forbid.asResult) },
             ),
         )
     }

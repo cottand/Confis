@@ -82,11 +82,11 @@ fun asCircumstanceRules(r: SentenceWithCircumstances): List<CircumstanceRule> = 
                 case = { r.sentence generalises q.s && r.circumstances !in forbidden.keys },
                 then = { forbidden += (r.circumstances to r) },
             ),
-            //// allow any other time
-            //CircumstanceRule(
+            // // allow any other time
+            // CircumstanceRule(
             //    case = { r.sentence generalises q.s && CircumstanceMap.empty !in circumstances },
             //    then = { circumstances += (CircumstanceMap.empty to r) },
-            //),
+            // ),
         )
     }
     Forbid -> when (r.circumstanceAllowance) {
