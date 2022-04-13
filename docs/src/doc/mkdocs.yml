@@ -3,7 +3,7 @@ site_name: Confis Documentation
 # Meta tags (placed in header)
 site_description: Confis is a framework for representing, querying, and verifying compliance of legal agreements
 site_author: Nico D'Cotta
-site_url: https://github.com/cottand/mengproject
+site_url: https://cottand.github.io/MEngProject/
 
 # Repository (add link to repository on each page)
 repo_name: Confis Repository

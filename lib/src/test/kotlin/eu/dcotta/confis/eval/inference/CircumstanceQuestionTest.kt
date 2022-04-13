@@ -149,6 +149,8 @@ class CircumstanceQuestionTest : StringSpec({
         }
     }
 
+
+    // TODO FIXME
     "circumstance result for circumstance allow-forbid" {
         val a = Agreement {
             val alice by party
