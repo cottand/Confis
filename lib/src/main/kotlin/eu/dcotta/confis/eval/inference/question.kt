@@ -56,7 +56,7 @@ fun Agreement.ask(q: CircumstanceQuestion): CircumstanceResult {
     val result = Builder(facts, q)
     return when {
         result.contradictions.isNotEmpty() -> CircumstanceResult.Contradictory(result.contradictions)
-        result.circumstances.isEmpty() && result.unless.isEmpty() -> CircumstanceResult.Forbidden
+        result.circumstances.isEmpty() && result.unless.isEmpty() -> CircumstanceResult.NotAllowed
         else -> CircumstanceResult.UnderCircumstances(result.circumstances.keys, result.unless.keys)
     }
 }

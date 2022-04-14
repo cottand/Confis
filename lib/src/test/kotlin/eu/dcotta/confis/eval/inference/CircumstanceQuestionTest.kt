@@ -66,7 +66,7 @@ class CircumstanceQuestionTest : StringSpec({
             bob may { pay(alice) }
         }
 
-        a.ask(CircumstanceQuestion(alicePayBob)) should beOfType<CircumstanceResult.Forbidden>()
+        a.ask(CircumstanceQuestion(alicePayBob)) should beOfType<CircumstanceResult.NotAllowed>()
     }
 
     "circumstance result for rule clauses, not allowed" {
@@ -78,7 +78,7 @@ class CircumstanceQuestionTest : StringSpec({
             alice mayNot { pay(bob) }
         }
 
-        a.ask(CircumstanceQuestion(alicePayBob)) should beOfType<CircumstanceResult.Forbidden>()
+        a.ask(CircumstanceQuestion(alicePayBob)) should beOfType<CircumstanceResult.NotAllowed>()
     }
 
     "circumstance result for circumstance allow-allow" {
@@ -149,7 +149,6 @@ class CircumstanceQuestionTest : StringSpec({
         }
     }
 
-    // TODO FIXME
     "circumstance result for circumstance allow-forbid" {
         val a = Agreement {
             val alice by party
@@ -162,11 +161,39 @@ class CircumstanceQuestionTest : StringSpec({
         val r = a.ask(CircumstanceQuestion(alicePayBob)).asOrFail<CircumstanceResult.UnderCircumstances>()
 
         r.circumstances shouldBe setOf(
-             CircumstanceMap.empty,
+            CircumstanceMap.empty,
         )
 
         r.unless shouldBe setOf(
             CircumstanceMap.of(PurposePolicy(Commercial)),
         )
+    }
+
+    "circumstance result for circumstance forbid-allow" {
+        val a = Agreement {
+            val alice by party
+            val bob by party
+            val pay by action
+
+            alice mayNot { pay(bob) } asLongAs { with purpose Commercial }
+        }
+
+        val r = a.ask(CircumstanceQuestion(alicePayBob)).asOrFail<CircumstanceResult.NotAllowed>()
+    }
+
+    "contradiction detected for forbid-allow" {
+        val a = Agreement {
+            val alice by party
+            val bob by party
+            val pay by action
+
+            alice mayNot { pay(bob) } asLongAs { with purpose Commercial }
+            alice may { pay(bob) }
+        }
+
+        val r = a.ask(CircumstanceQuestion(alicePayBob)).asOrFail<CircumstanceResult.Contradictory>()
+
+        r.contradictions shouldHaveSize 1
+        r.contradictions.first() shouldHaveSize 2
     }
 })

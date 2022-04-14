@@ -12,7 +12,7 @@ import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.plus
 
 sealed interface CircumstanceResult {
-    object Forbidden : CircumstanceResult
+    object NotAllowed : CircumstanceResult
     data class UnderCircumstances(
 
         /**
@@ -66,14 +66,6 @@ fun asCircumstanceRules(r: SentenceWithCircumstances): List<CircumstanceRule> = 
             ),
         )
         // may .. unless
-        /**
-         * TODO many things need to happen here
-         * - probably need to enforce checking both allow and forbid sets every single time
-         *  - if I do that then we can start discussing unspecified again :D
-         * - decide if we reaaaly need all 4 variants.. it looks cool but we could accomplish the same with more
-         * complex circumstances no?
-         * -
-         */
         Forbid -> listOf(
             // forbid when circumstances hold
             // contradiction detection
@@ -85,7 +77,7 @@ fun asCircumstanceRules(r: SentenceWithCircumstances): List<CircumstanceRule> = 
                         r !in contradictions.flatten()
                 },
                 then = {
-                    val dissidents = circumstances.values
+                    val dissidents = circumstances.findClausesOverlappingWith(r.circumstances)
                     contradictions += setOf(dissidents + r)
                 },
             ),
@@ -94,18 +86,35 @@ fun asCircumstanceRules(r: SentenceWithCircumstances): List<CircumstanceRule> = 
                 case = { r.sentence generalises q.s && r.circumstances !in unless.keys },
                 then = { unless += (r.circumstances to r) },
             ),
-             // allow any other time
-             CircumstanceRule(
+            // allow any other time
+            CircumstanceRule(
                 case = { r.sentence generalises q.s && CircumstanceMap.empty !in circumstances },
                 then = { circumstances += (CircumstanceMap.empty to r) },
-             ),
+            ),
         )
     }
     Forbid -> when (r.circumstanceAllowance) {
-        Allow -> TODO()
+        Allow -> listOf(
+            // contradiction detection
+            CircumstanceRule(
+                case = {
+                    // any of the allowed set overlap with this mayNot..asLongAs circumstances
+                    r.sentence generalises q.s &&
+                        circumstances.any { it.key overlapsWith r.circumstances } &&
+                        r !in contradictions.flatten()
+                },
+                then = {
+                    val culprits = circumstances.findClausesOverlappingWith(r.circumstances)
+                    contradictions += setOf(culprits + r)
+                },
+            )
+        )
         Forbid -> TODO()
     }
 }
+
+fun CircumstancesToClauses.findClausesOverlappingWith(others: CircumstanceMap): List<Clause> =
+    filter { (circumstance, _) -> circumstance overlapsWith others }.values.toList()
 
 private fun asCircumstanceRules(r: Rule) = when (r.allowance) {
     Allow -> listOf(
