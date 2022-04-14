@@ -20,6 +20,7 @@ import kotlin.time.Duration.Companion.seconds
 class CircumstanceQuestionTest : StringSpec({
 
     val alicePayBob = Sentence(Party("alice"), Action("pay"), Party("bob"))
+    val bobPayAlice = Sentence(Party("bob"), Action("pay"), Party("alice"))
 
     "detects the simplest contradiction".config(timeout = 1.seconds) {
         val a = Agreement {
@@ -178,7 +179,7 @@ class CircumstanceQuestionTest : StringSpec({
             alice mayNot { pay(bob) } asLongAs { with purpose Commercial }
         }
 
-        val r = a.ask(CircumstanceQuestion(alicePayBob)).asOrFail<CircumstanceResult.NotAllowed>()
+        a.ask(CircumstanceQuestion(alicePayBob)).asOrFail<CircumstanceResult.NotAllowed>()
     }
 
     "contradiction detected for forbid-allow" {
@@ -195,5 +196,20 @@ class CircumstanceQuestionTest : StringSpec({
 
         r.contradictions shouldHaveSize 1
         r.contradictions.first() shouldHaveSize 2
+    }
+
+    "rules not hit" {
+        val a = Agreement {
+            val alice by party
+            val bob by party
+            val pay by action
+
+            alice mayNot { pay(bob) } asLongAs { with purpose Commercial }
+            alice may { pay(bob) } asLongAs { with purpose Commercial }
+            alice mayNot { pay(bob) } unless { with purpose Commercial }
+            alice may { pay(bob) } unless { with purpose Commercial }
+        }
+
+        a.ask(CircumstanceQuestion(bobPayAlice)).asOrFail<CircumstanceResult.NotAllowed>()
     }
 })
