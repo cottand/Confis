@@ -135,6 +135,8 @@ val alice by party
 val bob by party
 val pay by action
 
+val may = (1 of May year 2022)..(30 of May year 2022)
+
 alice may { pay(bob) } asLongAs { within { may } }
 alice mayNot { pay(bob) } unless { within { may } }
 ```

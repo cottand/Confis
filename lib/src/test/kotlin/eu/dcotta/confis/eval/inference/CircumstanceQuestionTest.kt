@@ -250,7 +250,7 @@ class CircumstanceQuestionTest : StringSpec({
 
         verifyAgreementForContradiction(a)
 
-        val may = (1 of May year 2022)..(19 of May year 2022)
+        val may = (1 of May year 2022)..(30 of May year 2022)
         val `2022` = (1 of January year 2022)..(30 of December year 2022)
 
         val b = Agreement {
@@ -262,8 +262,22 @@ class CircumstanceQuestionTest : StringSpec({
 
             alice may { pay(bob) } asLongAs { within { may } }
         }
-
         b.ask(CircumstanceQuestion(alicePayBob)).asOrFail<UnderCircumstances>() should {
+            it.circumstances shouldBe setOf(CircumstanceMap.of(may))
+            it.unless shouldBe emptySet()
+        }
+
+        val b2 = Agreement {
+            val alice by party
+            val bob by party
+            val pay by action
+
+            alice mayNot { pay(bob) } unless { within { may } }
+
+            alice may { pay(bob) } asLongAs { within { may } }
+        }
+
+        b2.ask(CircumstanceQuestion(alicePayBob)).asOrFail<UnderCircumstances>() should {
             it.circumstances shouldBe setOf(CircumstanceMap.of(may))
             it.unless shouldBe emptySet()
         }
