@@ -18,5 +18,3 @@ alice mayNot { pay(bob) } asLongAs {
     with purpose Commercial
     alice did { pay(bob) }
 }
-
-

@@ -1,10 +1,16 @@
 package eu.dcotta.confis.eval.inference
 
 import eu.dcotta.confis.asOrFail
+import eu.dcotta.confis.dsl.of
+import eu.dcotta.confis.dsl.year
+import eu.dcotta.confis.eval.inference.CircumstanceResult.UnderCircumstances
 import eu.dcotta.confis.model.Action
 import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.model.CircumstanceMap
 import eu.dcotta.confis.model.Clause
+import eu.dcotta.confis.model.Month.December
+import eu.dcotta.confis.model.Month.January
+import eu.dcotta.confis.model.Month.May
 import eu.dcotta.confis.model.Party
 import eu.dcotta.confis.model.Purpose.Commercial
 import eu.dcotta.confis.model.Purpose.Research
@@ -20,6 +26,7 @@ import kotlin.time.Duration.Companion.seconds
 class CircumstanceQuestionTest : StringSpec({
 
     val alicePayBob = Sentence(Party("alice"), Action("pay"), Party("bob"))
+    val bobPayAlice = Sentence(Party("bob"), Action("pay"), Party("alice"))
 
     "detects the simplest contradiction".config(timeout = 1.seconds) {
         val a = Agreement {
@@ -66,7 +73,7 @@ class CircumstanceQuestionTest : StringSpec({
             bob may { pay(alice) }
         }
 
-        a.ask(CircumstanceQuestion(alicePayBob)) should beOfType<CircumstanceResult.Forbidden>()
+        a.ask(CircumstanceQuestion(alicePayBob)) should beOfType<CircumstanceResult.NotAllowed>()
     }
 
     "circumstance result for rule clauses, not allowed" {
@@ -78,7 +85,7 @@ class CircumstanceQuestionTest : StringSpec({
             alice mayNot { pay(bob) }
         }
 
-        a.ask(CircumstanceQuestion(alicePayBob)) should beOfType<CircumstanceResult.Forbidden>()
+        a.ask(CircumstanceQuestion(alicePayBob)) should beOfType<CircumstanceResult.NotAllowed>()
     }
 
     "circumstance result for circumstance allow-allow" {
@@ -149,7 +156,6 @@ class CircumstanceQuestionTest : StringSpec({
         }
     }
 
-    // TODO FIXME
     "circumstance result for circumstance allow-forbid" {
         val a = Agreement {
             val alice by party
@@ -162,11 +168,130 @@ class CircumstanceQuestionTest : StringSpec({
         val r = a.ask(CircumstanceQuestion(alicePayBob)).asOrFail<CircumstanceResult.UnderCircumstances>()
 
         r.circumstances shouldBe setOf(
-            // CircumstanceMap.empty,
+            CircumstanceMap.empty,
         )
 
-        r.forbidden shouldBe setOf(
+        r.unless shouldBe setOf(
             CircumstanceMap.of(PurposePolicy(Commercial)),
         )
+    }
+
+    "circumstance result for circumstance forbid-allow" {
+        val a = Agreement {
+            val alice by party
+            val bob by party
+            val pay by action
+
+            alice mayNot { pay(bob) } asLongAs { with purpose Commercial }
+        }
+
+        a.ask(CircumstanceQuestion(alicePayBob)).asOrFail<CircumstanceResult.NotAllowed>()
+    }
+
+    "contradiction detected for forbid-allow" {
+        val a = Agreement {
+            val alice by party
+            val bob by party
+            val pay by action
+
+            alice mayNot { pay(bob) } asLongAs { with purpose Commercial }
+            alice may { pay(bob) }
+        }
+
+        val r = a.ask(CircumstanceQuestion(alicePayBob)).asOrFail<CircumstanceResult.Contradictory>()
+
+        r.contradictions shouldHaveSize 1
+        r.contradictions.first() shouldHaveSize 2
+    }
+
+    "rules not hit" {
+        val a = Agreement {
+            val alice by party
+            val bob by party
+            val pay by action
+
+            alice mayNot { pay(bob) } asLongAs { with purpose Commercial }
+            alice may { pay(bob) } asLongAs { with purpose Commercial }
+            alice mayNot { pay(bob) } unless { with purpose Commercial }
+            alice may { pay(bob) } unless { with purpose Commercial }
+        }
+
+        a.ask(CircumstanceQuestion(bobPayAlice)).asOrFail<CircumstanceResult.NotAllowed>()
+    }
+
+    "circumstance result for forbid-forbid" {
+        val a = Agreement {
+            val alice by party
+            val bob by party
+            val pay by action
+
+            alice mayNot { pay(bob) } unless { with purpose Commercial }
+        }
+
+        a.ask(CircumstanceQuestion(alicePayBob)).asOrFail<CircumstanceResult.NotAllowed>()
+    }
+
+    "contradiction detection for forbid-forbid" {
+        fun verifyAgreementForContradiction(a: Agreement) {
+            val r = a.ask(CircumstanceQuestion(alicePayBob)).asOrFail<CircumstanceResult.Contradictory>()
+            r.contradictions shouldHaveSize 1
+            r.contradictions.first() shouldHaveSize 2
+        }
+
+        val a = Agreement {
+            val alice by party
+            val bob by party
+            val pay by action
+
+            alice mayNot { pay(bob) } unless { with purpose Commercial }
+
+            alice may { pay(bob) } unless { with purpose Commercial }
+        }
+
+        verifyAgreementForContradiction(a)
+
+        val may = (1 of May year 2022)..(30 of May year 2022)
+        val `2022` = (1 of January year 2022)..(30 of December year 2022)
+
+        val b = Agreement {
+            val alice by party
+            val bob by party
+            val pay by action
+
+            alice mayNot { pay(bob) } unless { within { `2022` } }
+
+            alice may { pay(bob) } asLongAs { within { may } }
+        }
+        b.ask(CircumstanceQuestion(alicePayBob)).asOrFail<UnderCircumstances>() should {
+            it.circumstances shouldBe setOf(CircumstanceMap.of(may))
+            it.unless shouldBe emptySet()
+        }
+
+        val b2 = Agreement {
+            val alice by party
+            val bob by party
+            val pay by action
+
+            alice mayNot { pay(bob) } unless { within { may } }
+
+            alice may { pay(bob) } asLongAs { within { may } }
+        }
+
+        b2.ask(CircumstanceQuestion(alicePayBob)).asOrFail<UnderCircumstances>() should {
+            it.circumstances shouldBe setOf(CircumstanceMap.of(may))
+            it.unless shouldBe emptySet()
+        }
+
+        val c = Agreement {
+            val alice by party
+            val bob by party
+            val pay by action
+
+            alice mayNot { pay(bob) } unless { within { may } }
+
+            alice may { pay(bob) } asLongAs { within { `2022` } }
+        }
+
+        verifyAgreementForContradiction(c)
     }
 })

@@ -9,6 +9,7 @@ Subject(may | mayNot) { action(thing) } unless | asLongAs {
     circumstance2
 }
 ```
+## Semantics
 
 Allowance has the following semantics:
 
@@ -79,7 +80,7 @@ forbidden from doing so with commercial purposes'.
 This encourages contract authors to be very specific concerning the behaviour they wish to describe,
 and allows contract readers to not need to make assumptions.
 
-For more examples, please see the table below:
+### Examples
 
 <table>
     <thread>
@@ -118,3 +119,26 @@ For more examples, please see the table below:
         </tr>
 </tbody>
 </table>
+
+
+## Examples
+
+### Alice is allowed to pay Bob in May 2022 and only in May 2022
+
+In this example, it is not enough to allow Alice to pay in May, we also want to
+forbid her from paying Bob some other time.
+
+Therefore, we need both a '_may ... asLongAs'_ clause and a _'mayNot ... unless'_ clause.
+
+```kotlin
+val alice by party
+val bob by party
+val pay by action
+
+val may = (1 of May year 2022)..(30 of May year 2022)
+
+alice may { pay(bob) } asLongAs { within { may } }
+alice mayNot { pay(bob) } unless { within { may } }
+```
+
+[//]: # (TODO more examples)
