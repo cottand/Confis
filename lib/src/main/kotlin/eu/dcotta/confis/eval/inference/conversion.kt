@@ -14,8 +14,19 @@ import kotlinx.collections.immutable.plus
 sealed interface CircumstanceResult {
     object Forbidden : CircumstanceResult
     data class UnderCircumstances(
+
+        /**
+         * These are the circumstances unless which the question can be answered,
+         * except the circumstances in [unless].
+         */
         val circumstances: Set<CircumstanceMap>,
-        val forbidden: Set<CircumstanceMap> = emptySet(),
+
+        /**
+         * Under these circumstances, the sentence is _not [allowed][Allow]_. This does not
+         * mean it is [forbidden][Forbid], just that the contract does not explicitly allow the sentence
+         * under circumstances included inside [unless].
+         */
+        val unless: Set<CircumstanceMap> = emptySet(),
     ) : CircumstanceResult
 
     data class Contradictory(val contradictions: Set<List<Clause>>) : CircumstanceResult
@@ -27,7 +38,8 @@ interface CircumstanceContext {
     val q: CircumstanceQuestion
     var circumstances: CircumstancesToClauses
     var contradictions: PersistentSet<List<Clause>>
-    var forbidden: CircumstancesToClauses
+
+    var unless: CircumstancesToClauses
 }
 
 /**
@@ -66,10 +78,10 @@ fun asCircumstanceRules(r: SentenceWithCircumstances): List<CircumstanceRule> = 
             // forbid when circumstances hold
             // contradiction detection
             CircumstanceRule(
-                // if this forbid overlaps with any of the existing allowances
+                // if this forbid overlaps with any of the existing allowances from other rules
                 case = {
                     r.sentence generalises q.s &&
-                        circumstances.keys.any { it overlapsWith r.circumstances } &&
+                        circumstances.entries.any { it.key overlapsWith r.circumstances && it.value != r } &&
                         r !in contradictions.flatten()
                 },
                 then = {
@@ -79,14 +91,14 @@ fun asCircumstanceRules(r: SentenceWithCircumstances): List<CircumstanceRule> = 
             ),
             // add to forbid set
             CircumstanceRule(
-                case = { r.sentence generalises q.s && r.circumstances !in forbidden.keys },
-                then = { forbidden += (r.circumstances to r) },
+                case = { r.sentence generalises q.s && r.circumstances !in unless.keys },
+                then = { unless += (r.circumstances to r) },
             ),
-            // // allow any other time
-            // CircumstanceRule(
-            //    case = { r.sentence generalises q.s && CircumstanceMap.empty !in circumstances },
-            //    then = { circumstances += (CircumstanceMap.empty to r) },
-            // ),
+             // allow any other time
+             CircumstanceRule(
+                case = { r.sentence generalises q.s && CircumstanceMap.empty !in circumstances },
+                then = { circumstances += (CircumstanceMap.empty to r) },
+             ),
         )
     }
     Forbid -> when (r.circumstanceAllowance) {

@@ -22,8 +22,11 @@ value class CircumstanceQuestion(val s: Sentence)
 private class Builder(facts: Facts, q2: CircumstanceQuestion) : CircumstanceContext {
 
     override var circumstances: CircumstancesToClauses by facts with persistentMapOf()
+
     override var contradictions: PersistentSet<List<Clause>> by facts with persistentSetOf()
-    override var forbidden: CircumstancesToClauses by facts with persistentMapOf()
+
+    override var unless: CircumstancesToClauses by facts with persistentMapOf()
+
     override val q by facts with q2
 }
 
@@ -53,7 +56,7 @@ fun Agreement.ask(q: CircumstanceQuestion): CircumstanceResult {
     val result = Builder(facts, q)
     return when {
         result.contradictions.isNotEmpty() -> CircumstanceResult.Contradictory(result.contradictions)
-        result.circumstances.isEmpty() && result.forbidden.isEmpty() -> CircumstanceResult.Forbidden
-        else -> CircumstanceResult.UnderCircumstances(result.circumstances.keys, result.forbidden.keys)
+        result.circumstances.isEmpty() && result.unless.isEmpty() -> CircumstanceResult.Forbidden
+        else -> CircumstanceResult.UnderCircumstances(result.circumstances.keys, result.unless.keys)
     }
 }
