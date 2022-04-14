@@ -109,7 +109,21 @@ fun asCircumstanceRules(r: SentenceWithCircumstances): List<CircumstanceRule> = 
                 },
             )
         )
-        Forbid -> TODO()
+        Forbid -> listOf(
+            // contradiction detection
+            CircumstanceRule(
+                case = {
+                    r.sentence generalises q.s &&
+                        // every existing circumstance should be generalised by the exception clause
+                        circumstances.any { !(r.circumstances generalises it.key) } &&
+                        r !in contradictions.flatten()
+                },
+                then = {
+                    val culprits = circumstances.filterNot { r.circumstances generalises it.key }.values
+                    contradictions += setOf(culprits + r)
+                },
+            )
+        )
     }
 }
 
