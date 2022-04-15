@@ -2,22 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://cottand.github.io/MEngProject/0.0.3/</loc>
-         <lastmod>2022-04-14</lastmod>
+         <lastmod>2022-04-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://cottand.github.io/MEngProject/0.0.3/IDEA%20Plugin/</loc>
-         <lastmod>2022-04-14</lastmod>
+         <loc>https://cottand.github.io/MEngProject/0.0.3/IDE%20Support/IDEAPlugin/</loc>
+         <lastmod>2022-04-15</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://cottand.github.io/MEngProject/0.0.3/IDE%20Support/NativeKotlin/</loc>
+         <lastmod>2022-04-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cottand.github.io/MEngProject/0.0.3/Language/Circumstances/</loc>
-         <lastmod>2022-04-14</lastmod>
+         <lastmod>2022-04-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cottand.github.io/MEngProject/0.0.3/Language/Clauses/</loc>
-         <lastmod>2022-04-14</lastmod>
+         <lastmod>2022-04-15</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
