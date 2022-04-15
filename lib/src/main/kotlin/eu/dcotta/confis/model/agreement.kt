@@ -23,6 +23,14 @@ sealed interface Clause {
         val sentence by rule::sentence
     }
 
+    data class Requirement(val allowance: Allowance, val sentence: Sentence) : Clause {
+        val subject by sentence::subject
+        val obj by sentence::obj
+        val action by sentence::action
+
+        override fun toString() = "Requirement($allowance $sentence)"
+    }
+
     data class Rule(val allowance: Allowance, val sentence: Sentence) : Clause {
         val subject by sentence::subject
         val obj by sentence::obj

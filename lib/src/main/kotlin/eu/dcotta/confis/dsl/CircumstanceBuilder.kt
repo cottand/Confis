@@ -11,7 +11,6 @@ import eu.dcotta.confis.model.Sentence
 import eu.dcotta.confis.model.Subject
 import eu.dcotta.confis.model.TimeRange
 
-@DslMarker
 annotation class CircumstanceDsl
 
 @ConfisDsl

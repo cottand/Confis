@@ -4,6 +4,7 @@ import eu.dcotta.confis.model.Action
 import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.model.Allowance.Allow
 import eu.dcotta.confis.model.Allowance.Forbid
+import eu.dcotta.confis.model.Clause.Requirement
 import eu.dcotta.confis.model.Clause.Rule
 import eu.dcotta.confis.model.Clause.Text
 import eu.dcotta.confis.model.Obj
@@ -27,6 +28,7 @@ open class AgreementBuilder {
         freeTextClauses += Text(this.trimIndent())
     }
 
+    // permission
     /**
      * Specifies that [Subject] may perform [sentence]
      */
@@ -52,6 +54,7 @@ open class AgreementBuilder {
     // overloads for less braces
     @CircumstanceDsl
     infix fun Subject.may(s: ActionObject) = may { s.action(s.obj) }
+
     @CircumstanceDsl
     infix fun Subject.mayNot(s: ActionObject) = mayNot { s.action(s.obj) }
 
@@ -71,6 +74,21 @@ open class AgreementBuilder {
         val b = CircumstanceBuilder(this, Forbid).also(init)
         sentencesWithoutCircumstances.removeLastOccurrence(this)
         clausesWithCircumstances += b
+    }
+
+    // requirement
+
+    @CircumstanceDsl
+    infix fun Subject.must(sentence: SentenceBuilderWithSubject.() -> Sentence): Requirement {
+        val req = Requirement(Allow, sentence(SentenceBuilderWithSubject(this)))
+        TODO()
+    }
+
+    @CircumstanceDsl
+    infix fun Subject.must(s: ActionObject) = must { s.action(s.obj) }
+
+    infix fun Requirement.underCircumstances(init: CircumstanceBuilder.() -> Unit) {
+        TODO()
     }
 
     private fun build(): Agreement = Agreement(

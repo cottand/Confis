@@ -66,6 +66,12 @@ class HostTest : StringSpec({
             .circumstances[TimeRange]
             .shouldBe(Date(1, May, 2022)..Date(13, April, 2023))
     }
+
+    "must clause syntax" {
+        val res = evalFile(File("src/test/resources/scripts/must.confis.kts"))
+
+        if (res !is ResultWithDiagnostics.Success) failAndPrint(res)
+    }
 })
 
 private fun failAndPrint(res: ResultWithDiagnostics<EvaluationResult>): Nothing =
