@@ -19,14 +19,14 @@ theme:
   favicon: favicon.svg
   palette:
     - scheme: default
-      primary: orange
-      accent: orange
+      primary: deep orange
+      accent: teal
       toggle:
         icon: material/weather-sunny
         name: Switch to dark mode
     - scheme: slate
-      primary: orange
-      accent: orange
+      primary: deep orange
+      accent: teal
       toggle:
         icon: material/weather-night
         name: Switch to light mode

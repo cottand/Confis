@@ -1,4 +1,4 @@
-# Index
+# About
 
 **Confis** is a framework for representing legal agreements.
 
