@@ -40,7 +40,7 @@ class PrecedentSentenceTest : StringSpec({
             }
 
             bob may { pay(alice) } asLongAs {
-                alice did { pay(bob) }
+                after { alice did pay(bob) }
             }
         }
 

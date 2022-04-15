@@ -53,12 +53,15 @@ class CircumstanceBuilder(private val rule: Rule, private val circumstanceAllowa
 
     // conditional
 
+    object PastSentenceBuilder {
+        infix fun Subject.did(actionObject: ActionObject) = Sentence(this, actionObject.action, actionObject.obj)
+    }
+
     /**
      * Starts a precedent circumstance, where the [Subject] must have actioned [sentence]
      */
-    infix fun Subject.did(sentence: SentenceBuilder.() -> Sentence) {
-        val s = SentenceBuilder(this).sentence()
-        circumstances += PrecedentSentence(s)
+    fun after(sentence: PastSentenceBuilder.() -> Sentence) {
+        circumstances += PrecedentSentence(sentence(PastSentenceBuilder))
     }
 
     internal fun build(): SentenceWithCircumstances {

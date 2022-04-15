@@ -10,11 +10,11 @@ val pay by action
     accordance with the law of England and Wales.
 """
 
-alice may { pay(bob) } asLongAs {
+alice may pay(bob) asLongAs {
     with purpose Research
+    within { (1 of June)..(7 of June) year 2022 }
 }
 
-alice mayNot { pay(bob) } asLongAs {
-    with purpose Commercial
-    alice did { pay(bob) }
+alice mayNot pay(bob) asLongAs {
+    after { alice did pay(bob) }
 }

@@ -31,8 +31,8 @@ open class AgreementBuilder {
      * Specifies that [Subject] may perform [sentence]
      */
     @CircumstanceDsl
-    infix fun Subject.may(sentence: SentenceBuilder.() -> Sentence): Rule {
-        val rule = Rule(Allow, sentence(SentenceBuilder(this)))
+    infix fun Subject.may(sentence: SentenceBuilderWithSubject.() -> Sentence): Rule {
+        val rule = Rule(Allow, sentence(SentenceBuilderWithSubject(this)))
         sentencesWithoutCircumstances += rule
         return rule
     }
@@ -41,15 +41,22 @@ open class AgreementBuilder {
      * Specifies that [Subject] may not perform [sentence]
      */
     @CircumstanceDsl
-    infix fun Subject.mayNot(sentence: SentenceBuilder.() -> Sentence): Rule {
-        val rule = Rule(Forbid, sentence(SentenceBuilder(this)))
+    infix fun Subject.mayNot(sentence: SentenceBuilderWithSubject.() -> Sentence): Rule {
+        val rule = Rule(Forbid, sentence(SentenceBuilderWithSubject(this)))
         sentencesWithoutCircumstances += rule
         return rule
     }
 
+    operator fun Action.invoke(obj: Obj): ActionObject = ActionObject(this, obj)
+
+    // overloads for less braces
+    @CircumstanceDsl
+    infix fun Subject.may(s: ActionObject) = may { s.action(s.obj) }
+    @CircumstanceDsl
+    infix fun Subject.mayNot(s: ActionObject) = mayNot { s.action(s.obj) }
+
     /**
      * Constrains the previous [Rule] to [init]
-     *
      *
      */
     @CircumstanceDsl
@@ -79,7 +86,8 @@ open class AgreementBuilder {
     }
 
     @ConfisDsl
-    val thing get() = oneTimeProperty<Any?, Obj> { Named(it.name) }
+    val thing
+        get() = oneTimeProperty<Any?, Obj> { Named(it.name) }
 
     @ConfisDsl
     val party
