@@ -4,6 +4,8 @@ import eu.dcotta.confis.model.Allowance.Allow
 import eu.dcotta.confis.model.Allowance.Forbid
 import eu.dcotta.confis.model.AllowanceResult
 import eu.dcotta.confis.model.Clause
+import eu.dcotta.confis.model.Clause.Requirement
+import eu.dcotta.confis.model.Clause.RequirementWithCircumstances
 import eu.dcotta.confis.model.Clause.Rule
 import eu.dcotta.confis.model.Clause.SentenceWithCircumstances
 import eu.dcotta.confis.model.Clause.Text
@@ -20,6 +22,8 @@ fun Clause.asAllowanceRules(): List<AllowanceRule> = when (this) {
     is Rule -> asAllowanceRules(this)
     is SentenceWithCircumstances -> asAllowanceRules(this)
     is Text -> emptyList()
+    is Requirement -> TODO()
+    is RequirementWithCircumstances -> TODO()
 }
 
 // TODO revise if these should really be the semantics but it looks alright

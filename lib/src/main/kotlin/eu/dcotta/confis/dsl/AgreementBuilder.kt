@@ -5,7 +5,9 @@ import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.model.Allowance.Allow
 import eu.dcotta.confis.model.Allowance.Forbid
 import eu.dcotta.confis.model.Clause.Requirement
+import eu.dcotta.confis.model.Clause.RequirementWithCircumstances
 import eu.dcotta.confis.model.Clause.Rule
+import eu.dcotta.confis.model.Clause.SentenceWithCircumstances
 import eu.dcotta.confis.model.Clause.Text
 import eu.dcotta.confis.model.Obj
 import eu.dcotta.confis.model.Obj.Named
@@ -23,10 +25,10 @@ open class AgreementBuilder {
     private val parties = mutableListOf<Party>()
 
     private val sentencesWithoutCircumstances = mutableListOf<Rule>()
-    private val clausesWithCircumstances = mutableListOf<CircumstanceBuilder>()
+    private val clausesWithCircumstances = mutableListOf<SentenceWithCircumstances>()
 
     private val requirements = mutableListOf<Requirement>()
-    private val requirementsWithCircumstances = mutableListOf<CircumstanceBuilder>()
+    private val requirementsWithCircumstances = mutableListOf<RequirementWithCircumstances>()
 
     operator fun String.unaryMinus() {
         freeTextClauses += Text(this.trimIndent())
@@ -68,17 +70,23 @@ open class AgreementBuilder {
      */
     @CircumstanceDsl
     infix fun Rule.asLongAs(init: CircumstanceBuilder.() -> Unit) {
-        val b = CircumstanceBuilder(this, Allow).also(init)
+        val cs = CircumstanceBuilder().also(init).build()
+        val s = SentenceWithCircumstances(this, Allow, cs)
         sentencesWithoutCircumstances.removeLastOccurrence(this)
-        clausesWithCircumstances += b
+        clausesWithCircumstances += s
     }
 
     @CircumstanceDsl
     infix fun Rule.unless(init: CircumstanceBuilder.() -> Unit) {
-        val b = CircumstanceBuilder(this, Forbid).also(init)
+        val cs = CircumstanceBuilder().also(init).build()
+        val s = SentenceWithCircumstances(this, Forbid, cs)
         sentencesWithoutCircumstances.removeLastOccurrence(this)
-        clausesWithCircumstances += b
+        clausesWithCircumstances += s
     }
+    // return when (rule) {
+    //    is Requirement -> RequirementWithCircumstances(rule.sentence, circumstances)
+    //    is Rule -> SentenceWithCircumstances(rule, circumstanceAllowance, circumstances)
+    // }
 
     // requirement
 
@@ -93,13 +101,17 @@ open class AgreementBuilder {
     infix fun Subject.must(s: ActionObject) = must { s.action(s.obj) }
 
     infix fun Requirement.underCircumstances(init: CircumstanceBuilder.() -> Unit) {
-        val c = CircumstanceBuilder(this, Allow).also(init)
+        val cs = CircumstanceBuilder().also(init).build()
         requirements.removeLastOccurrence(this)
-        requirementsWithCircumstances += c
+        requirementsWithCircumstances += RequirementWithCircumstances(sentence, cs)
     }
 
     private fun build(): Agreement = Agreement(
-        clauses = clausesWithCircumstances.map { it.build() } + sentencesWithoutCircumstances + freeTextClauses,
+        clauses = requirements +
+            requirementsWithCircumstances +
+            clausesWithCircumstances +
+            sentencesWithoutCircumstances +
+            freeTextClauses,
         parties = parties
     )
 
