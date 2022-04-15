@@ -20,9 +20,13 @@ import kotlin.properties.ReadOnlyProperty
 open class AgreementBuilder {
 
     private val freeTextClauses = mutableListOf<Text>()
+    private val parties = mutableListOf<Party>()
+
     private val sentencesWithoutCircumstances = mutableListOf<Rule>()
     private val clausesWithCircumstances = mutableListOf<CircumstanceBuilder>()
-    private val parties = mutableListOf<Party>()
+
+    private val requirements = mutableListOf<Requirement>()
+    private val requirementsWithCircumstances = mutableListOf<CircumstanceBuilder>()
 
     operator fun String.unaryMinus() {
         freeTextClauses += Text(this.trimIndent())
@@ -80,15 +84,18 @@ open class AgreementBuilder {
 
     @CircumstanceDsl
     infix fun Subject.must(sentence: SentenceBuilderWithSubject.() -> Sentence): Requirement {
-        val req = Requirement(Allow, sentence(SentenceBuilderWithSubject(this)))
-        TODO()
+        val req = Requirement(sentence(SentenceBuilderWithSubject(this)))
+        requirements += req
+        return req
     }
 
     @CircumstanceDsl
     infix fun Subject.must(s: ActionObject) = must { s.action(s.obj) }
 
     infix fun Requirement.underCircumstances(init: CircumstanceBuilder.() -> Unit) {
-        TODO()
+        val c = CircumstanceBuilder(this, Allow).also(init)
+        requirements.removeLastOccurrence(this)
+        requirementsWithCircumstances += c
     }
 
     private fun build(): Agreement = Agreement(

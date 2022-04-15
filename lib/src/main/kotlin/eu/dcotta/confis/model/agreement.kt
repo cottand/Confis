@@ -11,6 +11,8 @@ data class Agreement(
     }
 }
 
+sealed interface NoCircumstance
+
 sealed interface Clause {
     @JvmInline
     value class Text(val string: String) : Clause
@@ -23,15 +25,20 @@ sealed interface Clause {
         val sentence by rule::sentence
     }
 
-    data class Requirement(val allowance: Allowance, val sentence: Sentence) : Clause {
+    data class RequirementWithCircumstances(
+        val sentence: Sentence,
+        val circumstances: CircumstanceMap,
+    ) : Clause
+
+    data class Requirement(val sentence: Sentence) : Clause, NoCircumstance {
         val subject by sentence::subject
         val obj by sentence::obj
         val action by sentence::action
 
-        override fun toString() = "Requirement($allowance $sentence)"
+        override fun toString() = "Requirement($sentence)"
     }
 
-    data class Rule(val allowance: Allowance, val sentence: Sentence) : Clause {
+    data class Rule(val allowance: Allowance, val sentence: Sentence) : Clause, NoCircumstance {
         val subject by sentence::subject
         val obj by sentence::obj
         val action by sentence::action
