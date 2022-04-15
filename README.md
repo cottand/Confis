@@ -1,4 +1,4 @@
-# Confis
+# ![law](docs/src/doc/docs/pics/law-inline-deep_orange.svg) [Confis](https://confis.dcotta.eu)
 
 **Confis** (In Spanish, slang for _trust_ and short for _confianzas_) is a Domain Specific
 Language (DSL) that allows defining legal agreements in a computer-readable format.

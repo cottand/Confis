@@ -15,8 +15,13 @@ copyright: "Copyright &copy; 2022 Nicolas D'Cotta"
 
 # Material theme
 theme:
+  features:
+    - navigation.sections
   name: 'material'
-  favicon: favicon.svg
+#  favicon: favicon.svg
+  favicon: pics/law-16-deep_orange.svg
+  icon:
+    logo: octicons/law-16
   palette:
     - scheme: default
       primary: deep orange
@@ -36,6 +41,8 @@ theme:
 
 # Extensions
 markdown_extensions:
+  - attr_list
+  - md_in_html
   - admonition
   - codehilite:
       guess_lang: false
