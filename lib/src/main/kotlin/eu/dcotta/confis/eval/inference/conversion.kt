@@ -1,6 +1,5 @@
 package eu.dcotta.confis.eval.inference
 
-import eu.dcotta.confis.eval.ConfisRule
 import eu.dcotta.confis.model.Allowance.Allow
 import eu.dcotta.confis.model.Allowance.Forbid
 import eu.dcotta.confis.model.CircumstanceMap
@@ -13,12 +12,11 @@ import kotlinx.collections.immutable.plus
 
 typealias CircumstancesToClauses = PersistentMap<CircumstanceMap, Clause>
 
-fun Clause.asCircumstanceRules(): List<CircumstanceRule> =
-    when (this) {
-        is Rule -> asCircumstanceRules(this)
-        is SentenceWithCircumstances -> asCircumstanceRules(this)
-        is Text -> emptyList()
-    }
+fun asCircumstanceRules(clause: Clause): List<CircumstanceRule> = when (clause) {
+    is Rule -> asCircumstanceRules(clause)
+    is SentenceWithCircumstances -> asCircumstanceRules(clause)
+    is Text -> emptyList()
+}
 
 fun asCircumstanceRules(r: SentenceWithCircumstances): List<CircumstanceRule> = when (r.rule.allowance) {
     Allow -> when (r.circumstanceAllowance) {

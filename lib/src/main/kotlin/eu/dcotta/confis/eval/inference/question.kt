@@ -10,10 +10,7 @@ import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.persistentSetOf
 import org.jeasy.rules.api.Facts
-import org.jeasy.rules.api.Rules
-import org.jeasy.rules.api.RulesEngineParameters
 import org.jeasy.rules.core.InferenceRulesEngine
-import org.jeasy.rules.core.RuleBuilder
 
 /**
  * Question meant to represent _'Under what circumstances may A do X?'_
@@ -21,15 +18,15 @@ import org.jeasy.rules.core.RuleBuilder
 @JvmInline
 value class CircumstanceQuestion(val s: Sentence)
 
-private class Builder(facts: Facts, q2: CircumstanceQuestion) : CircumstanceContext {
+class CircumstanceContext(facts: Facts, q2: CircumstanceQuestion) {
 
-    override var circumstances: CircumstancesToClauses by facts with persistentMapOf()
+    var circumstances: CircumstancesToClauses by facts with persistentMapOf()
 
-    override var contradictions: PersistentSet<List<Clause>> by facts with persistentSetOf()
+    var contradictions: PersistentSet<List<Clause>> by facts with persistentSetOf()
 
-    override var unless: CircumstancesToClauses by facts with persistentMapOf()
+    var unless: CircumstancesToClauses by facts with persistentMapOf()
 
-    override val q by facts with q2
+    val q by facts with q2
 }
 
 /**
@@ -40,11 +37,11 @@ private class Builder(facts: Facts, q2: CircumstanceQuestion) : CircumstanceCont
 data class CircumstanceRule(
     override val case: CircumstanceContext.() -> Boolean,
     override val then: CircumstanceContext.() -> Unit
-): ConfisRule<CircumstanceContext>
+) : ConfisRule<CircumstanceContext>
 
 fun Agreement.ask(q: CircumstanceQuestion): CircumstanceResult = askEngine(
-    clauseToRule = { it.asCircumstanceRules() },
-    buildContext = { fs -> Builder(fs, q) },
+    clauseToRule = ::asCircumstanceRules,
+    buildContext = { fs -> CircumstanceContext(fs, q) },
     rulesEngine = InferenceRulesEngine(),
     buildResult = { result ->
         when {
