@@ -4,6 +4,8 @@ import eu.dcotta.confis.model.Allowance.Allow
 import eu.dcotta.confis.model.Allowance.Forbid
 import eu.dcotta.confis.model.CircumstanceMap
 import eu.dcotta.confis.model.Clause
+import eu.dcotta.confis.model.Clause.Requirement
+import eu.dcotta.confis.model.Clause.RequirementWithCircumstances
 import eu.dcotta.confis.model.Clause.Rule
 import eu.dcotta.confis.model.Clause.SentenceWithCircumstances
 import eu.dcotta.confis.model.Clause.Text
@@ -54,6 +56,10 @@ fun Clause.asCircumstanceRules(): List<CircumstanceRule> =
         is Rule -> asCircumstanceRules(this)
         is SentenceWithCircumstances -> asCircumstanceRules(this)
         is Text -> emptyList()
+        is Requirement -> asCircumstanceRules(Rule(Allow, sentence))
+        is RequirementWithCircumstances -> asCircumstanceRules(
+            SentenceWithCircumstances(Rule(Allow, sentence), Allow, circumstances)
+        )
     }
 
 fun asCircumstanceRules(r: SentenceWithCircumstances): List<CircumstanceRule> = when (r.rule.allowance) {

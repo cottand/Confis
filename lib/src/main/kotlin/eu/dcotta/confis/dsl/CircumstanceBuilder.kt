@@ -1,9 +1,6 @@
 package eu.dcotta.confis.dsl
 
-import eu.dcotta.confis.model.Allowance
 import eu.dcotta.confis.model.CircumstanceMap
-import eu.dcotta.confis.model.Clause.Rule
-import eu.dcotta.confis.model.Clause.SentenceWithCircumstances
 import eu.dcotta.confis.model.PrecedentSentence
 import eu.dcotta.confis.model.Purpose
 import eu.dcotta.confis.model.PurposePolicy
@@ -11,11 +8,10 @@ import eu.dcotta.confis.model.Sentence
 import eu.dcotta.confis.model.Subject
 import eu.dcotta.confis.model.TimeRange
 
-@DslMarker
 annotation class CircumstanceDsl
 
 @ConfisDsl
-class CircumstanceBuilder(private val rule: Rule, private val circumstanceAllowance: Allowance) {
+class CircumstanceBuilder {
     private val purposePolicies = mutableListOf<Purpose>()
     private var circumstances = CircumstanceMap.empty
 
@@ -64,8 +60,8 @@ class CircumstanceBuilder(private val rule: Rule, private val circumstanceAllowa
         circumstances += PrecedentSentence(sentence(PastSentenceBuilder))
     }
 
-    internal fun build(): SentenceWithCircumstances {
+    internal fun build(): CircumstanceMap {
         if (purposePolicies.isNotEmpty()) circumstances += PurposePolicy(purposePolicies)
-        return SentenceWithCircumstances(rule, circumstanceAllowance, circumstances)
+        return circumstances
     }
 }

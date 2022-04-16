@@ -1,10 +1,13 @@
 package eu.dcotta.confis.dsl
 
+import eu.dcotta.confis.asOrFail
+import eu.dcotta.confis.model.Action
 import eu.dcotta.confis.model.Allowance
 import eu.dcotta.confis.model.Allowance.Allow
 import eu.dcotta.confis.model.Allowance.Forbid
 import eu.dcotta.confis.model.CircumstanceMap
 import eu.dcotta.confis.model.Clause
+import eu.dcotta.confis.model.Obj
 import eu.dcotta.confis.model.Party
 import eu.dcotta.confis.model.Purpose.Commercial
 import eu.dcotta.confis.model.Purpose.Research
@@ -120,5 +123,35 @@ class LicenseTest : StringSpec({
             it.rule.allowance shouldBe Forbid
             it.circumstanceAllowance shouldBe Allow
         }
+    }
+
+    "add descriptions to parties" {
+        val a = AgreementBuilder {
+            val alice by party(description = "Alice in Wonderland")
+        }
+
+        a.parties.firstOrNull() shouldBe Party("alice", "Alice in Wonderland")
+    }
+
+    "add descriptions to actions" {
+        val a = AgreementBuilder {
+            val pay by action(description = "as in pay 10 EUR")
+            val alice by party
+
+            alice may pay(alice)
+        }
+
+        a.clauses.firstOrNull()?.asOrFail<Clause.Rule>()?.action shouldBe Action("pay", "as in pay 10 EUR")
+    }
+
+    "add descriptions to things" {
+        val a = AgreementBuilder {
+            val pay by action
+            val alice by party
+            val money by thing(named = "cash", description = "10€")
+
+            alice may pay(money)
+        }
+        a.clauses.firstOrNull()?.asOrFail<Clause.Rule>()?.obj shouldBe Obj(named = "cash", description = "10€")
     }
 })
