@@ -16,7 +16,6 @@ import eu.dcotta.confis.model.Sentence
 import eu.dcotta.confis.model.Subject
 import eu.dcotta.confis.util.oneTimeProperty
 import eu.dcotta.confis.util.removeLastOccurrence
-import kotlin.properties.ReadOnlyProperty
 
 // @ConfisDsl
 open class AgreementBuilder {
@@ -116,28 +115,30 @@ open class AgreementBuilder {
     )
 
     @ConfisDsl
-    fun party(named: String) = oneTimeProperty<Any?, Party> {
-        val party = Party(named)
+    fun party(named: String? = null, description: String? = null) = oneTimeProperty<Any?, Party> {
+        val party = Party(named ?: it.name, description)
         parties.add(party)
         party
     }
 
     @ConfisDsl
-    val thing
-        get() = oneTimeProperty<Any?, Obj> { Named(it.name) }
+    val party = party()
 
     @ConfisDsl
-    val party
-        get() = oneTimeProperty<Any?, Party> {
-            val party = Party(it.name)
-            parties.add(party)
-            party
-        }
-
-    @Suppress("unused")
-    val action = ReadOnlyProperty<Any?, Action> { _, prop ->
-        Action(prop.name)
+    fun thing(named: String? = null, description: String? = null) = oneTimeProperty<Any?, Named> { prop ->
+        Named(named ?: prop.name, description)
     }
+
+    @ConfisDsl
+    val thing = thing()
+
+    @ConfisDsl
+    fun action(named: String? = null, description: String? = null) = oneTimeProperty<Any?, Action> { prop ->
+        Action(named ?: prop.name, description)
+    }
+
+    @ConfisDsl
+    val action = action()
 
     companion object Builder {
         operator fun invoke(builder: AgreementBuilder.() -> Unit) = AgreementBuilder().apply(builder).build()
