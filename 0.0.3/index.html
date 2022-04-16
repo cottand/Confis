@@ -404,36 +404,8 @@
   
   
     <li class="md-nav__item">
-      <a href="Language/Declarations/" class="md-nav__link">
-        Parties, Things, and Actions
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="Language/PermissionClauses/" class="md-nav__link">
-        Permission Clauses
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="Language/RequirementClauses/" class="md-nav__link">
-        Requirement Clauses
+      <a href="Language/Clauses/" class="md-nav__link">
+        Clauses
       </a>
     </li>
   
@@ -501,16 +473,11 @@
 <p><strong>Confis</strong> is a framework for representing legal agreements.</p>
 <p>It includes its own language to write legal contracts and the ability to ask questions in order to allow parties to figure out their legal capabilities.</p>
 <h2 id="quick-example">Quick example<a class="headerlink" href="#quick-example" title="Permanent link">&para;</a></h2>
-<p>Below is a simple license agreement where <code>alice</code> licenses some data to <code>bob</code> in exchange for a fee of £100, which must be paid sometime in the month of April 2022.</p>
-<p>Additionally, <code>bob</code> may not use the data for commercial purposes.</p>
-<div class="highlight"><span class="filename">License Example</span><pre><span></span><code><span class="kd">val</span> <span class="nv">alice</span> <span class="k">by</span> <span class="n">party</span>
-<span class="kd">val</span> <span class="nv">bob</span> <span class="k">by</span> <span class="n">party</span>
+<div class="highlight"><pre><span></span><code><span class="kd">val</span> <span class="nv">alice</span> <span class="k">by</span> <span class="n">party</span><span class="p">(</span><span class="s">&quot;alice&quot;</span><span class="p">)</span>
 
-<span class="kd">val</span> <span class="nv">payLicenseFeeTo</span> <span class="k">by</span> <span class="n">action</span><span class="p">(</span><span class="s">&quot;Fee of £100&quot;</span><span class="p">)</span>
-<span class="kd">val</span> <span class="nv">use</span> <span class="k">by</span> <span class="n">action</span><span class="p">(</span><span class="s">&quot;Use as in deriving statistics from&quot;</span><span class="p">)</span>
-<span class="kd">val</span> <span class="nv">share</span> <span class="k">by</span> <span class="n">action</span>
+<span class="kd">val</span> <span class="nv">bob</span> <span class="k">by</span> <span class="n">party</span><span class="p">(</span><span class="s">&quot;bob&quot;</span><span class="p">)</span>
 
-<span class="kd">val</span> <span class="nv">data</span> <span class="k">by</span> <span class="n">thing</span>
+<span class="kd">val</span> <span class="nv">pay</span> <span class="k">by</span> <span class="n">action</span>
 
 <span class="c1">// a plaintext clause that we do not wish to try to encode</span>
 <span class="o">-</span><span class="s">&quot;&quot;&quot;</span>
@@ -518,42 +485,14 @@
 <span class="s">    accordance with the law of England and Wales.</span>
 <span class="s">&quot;&quot;&quot;</span>
 
-
-<span class="n">bob</span> <span class="n">must</span> <span class="n">payLicenseFeeTo</span><span class="p">(</span><span class="n">alice</span><span class="p">)</span> <span class="n">underCircumstances</span> <span class="p">{</span>
-    <span class="n">within</span> <span class="p">{</span> <span class="p">(</span><span class="m">1</span> <span class="n">of</span> <span class="n">April</span><span class="p">)..(</span><span class="m">30</span> <span class="n">of</span> <span class="n">April</span><span class="p">)</span> <span class="n">year</span> <span class="m">2022</span> <span class="p">}</span>
+<span class="n">alice</span> <span class="n">may</span> <span class="p">{</span> <span class="n">pay</span><span class="p">(</span><span class="n">bob</span><span class="p">)</span> <span class="p">}</span> <span class="n">asLongAs</span> <span class="p">{</span>
+    <span class="n">with</span> <span class="n">purpose</span> <span class="p">(</span><span class="n">Research</span><span class="p">)</span>
 <span class="p">}</span>
 
-<span class="n">alice</span> <span class="n">must</span> <span class="n">share</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="n">asLongAs</span> <span class="p">{</span>
-    <span class="n">after</span> <span class="p">{</span> <span class="n">bob</span> <span class="n">did</span> <span class="n">payLicenseFeeTo</span><span class="p">(</span><span class="n">alice</span><span class="p">)</span> <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="n">bob</span> <span class="n">may</span> <span class="n">use</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="n">asLongAs</span> <span class="p">{</span>
-    <span class="n">after</span> <span class="p">{</span> <span class="n">bob</span> <span class="n">did</span> <span class="n">payLicenseFeeTo</span><span class="p">(</span><span class="n">alice</span><span class="p">)</span> <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="n">bob</span> <span class="n">mayNot</span> <span class="n">use</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="n">asLongAs</span> <span class="p">{</span>
+<span class="n">alice</span> <span class="n">mayNot</span> <span class="p">{</span> <span class="n">pay</span><span class="p">(</span><span class="n">bob</span><span class="p">)</span> <span class="p">}</span> <span class="n">asLongAs</span> <span class="p">{</span>
     <span class="n">with</span> <span class="n">purpose</span> <span class="n">Commercial</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>This example of a license highlights the following:</p>
-<ul>
-<li>
-<p>Defining <a href="Language/Declarations/#parties">Parties</a> (<code>bob</code> and <code>alice</code>)</p>
-</li>
-<li>
-<p>Defining <a href="Language/Declarations/#actions">Actions</a> the Parties can make (here <code>use</code>, <code>share</code>, and <code>payLicenseFeeTo</code>)</p>
-</li>
-<li>
-<p>Defining <a href="Language/Declarations/#things">Things</a> that Actions can be performed on (<code>data</code>).</p>
-</li>
-<li>
-<p><a href="Language/PermissionClauses/">Permissions</a>, which allow limiting the space within which parties are allowed to operate.
-If a party does not operate within this space, we can say they are <em>non-compliant</em>.</p>
-</li>
-<li>
-<p><a href="Language/RequirementClauses/">Requirements</a>, which allow adding further constraints to what a party must do in order to remain <em>compliant</em>.</p>
-</li>
-</ul>
 
               
             </article>
