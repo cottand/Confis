@@ -1,24 +1,22 @@
 package eu.dcotta.confis.eval.allowance
 
+import eu.dcotta.confis.eval.ConfisRule
 import eu.dcotta.confis.model.Allowance.Allow
 import eu.dcotta.confis.model.Allowance.Forbid
-import eu.dcotta.confis.model.AllowanceResult
 import eu.dcotta.confis.model.Clause
 import eu.dcotta.confis.model.Clause.Rule
 import eu.dcotta.confis.model.Clause.SentenceWithCircumstances
 import eu.dcotta.confis.model.Clause.Text
 import eu.dcotta.confis.model.computeAmbiguous
 
-interface AllowanceContext {
-    val q: AllowanceQuestion
-    var result: AllowanceResult
-}
+data class AllowanceRule(
+    override val case: AllowanceContext.() -> Boolean,
+    override val then: AllowanceContext.() -> Unit,
+) : ConfisRule<AllowanceContext>
 
-data class AllowanceRule(val case: AllowanceContext.() -> Boolean, val then: AllowanceContext.() -> Unit)
-
-fun Clause.asAllowanceRules(): List<AllowanceRule> = when (this) {
-    is Rule -> asAllowanceRules(this)
-    is SentenceWithCircumstances -> asAllowanceRules(this)
+fun asAllowanceRules(clause: Clause): List<AllowanceRule> = when (clause) {
+    is Rule -> asAllowanceRules(clause)
+    is SentenceWithCircumstances -> asAllowanceRules(clause)
     is Text -> emptyList()
 }
 
