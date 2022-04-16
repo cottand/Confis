@@ -21,7 +21,17 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://cottand.github.io/MEngProject/0.0.3/Language/Clauses/</loc>
+         <loc>https://cottand.github.io/MEngProject/0.0.3/Language/Declarations/</loc>
+         <lastmod>2022-04-16</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://cottand.github.io/MEngProject/0.0.3/Language/PermissionClauses/</loc>
+         <lastmod>2022-04-16</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://cottand.github.io/MEngProject/0.0.3/Language/RequirementClauses/</loc>
          <lastmod>2022-04-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
