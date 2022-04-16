@@ -1,5 +1,6 @@
 package eu.dcotta.confis.eval.inference
 
+import eu.dcotta.confis.eval.ConfisRule
 import eu.dcotta.confis.model.Allowance.Allow
 import eu.dcotta.confis.model.Allowance.Forbid
 import eu.dcotta.confis.model.CircumstanceMap
@@ -8,46 +9,9 @@ import eu.dcotta.confis.model.Clause.Rule
 import eu.dcotta.confis.model.Clause.SentenceWithCircumstances
 import eu.dcotta.confis.model.Clause.Text
 import kotlinx.collections.immutable.PersistentMap
-import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.plus
 
-sealed interface CircumstanceResult {
-    object NotAllowed : CircumstanceResult
-    data class UnderCircumstances(
-
-        /**
-         * These are the circumstances unless which the question can be answered,
-         * except the circumstances in [unless].
-         */
-        val circumstances: Set<CircumstanceMap>,
-
-        /**
-         * Under these circumstances, the sentence is _not [allowed][Allow]_. This does not
-         * mean it is [forbidden][Forbid], just that the contract does not explicitly allow the sentence
-         * under circumstances included inside [unless].
-         */
-        val unless: Set<CircumstanceMap> = emptySet(),
-    ) : CircumstanceResult
-
-    data class Contradictory(val contradictions: Set<List<Clause>>) : CircumstanceResult
-}
-
 typealias CircumstancesToClauses = PersistentMap<CircumstanceMap, Clause>
-
-interface CircumstanceContext {
-    val q: CircumstanceQuestion
-    var circumstances: CircumstancesToClauses
-    var contradictions: PersistentSet<List<Clause>>
-
-    var unless: CircumstancesToClauses
-}
-
-/**
- * Unlike allowance rules, a [CircumstanceRule] should
- * - **match when there are circumstances to add** to be able to perform the action
- * - **then add the new required circumstances** to the result
- */
-data class CircumstanceRule(val case: CircumstanceContext.() -> Boolean, val then: CircumstanceContext.() -> Unit)
 
 fun Clause.asCircumstanceRules(): List<CircumstanceRule> =
     when (this) {

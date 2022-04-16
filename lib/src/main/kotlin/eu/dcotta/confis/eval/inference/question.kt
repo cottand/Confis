@@ -1,5 +1,7 @@
 package eu.dcotta.confis.eval.inference
 
+import eu.dcotta.confis.eval.ConfisRule
+import eu.dcotta.confis.eval.askEngine
 import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.model.Clause
 import eu.dcotta.confis.model.Sentence
@@ -30,33 +32,25 @@ private class Builder(facts: Facts, q2: CircumstanceQuestion) : CircumstanceCont
     override val q by facts with q2
 }
 
-fun Agreement.ask(q: CircumstanceQuestion): CircumstanceResult {
-    val rs = clauses.flatMap { c -> c.asCircumstanceRules().map { r -> c to r } }
-        .mapIndexed { index, (clause, confisRule) ->
-            RuleBuilder()
-                .name("${clause::class.simpleName}#$index")
-                .description(clause.toString())
-                // rules have ordering as written in the contract - later -> higher priority (low number)
-                .priority(-index)
-                .`when` { fs -> confisRule.case(Builder(fs, q)) }
-                .then { fs -> confisRule.then(Builder(fs, q)) }
-                .build()
+/**
+ * Unlike allowance rules, a [CircumstanceRule] should
+ * - **match when there are circumstances to add** to be able to perform the action
+ * - **then add the new required circumstances** to the result
+ */
+data class CircumstanceRule(
+    override val case: CircumstanceContext.() -> Boolean,
+    override val then: CircumstanceContext.() -> Unit
+): ConfisRule<CircumstanceContext>
+
+fun Agreement.ask(q: CircumstanceQuestion): CircumstanceResult = askEngine(
+    clauseToRule = { it.asCircumstanceRules() },
+    buildContext = { fs -> Builder(fs, q) },
+    rulesEngine = InferenceRulesEngine(),
+    buildResult = { result ->
+        when {
+            result.contradictions.isNotEmpty() -> CircumstanceResult.Contradictory(result.contradictions)
+            result.circumstances.isEmpty() && result.unless.isEmpty() -> CircumstanceResult.NotAllowed
+            else -> CircumstanceResult.UnderCircumstances(result.circumstances.keys, result.unless.keys)
         }
-        .toSet()
-        .let(::Rules)
-
-    val facts = Facts()
-
-    val options = RulesEngineParameters().apply {
-        isSkipOnFirstFailedRule = false
     }
-
-    InferenceRulesEngine(options).fire(rs, facts)
-
-    val result = Builder(facts, q)
-    return when {
-        result.contradictions.isNotEmpty() -> CircumstanceResult.Contradictory(result.contradictions)
-        result.circumstances.isEmpty() && result.unless.isEmpty() -> CircumstanceResult.NotAllowed
-        else -> CircumstanceResult.UnderCircumstances(result.circumstances.keys, result.unless.keys)
-    }
-}
+)
