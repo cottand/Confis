@@ -6,12 +6,11 @@ import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.model.Circumstance
 import eu.dcotta.confis.model.CircumstanceMap
 import eu.dcotta.confis.model.Clause
-import eu.dcotta.confis.model.Sentence
 import eu.dcotta.confis.util.with
 import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.PersistentMap
+import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.collections.immutable.persistentSetOf
 import org.jeasy.rules.api.Facts
 
 fun Agreement.ask(q: ComplianceQuestion): ComplianceResult = askEngine(
@@ -34,13 +33,13 @@ value class ComplianceQuestion(val cs: CircumstanceMap) {
     constructor(vararg circumstances: Circumstance) : this(CircumstanceMap.of(*circumstances))
 }
 
-class ComplianceContext(facts: Facts, q2: ComplianceQuestion) {
+internal class ComplianceContext(facts: Facts, q2: ComplianceQuestion) {
     val q by facts with q2
-    val required: PersistentMap<Sentence, Set<CircumstanceMap>> by facts with persistentMapOf()
-    val breached: PersistentList<Clause> by facts with persistentListOf()
+    var required: PersistentSet<CircumstanceMap> by facts with persistentSetOf()
+    var breached: PersistentList<Clause> by facts with persistentListOf()
 }
 
-class ComplianceRule(
+internal class ComplianceRule(
     override val case: ComplianceContext.() -> Boolean,
     override val then: ComplianceContext.() -> Unit,
 ) : ConfisRule<ComplianceContext>

@@ -6,11 +6,12 @@ package eu.dcotta.confis.model
  */
 data class PrecedentSentence(val sentence: Sentence) : Circumstance {
 
-    override val key get() = Key
+    override val key get() = Key(sentence)
 
     override fun generalises(other: Circumstance) = other is PrecedentSentence && sentence generalises other.sentence
 
     override fun toString() = "PrecedentSentence($sentence)"
 
-    companion object Key : Circumstance.Key<PrecedentSentence>
+    @JvmInline
+    value class Key(val sentence: Sentence) : Circumstance.Key<PrecedentSentence>
 }

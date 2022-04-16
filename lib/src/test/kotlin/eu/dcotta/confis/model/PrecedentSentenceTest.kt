@@ -20,10 +20,18 @@ class PrecedentSentenceTest : StringSpec({
     val date = 1 of August year 2022
     val onAugust = CircumstanceMap.of(date..date)
     val afterAlicePaidBob = CircumstanceMap.of(PrecedentSentence(alicePaysBob))
+    val afterbobPaidAlice = CircumstanceMap.of(PrecedentSentence(bobPaysAlice))
 
     "a precedent sentence circumstance is generalises no precedents" {
         (CircumstanceMap.empty generalises afterAlicePaidBob) shouldBe true
         (afterAlicePaidBob generalises afterAlicePaidBob) shouldBe true
+    }
+
+    "can have 2 precendent sentences in a circumstance map" {
+        val map = afterbobPaidAlice + afterAlicePaidBob
+
+        map.overlapsWith(afterbobPaidAlice) shouldBe true
+        map.overlapsWith(afterAlicePaidBob) shouldBe true
     }
 
     "can write agreements with precedent sentences" {

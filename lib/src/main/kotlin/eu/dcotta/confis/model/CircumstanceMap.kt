@@ -31,6 +31,9 @@ class CircumstanceMap private constructor(
 
     fun generalises(key: Key<*>) = key in map
 
+    infix fun generalises(circumstance: Circumstance): Boolean =
+        get(circumstance.key)?.generalises(circumstance) ?: true
+
     /**
      * This [CircumstanceMap] generalises [otherCircumstances] when for every [Circumstance] `c` in this,
      * `c` generalises the [Circumstance] of the same type inside [otherCircumstances].
@@ -54,9 +57,8 @@ class CircumstanceMap private constructor(
         val otherMap = other.map
 
         return otherMap.isEmpty() || isEmpty() ||
-            otherMap.keys.containsAll(map.keys) &&
             map.entries.any { (thisKey, thisCircumstance) ->
-                val otherCircumstance = otherMap[thisKey] ?: error("Concurrent access error")
+                val otherCircumstance = otherMap[thisKey] ?: return@any false
 
                 !(thisCircumstance disjoint otherCircumstance)
             }
