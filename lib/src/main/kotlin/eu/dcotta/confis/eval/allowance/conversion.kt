@@ -22,8 +22,10 @@ fun Clause.asAllowanceRules(): List<AllowanceRule> = when (this) {
     is Rule -> asAllowanceRules(this)
     is SentenceWithCircumstances -> asAllowanceRules(this)
     is Text -> emptyList()
-    is Requirement -> TODO()
-    is RequirementWithCircumstances -> TODO()
+    // as far as allowance is concerned, requirement clauses are like permission clauses
+    is Requirement -> asAllowanceRules(Rule(Allow, sentence))
+    is RequirementWithCircumstances ->
+        asAllowanceRules(SentenceWithCircumstances(Rule(Allow, sentence), Allow, circumstances))
 }
 
 // TODO revise if these should really be the semantics but it looks alright

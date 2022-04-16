@@ -5,11 +5,9 @@ import eu.dcotta.confis.dsl.AgreementBuilder
 data class Agreement(
     val clauses: List<Clause>,
     val parties: List<Party>,
-) {
-    companion object {
-        operator fun invoke(builder: AgreementBuilder.() -> Unit): Agreement = AgreementBuilder(builder)
-    }
-}
+)
+
+fun Agreement(builder: AgreementBuilder.() -> Unit): Agreement = AgreementBuilder(builder)
 
 sealed interface NoCircumstance
 

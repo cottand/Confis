@@ -56,8 +56,10 @@ fun Clause.asCircumstanceRules(): List<CircumstanceRule> =
         is Rule -> asCircumstanceRules(this)
         is SentenceWithCircumstances -> asCircumstanceRules(this)
         is Text -> emptyList()
-        is Requirement -> TODO()
-        is RequirementWithCircumstances -> TODO()
+        is Requirement -> asCircumstanceRules(Rule(Allow, sentence))
+        is RequirementWithCircumstances -> asCircumstanceRules(
+            SentenceWithCircumstances(Rule(Allow, sentence), Allow, circumstances)
+        )
     }
 
 fun asCircumstanceRules(r: SentenceWithCircumstances): List<CircumstanceRule> = when (r.rule.allowance) {
