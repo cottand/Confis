@@ -1,5 +1,12 @@
 # ![law](docs/src/doc/docs/pics/law-inline-deep_orange.svg) [Confis](https://confis.dcotta.eu)
 
+[![Check](https://github.com/Cottand/Confis/actions/workflows/main.yml/badge.svg)](https://github.com/Cottand/Confis/actions/workflows/main.yml)
+[![Publish Docs](https://github.com/Cottand/Confis/actions/workflows/pages.yml/badge.svg)](https://github.com/Cottand/Confis/actions/workflows/pages.yml)
+[![codecov](https://codecov.io/gh/Cottand/Confis/branch/master/graph/badge.svg?token=D3GWOO1UKF)](https://codecov.io/gh/Cottand/Confis)
+[![Documentation](https://img.shields.io/static/v1?label=docs&message=exist&logo=markdown&color=orange)](https://confis.dcotta.eu)
+
+
+
 **Confis** (In Spanish, slang for _trust_ and short for _confianzas_) is a Domain Specific
 Language (DSL) that allows defining legal agreements in a computer-readable format.
 
