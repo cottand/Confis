@@ -4,6 +4,8 @@ import eu.dcotta.confis.eval.ConfisRule
 import eu.dcotta.confis.model.Allowance.Allow
 import eu.dcotta.confis.model.Allowance.Forbid
 import eu.dcotta.confis.model.Clause
+import eu.dcotta.confis.model.Clause.Requirement
+import eu.dcotta.confis.model.Clause.RequirementWithCircumstances
 import eu.dcotta.confis.model.Clause.Rule
 import eu.dcotta.confis.model.Clause.SentenceWithCircumstances
 import eu.dcotta.confis.model.Clause.Text
@@ -18,6 +20,10 @@ fun asAllowanceRules(clause: Clause): List<AllowanceRule> = when (clause) {
     is Rule -> asAllowanceRules(clause)
     is SentenceWithCircumstances -> asAllowanceRules(clause)
     is Text -> emptyList()
+    // as far as allowance is concerned, requirement clauses are like permission clauses
+    is Requirement -> asAllowanceRules(Rule(Allow, clause.sentence))
+    is RequirementWithCircumstances ->
+        asAllowanceRules(SentenceWithCircumstances(Rule(Allow, clause.sentence), Allow, clause.circumstances))
 }
 
 // TODO revise if these should really be the semantics but it looks alright

@@ -1,17 +1,35 @@
-# Clauses
+# Permission Clauses
 
-Clauses have the following grammar:
+It is common in legal agreement to restrict the things a party is (or is not) allowed to do.
+In order to specify these, Confis uses **Permission clauses**, which combine `may` or `mayNot` with some circumstances, optionally specified by `asLongAs` or `unless`.
+
+We can say a party is compliant (as far as permission clauses go) with the agreement **when they only do the things they have permission to do**. For more ways to define compliance, see [Requirement Clauses](RequirementClauses.md).
+
+A typical requirement clause looks as follows:
+```kotlin
+// specifies that alice may only pay bob during the first week of June and with
+// research purposes
+alice may { pay(bob) } asLongAs { 
+    with purpose Research
+    within { (1 of June)..(7 of June) year 2022 }
+}
+```
+
+## Syntax
+Permission clauses have the following grammar:
 
 ```kotlin
-
-Subject(may | mayNot) { action(thing) } unless | asLongAs {
+subject may/mayNot action(thing)
+// or
+subject may/mayNot action(thing) unless/asLongAs {
     circumstance1
-    circumstance2
+    ...
+    circumstanceN
 }
 ```
 ## Semantics
 
-Allowance has the following semantics:
+Permission has the following semantics:
 
 There are 4 possible results to a _"Can this happen"_ question: `Allow`, `Forbid`, `Unspecified` (
 the agreement just does not say) or `Depends` (circumstances are too general for a specific answer)
@@ -123,7 +141,7 @@ and allows contract readers to not need to make assumptions.
 
 ## Examples
 
-### Alice is allowed to pay Bob in May 2022 and only in May 2022
+### Alice has permission to pay Bob in May 2022 and only in May 2022
 
 In this example, it is not enough to allow Alice to pay in May, we also want to
 forbid her from paying Bob some other time.

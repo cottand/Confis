@@ -294,4 +294,35 @@ class CircumstanceQuestionTest : StringSpec({
 
         verifyAgreementForContradiction(c)
     }
+
+    "requirement clauses are equivalent to allow-allow clauses" {
+        val a = Agreement {
+            val alice by party
+            val bob by party
+            val pay by action
+
+            alice must pay(bob)
+        }
+
+        a.ask(CircumstanceQuestion(alicePayBob)).asOrFail<UnderCircumstances>() should {
+            it.circumstances shouldBe setOf(CircumstanceMap.empty)
+            it.unless shouldBe emptySet()
+        }
+
+        val may = (1 of May year 2022)..(30 of May year 2022)
+        val b = Agreement {
+            val alice by party
+            val bob by party
+            val pay by action
+
+            alice must pay(bob) underCircumstances {
+                within { may }
+            }
+        }
+
+        b.ask(CircumstanceQuestion(alicePayBob)).asOrFail<UnderCircumstances>() should {
+            it.circumstances shouldBe setOf(CircumstanceMap.of(may))
+            it.unless shouldBe emptySet()
+        }
+    }
 })

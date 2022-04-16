@@ -4,7 +4,10 @@ import eu.dcotta.confis.model.Action
 import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.model.Allowance.Allow
 import eu.dcotta.confis.model.Allowance.Forbid
+import eu.dcotta.confis.model.Clause.Requirement
+import eu.dcotta.confis.model.Clause.RequirementWithCircumstances
 import eu.dcotta.confis.model.Clause.Rule
+import eu.dcotta.confis.model.Clause.SentenceWithCircumstances
 import eu.dcotta.confis.model.Clause.Text
 import eu.dcotta.confis.model.Obj
 import eu.dcotta.confis.model.Obj.Named
@@ -13,20 +16,24 @@ import eu.dcotta.confis.model.Sentence
 import eu.dcotta.confis.model.Subject
 import eu.dcotta.confis.util.oneTimeProperty
 import eu.dcotta.confis.util.removeLastOccurrence
-import kotlin.properties.ReadOnlyProperty
 
 // @ConfisDsl
 open class AgreementBuilder {
 
     private val freeTextClauses = mutableListOf<Text>()
-    private val sentencesWithoutCircumstances = mutableListOf<Rule>()
-    private val clausesWithCircumstances = mutableListOf<CircumstanceBuilder>()
     private val parties = mutableListOf<Party>()
+
+    private val sentencesWithoutCircumstances = mutableListOf<Rule>()
+    private val clausesWithCircumstances = mutableListOf<SentenceWithCircumstances>()
+
+    private val requirements = mutableListOf<Requirement>()
+    private val requirementsWithCircumstances = mutableListOf<RequirementWithCircumstances>()
 
     operator fun String.unaryMinus() {
         freeTextClauses += Text(this.trimIndent())
     }
 
+    // permission
     /**
      * Specifies that [Subject] may perform [sentence]
      */
@@ -52,6 +59,7 @@ open class AgreementBuilder {
     // overloads for less braces
     @CircumstanceDsl
     infix fun Subject.may(s: ActionObject) = may { s.action(s.obj) }
+
     @CircumstanceDsl
     infix fun Subject.mayNot(s: ActionObject) = mayNot { s.action(s.obj) }
 
@@ -61,46 +69,76 @@ open class AgreementBuilder {
      */
     @CircumstanceDsl
     infix fun Rule.asLongAs(init: CircumstanceBuilder.() -> Unit) {
-        val b = CircumstanceBuilder(this, Allow).also(init)
+        val cs = CircumstanceBuilder().also(init).build()
+        val s = SentenceWithCircumstances(this, Allow, cs)
         sentencesWithoutCircumstances.removeLastOccurrence(this)
-        clausesWithCircumstances += b
+        clausesWithCircumstances += s
     }
 
     @CircumstanceDsl
     infix fun Rule.unless(init: CircumstanceBuilder.() -> Unit) {
-        val b = CircumstanceBuilder(this, Forbid).also(init)
+        val cs = CircumstanceBuilder().also(init).build()
+        val s = SentenceWithCircumstances(this, Forbid, cs)
         sentencesWithoutCircumstances.removeLastOccurrence(this)
-        clausesWithCircumstances += b
+        clausesWithCircumstances += s
+    }
+    // return when (rule) {
+    //    is Requirement -> RequirementWithCircumstances(rule.sentence, circumstances)
+    //    is Rule -> SentenceWithCircumstances(rule, circumstanceAllowance, circumstances)
+    // }
+
+    // requirement
+
+    @CircumstanceDsl
+    infix fun Subject.must(sentence: SentenceBuilderWithSubject.() -> Sentence): Requirement {
+        val req = Requirement(sentence(SentenceBuilderWithSubject(this)))
+        requirements += req
+        return req
+    }
+
+    @CircumstanceDsl
+    infix fun Subject.must(s: ActionObject) = must { s.action(s.obj) }
+
+    infix fun Requirement.underCircumstances(init: CircumstanceBuilder.() -> Unit) {
+        val cs = CircumstanceBuilder().also(init).build()
+        requirements.removeLastOccurrence(this)
+        requirementsWithCircumstances += RequirementWithCircumstances(sentence, cs)
     }
 
     private fun build(): Agreement = Agreement(
-        clauses = clausesWithCircumstances.map { it.build() } + sentencesWithoutCircumstances + freeTextClauses,
+        clauses = requirements +
+            requirementsWithCircumstances +
+            clausesWithCircumstances +
+            sentencesWithoutCircumstances +
+            freeTextClauses,
         parties = parties
     )
 
     @ConfisDsl
-    fun party(named: String) = oneTimeProperty<Any?, Party> {
-        val party = Party(named)
+    fun party(named: String? = null, description: String? = null) = oneTimeProperty<Any?, Party> {
+        val party = Party(named ?: it.name, description)
         parties.add(party)
         party
     }
 
     @ConfisDsl
-    val thing
-        get() = oneTimeProperty<Any?, Obj> { Named(it.name) }
+    val party = party()
 
     @ConfisDsl
-    val party
-        get() = oneTimeProperty<Any?, Party> {
-            val party = Party(it.name)
-            parties.add(party)
-            party
-        }
-
-    @Suppress("unused")
-    val action = ReadOnlyProperty<Any?, Action> { _, prop ->
-        Action(prop.name)
+    fun thing(named: String? = null, description: String? = null) = oneTimeProperty<Any?, Named> { prop ->
+        Named(named ?: prop.name, description)
     }
+
+    @ConfisDsl
+    val thing = thing()
+
+    @ConfisDsl
+    fun action(named: String? = null, description: String? = null) = oneTimeProperty<Any?, Action> { prop ->
+        Action(named ?: prop.name, description)
+    }
+
+    @ConfisDsl
+    val action = action()
 
     companion object Builder {
         operator fun invoke(builder: AgreementBuilder.() -> Unit) = AgreementBuilder().apply(builder).build()

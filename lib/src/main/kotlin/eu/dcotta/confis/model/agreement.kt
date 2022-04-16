@@ -5,11 +5,11 @@ import eu.dcotta.confis.dsl.AgreementBuilder
 data class Agreement(
     val clauses: List<Clause>,
     val parties: List<Party>,
-) {
-    companion object {
-        operator fun invoke(builder: AgreementBuilder.() -> Unit): Agreement = AgreementBuilder(builder)
-    }
-}
+)
+
+fun Agreement(builder: AgreementBuilder.() -> Unit): Agreement = AgreementBuilder(builder)
+
+sealed interface NoCircumstance
 
 sealed interface Clause {
     @JvmInline
@@ -23,7 +23,20 @@ sealed interface Clause {
         val sentence by rule::sentence
     }
 
-    data class Rule(val allowance: Allowance, val sentence: Sentence) : Clause {
+    data class RequirementWithCircumstances(
+        val sentence: Sentence,
+        val circumstances: CircumstanceMap,
+    ) : Clause
+
+    data class Requirement(val sentence: Sentence) : Clause, NoCircumstance {
+        val subject by sentence::subject
+        val obj by sentence::obj
+        val action by sentence::action
+
+        override fun toString() = "Requirement($sentence)"
+    }
+
+    data class Rule(val allowance: Allowance, val sentence: Sentence) : Clause, NoCircumstance {
         val subject by sentence::subject
         val obj by sentence::obj
         val action by sentence::action

@@ -43,25 +43,29 @@ fun mostPermissive(left: AllowanceResult, other: AllowanceResult): AllowanceResu
 fun computeAmbiguous(l: AllowanceResult, r: AllowanceResult) = if (l == r) l else Depends
 
 interface Obj {
-    data class Named(val name: String) : Obj {
-        override fun toString() = "Obj($name)"
+    class Named(val name: String, val description: String? = null) : Obj {
+        override fun toString() = "Obj($name ${description ?: ""})"
+        override fun equals(other: Any?) = other === this || other is Named && name == other.name
+        override fun hashCode(): Int = name.hashCode() * 7
     }
 
     object Anything : Obj
-
-    companion object {
-        operator fun invoke(name: String) = Named(name)
-    }
 }
+
+fun Obj(named: String, description: String? = null) = Obj.Named(named, description)
 
 interface Subject
 
-data class Action(val name: String) {
-    override fun toString() = "Action($name)"
+class Action(val name: String, val description: String? = null) {
+    override fun toString() = "Action($name ${description ?: ""})"
+    override fun equals(other: Any?) = other === this || other is Action && name == other.name
+    override fun hashCode(): Int = name.hashCode() * 71
 }
 
-data class Party(val name: String) : Subject, Obj {
-    override fun toString() = "Party($name)"
+class Party(val name: String, val description: String? = null) : Subject, Obj {
+    override fun toString() = "Party($name ${description ?: ""})"
+    override fun equals(other: Any?) = other === this || other is Party && name == other.name
+    override fun hashCode(): Int = name.hashCode() * 71
 }
 
 data class Sentence(val subject: Subject, val action: Action, val obj: Obj) {

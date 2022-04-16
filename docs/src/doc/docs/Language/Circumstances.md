@@ -1,7 +1,7 @@
 # Circumstances
 
 Circumstances allow narrowing down when exactly a
-[clause](Clauses.md) applies. There are several types of cirtcumstances:
+[clause](PermissionClauses.md) applies. There are several types of cirtcumstances:
 
 ## Purpose
 
@@ -15,7 +15,7 @@ alice may { see(data) } asLongAs {
 
 ...states that `alice` is _Allowed_ to`see` the `data`, under the circumstance of having `Research` purposes.
 
-If the circumstance is not `Research`, then the answer to 'May Alice see the data?' will be `Unspecified`. See [Clauses](Clauses.md) for more details.
+If the circumstance is not `Research`, then the answer to 'May Alice see the data?' will be `Unspecified`. See [Clauses](PermissionClauses.md) for more details.
 
 ## Time Periods
 Meant to restrict a clause to acting within a specific time period. For example:

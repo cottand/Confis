@@ -1,13 +1,16 @@
-package eu.dcotta.confis.eval
+package eu.dcotta.confis.eval.allowance
 
-import eu.dcotta.confis.eval.allowance.AllowanceQuestion
-import eu.dcotta.confis.eval.allowance.ask
+import eu.dcotta.confis.dsl.of
+import eu.dcotta.confis.dsl.year
+import eu.dcotta.confis.eval.inference.ask
 import eu.dcotta.confis.model.Action
 import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.model.AllowanceResult.Allow
 import eu.dcotta.confis.model.AllowanceResult.Depends
 import eu.dcotta.confis.model.AllowanceResult.Forbid
 import eu.dcotta.confis.model.AllowanceResult.Unspecified
+import eu.dcotta.confis.model.CircumstanceMap
+import eu.dcotta.confis.model.Month.May
 import eu.dcotta.confis.model.Obj
 import eu.dcotta.confis.model.Party
 import eu.dcotta.confis.model.Purpose.Commercial
@@ -142,5 +145,30 @@ class QueryableAgreementTest : StringSpec({
         a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Research)) shouldBe Forbid
 
         a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Commercial)) shouldBe Unspecified
+    }
+
+    "requirement clauses equivalent to may..asLongAs" {
+        val a = Agreement {
+            val alice by party
+            val eat by action
+            val cookie by thing
+
+            alice must eat(cookie)
+        }
+        a.ask(AllowanceQuestion(aliceEatsCookie)) shouldBe Allow
+
+        val may = (1 of May year 2022)..(30 of May year 2022)
+        val b = Agreement {
+            val alice by party
+            val eat by action
+            val cookie by thing
+
+            alice must eat(cookie) underCircumstances {
+                within { may }
+            }
+        }
+
+        b.ask(AllowanceQuestion(aliceEatsCookie)) shouldBe Depends
+        b.ask(AllowanceQuestion(aliceEatsCookie, CircumstanceMap.of(may))) shouldBe Allow
     }
 })
