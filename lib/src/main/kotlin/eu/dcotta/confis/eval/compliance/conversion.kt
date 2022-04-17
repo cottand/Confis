@@ -1,5 +1,7 @@
 package eu.dcotta.confis.eval.compliance
 
+import eu.dcotta.confis.model.Allowance.Allow
+import eu.dcotta.confis.model.Allowance.Forbid
 import eu.dcotta.confis.model.Clause
 import eu.dcotta.confis.model.Clause.Requirement
 import eu.dcotta.confis.model.Clause.RequirementWithCircumstances
@@ -9,12 +11,13 @@ import eu.dcotta.confis.model.Clause.Text
 import eu.dcotta.confis.model.PrecedentSentence
 import eu.dcotta.confis.model.generalises
 import eu.dcotta.confis.util.plus
+import kotlinx.collections.immutable.plus
 
 internal fun asComplianceRules(c: Clause): List<ComplianceRule> = when (c) {
     is Text -> emptyList()
     is Requirement -> asComplianceRules(c)
     is RequirementWithCircumstances -> TODO()
-    is Rule -> TODO()
+    is Rule -> asComplianceRules(c)
     is SentenceWithCircumstances -> TODO()
 }
 
@@ -25,3 +28,13 @@ private fun asComplianceRules(c: Requirement): List<ComplianceRule> = listOf(
         then = { required += PrecedentSentence(c.sentence) },
     )
 )
+
+private fun asComplianceRules(c: Rule): List<ComplianceRule> = when (c.allowance) {
+    Allow -> emptyList()
+    Forbid -> listOf(
+        ComplianceRule(
+            case = { PrecedentSentence(c.sentence) generalises q.cs },
+            then = { breached += c },
+        )
+    )
+}
