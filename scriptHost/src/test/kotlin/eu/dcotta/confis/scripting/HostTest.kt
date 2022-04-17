@@ -1,7 +1,6 @@
 package eu.dcotta.confis.scripting
 
 import eu.dcotta.confis.dsl.AgreementBuilder
-import eu.dcotta.confis.dsl.rangeTo
 import eu.dcotta.confis.model.Clause
 import eu.dcotta.confis.model.Date
 import eu.dcotta.confis.model.Month.April
@@ -62,7 +61,7 @@ class HostTest : StringSpec({
 
         val assembled = AgreementBuilder.assemble(instance)
 
-        (assembled.clauses.first() as Clause.SentenceWithCircumstances)
+        (assembled.clauses.first() as Clause.PermissionWithCircumstances)
             .circumstances[TimeRange]
             .shouldBe(Date(1, May, 2022)..Date(13, April, 2023))
     }

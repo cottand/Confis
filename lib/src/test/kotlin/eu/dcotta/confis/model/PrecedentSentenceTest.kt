@@ -7,7 +7,7 @@ import eu.dcotta.confis.eval.allowance.AllowanceQuestion
 import eu.dcotta.confis.eval.allowance.ask
 import eu.dcotta.confis.model.AllowanceResult.Allow
 import eu.dcotta.confis.model.AllowanceResult.Depends
-import eu.dcotta.confis.model.Clause.SentenceWithCircumstances
+import eu.dcotta.confis.model.Clause.PermissionWithCircumstances
 import eu.dcotta.confis.model.Month.August
 import eu.dcotta.confis.model.Month.December
 import io.kotest.core.spec.style.StringSpec
@@ -20,10 +20,18 @@ class PrecedentSentenceTest : StringSpec({
     val date = 1 of August year 2022
     val onAugust = CircumstanceMap.of(date..date)
     val afterAlicePaidBob = CircumstanceMap.of(PrecedentSentence(alicePaysBob))
+    val afterbobPaidAlice = CircumstanceMap.of(PrecedentSentence(bobPaysAlice))
 
     "a precedent sentence circumstance is generalises no precedents" {
         (CircumstanceMap.empty generalises afterAlicePaidBob) shouldBe true
         (afterAlicePaidBob generalises afterAlicePaidBob) shouldBe true
+    }
+
+    "can have 2 precendent sentences in a circumstance map" {
+        val map = afterbobPaidAlice + afterAlicePaidBob
+
+        map.overlapsWith(afterbobPaidAlice) shouldBe true
+        map.overlapsWith(afterAlicePaidBob) shouldBe true
     }
 
     "can write agreements with precedent sentences" {
@@ -44,7 +52,7 @@ class PrecedentSentenceTest : StringSpec({
             }
         }
 
-        val agreementSentence = (a.clauses[1] as SentenceWithCircumstances).rule.sentence
+        val agreementSentence = (a.clauses[1] as PermissionWithCircumstances).permission.sentence
         (bobPaysAlice generalises agreementSentence) shouldBe true
         (agreementSentence generalises bobPaysAlice) shouldBe true
 

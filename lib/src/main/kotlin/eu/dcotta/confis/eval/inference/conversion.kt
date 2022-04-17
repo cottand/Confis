@@ -4,70 +4,32 @@ import eu.dcotta.confis.model.Allowance.Allow
 import eu.dcotta.confis.model.Allowance.Forbid
 import eu.dcotta.confis.model.CircumstanceMap
 import eu.dcotta.confis.model.Clause
+import eu.dcotta.confis.model.Clause.Permission
+import eu.dcotta.confis.model.Clause.PermissionWithCircumstances
 import eu.dcotta.confis.model.Clause.Requirement
 import eu.dcotta.confis.model.Clause.RequirementWithCircumstances
-import eu.dcotta.confis.model.Clause.Rule
-import eu.dcotta.confis.model.Clause.SentenceWithCircumstances
 import eu.dcotta.confis.model.Clause.Text
 import kotlinx.collections.immutable.PersistentMap
-import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.plus
-
-sealed interface CircumstanceResult {
-    object NotAllowed : CircumstanceResult
-    data class UnderCircumstances(
-
-        /**
-         * These are the circumstances unless which the question can be answered,
-         * except the circumstances in [unless].
-         */
-        val circumstances: Set<CircumstanceMap>,
-
-        /**
-         * Under these circumstances, the sentence is _not [allowed][Allow]_. This does not
-         * mean it is [forbidden][Forbid], just that the contract does not explicitly allow the sentence
-         * under circumstances included inside [unless].
-         */
-        val unless: Set<CircumstanceMap> = emptySet(),
-    ) : CircumstanceResult
-
-    data class Contradictory(val contradictions: Set<List<Clause>>) : CircumstanceResult
-}
 
 typealias CircumstancesToClauses = PersistentMap<CircumstanceMap, Clause>
 
-interface CircumstanceContext {
-    val q: CircumstanceQuestion
-    var circumstances: CircumstancesToClauses
-    var contradictions: PersistentSet<List<Clause>>
-
-    var unless: CircumstancesToClauses
+fun asCircumstanceRules(clause: Clause): List<CircumstanceRule> = when (clause) {
+    is Permission -> asCircumstanceRules(clause)
+    is PermissionWithCircumstances -> asCircumstanceRules(clause)
+    is Text -> emptyList()
+    is Requirement -> asCircumstanceRules(Permission(Allow, clause.sentence))
+    is RequirementWithCircumstances -> asCircumstanceRules(
+        PermissionWithCircumstances(Permission(Allow, clause.sentence), Allow, clause.circumstances)
+    )
 }
 
-/**
- * Unlike allowance rules, a [CircumstanceRule] should
- * - **match when there are circumstances to add** to be able to perform the action
- * - **then add the new required circumstances** to the result
- */
-data class CircumstanceRule(val case: CircumstanceContext.() -> Boolean, val then: CircumstanceContext.() -> Unit)
-
-fun Clause.asCircumstanceRules(): List<CircumstanceRule> =
-    when (this) {
-        is Rule -> asCircumstanceRules(this)
-        is SentenceWithCircumstances -> asCircumstanceRules(this)
-        is Text -> emptyList()
-        is Requirement -> asCircumstanceRules(Rule(Allow, sentence))
-        is RequirementWithCircumstances -> asCircumstanceRules(
-            SentenceWithCircumstances(Rule(Allow, sentence), Allow, circumstances)
-        )
-    }
-
-fun asCircumstanceRules(r: SentenceWithCircumstances): List<CircumstanceRule> = when (r.rule.allowance) {
+fun asCircumstanceRules(r: PermissionWithCircumstances): List<CircumstanceRule> = when (r.permission.allowance) {
     Allow -> when (r.circumstanceAllowance) {
         // may .. asLongAs
         Allow -> listOf(
             CircumstanceRule(
-                case = { r.rule.sentence generalises q.s && r.circumstances !in circumstances },
+                case = { r.permission.sentence generalises q.s && r.circumstances !in circumstances },
                 then = { circumstances += (r.circumstances to r) },
             ),
         )
@@ -136,7 +98,7 @@ fun asCircumstanceRules(r: SentenceWithCircumstances): List<CircumstanceRule> = 
 fun CircumstancesToClauses.findClausesOverlappingWith(others: CircumstanceMap): List<Clause> =
     filter { (circumstance, _) -> circumstance overlapsWith others }.values.toList()
 
-private fun asCircumstanceRules(r: Rule) = when (r.allowance) {
+private fun asCircumstanceRules(r: Permission) = when (r.allowance) {
     Allow -> listOf(
         // TODO contradiction detection?
         CircumstanceRule(

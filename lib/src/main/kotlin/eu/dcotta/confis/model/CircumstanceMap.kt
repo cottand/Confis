@@ -22,7 +22,7 @@ class CircumstanceMap private constructor(
     override fun equals(other: Any?): Boolean = other is CircumstanceMap && other.map == map
 
     @Suppress("UNCHECKED_CAST")
-    operator fun <C : Circumstance> get(key: Circumstance.Key<C>): C? = map[key] as C?
+    operator fun <C : Circumstance> get(key: Key<C>): C? = map[key] as C?
 
     operator fun plus(value: Circumstance): CircumstanceMap =
         CircumstanceMap(map + (value.key to value))
@@ -30,6 +30,9 @@ class CircumstanceMap private constructor(
     operator fun plus(other: CircumstanceMap) = CircumstanceMap(map + other.map)
 
     fun generalises(key: Key<*>) = key in map
+
+    infix fun generalises(circumstance: Circumstance): Boolean =
+        get(circumstance.key)?.generalises(circumstance) ?: true
 
     /**
      * This [CircumstanceMap] generalises [otherCircumstances] when for every [Circumstance] `c` in this,
@@ -54,9 +57,8 @@ class CircumstanceMap private constructor(
         val otherMap = other.map
 
         return otherMap.isEmpty() || isEmpty() ||
-            otherMap.keys.containsAll(map.keys) &&
             map.entries.any { (thisKey, thisCircumstance) ->
-                val otherCircumstance = otherMap[thisKey] ?: error("Concurrent access error")
+                val otherCircumstance = otherMap[thisKey] ?: return@any false
 
                 !(thisCircumstance disjoint otherCircumstance)
             }

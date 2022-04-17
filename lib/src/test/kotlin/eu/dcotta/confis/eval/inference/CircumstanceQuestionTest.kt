@@ -46,7 +46,7 @@ class CircumstanceQuestionTest : StringSpec({
             it.contradictions.first() shouldHaveSize 2
             val (may, mayNot) = it.contradictions.first()
 
-            may.asOrFail<Clause.Rule>().sentence shouldBe mayNot.asOrFail<Clause.Rule>().sentence
+            may.asOrFail<Clause.Permission>().sentence shouldBe mayNot.asOrFail<Clause.Permission>().sentence
         }
     }
 
@@ -147,12 +147,12 @@ class CircumstanceQuestionTest : StringSpec({
             it.contradictions.first() shouldHaveSize 2
             val (may, mayNot) = it.contradictions.first()
 
-            val mayClause = may.asOrFail<Clause.SentenceWithCircumstances>()
+            val mayClause = may.asOrFail<Clause.PermissionWithCircumstances>()
             mayClause.circumstances shouldBe CircumstanceMap.of(PurposePolicy(Commercial))
 
-            val mayNotRule = mayNot.asOrFail<Clause.Rule>()
+            val mayNotPermission = mayNot.asOrFail<Clause.Permission>()
 
-            mayNotRule.sentence shouldBe mayClause.rule.sentence
+            mayNotPermission.sentence shouldBe mayClause.permission.sentence
         }
     }
 
