@@ -60,7 +60,7 @@ class LicenseTest : StringSpec({
             alice may { hug(bob) }
         }
 
-        val sentence = l.clauses.first().narrowedTo<Clause.Rule>()
+        val sentence = l.clauses.first().narrowedTo<Clause.Permission>()
 
         sentence should {
             it.action.name shouldBe "hug"
@@ -81,7 +81,7 @@ class LicenseTest : StringSpec({
             alice mayNot { hug(bob) }
         }
 
-        val sentence = l.clauses.first().narrowedTo<Clause.Rule>()
+        val sentence = l.clauses.first().narrowedTo<Clause.Permission>()
 
         sentence should {
             it.action.name shouldBe "hug"
@@ -108,19 +108,19 @@ class LicenseTest : StringSpec({
             }
         }
 
-        val clauses = l.clauses.filterIsInstance<Clause.SentenceWithCircumstances>()
+        val clauses = l.clauses.filterIsInstance<Clause.PermissionWithCircumstances>()
 
         val (research, commercial) = clauses
 
         research should {
             it.circumstances shouldBe CircumstanceMap.of(PurposePolicy(Research))
-            it.rule.allowance shouldBe Allow
+            it.permission.allowance shouldBe Allow
             it.circumstanceAllowance shouldBe Allow
         }
 
         commercial should {
             it.circumstances shouldBe CircumstanceMap.of(PurposePolicy(Commercial))
-            it.rule.allowance shouldBe Forbid
+            it.permission.allowance shouldBe Forbid
             it.circumstanceAllowance shouldBe Allow
         }
     }
@@ -141,7 +141,7 @@ class LicenseTest : StringSpec({
             alice may pay(alice)
         }
 
-        a.clauses.firstOrNull()?.asOrFail<Clause.Rule>()?.action shouldBe Action("pay", "as in pay 10 EUR")
+        a.clauses.firstOrNull()?.asOrFail<Clause.Permission>()?.action shouldBe Action("pay", "as in pay 10 EUR")
     }
 
     "add descriptions to things" {
@@ -152,6 +152,6 @@ class LicenseTest : StringSpec({
 
             alice may pay(money)
         }
-        a.clauses.firstOrNull()?.asOrFail<Clause.Rule>()?.obj shouldBe Obj(named = "cash", description = "10€")
+        a.clauses.firstOrNull()?.asOrFail<Clause.Permission>()?.obj shouldBe Obj(named = "cash", description = "10€")
     }
 })

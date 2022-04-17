@@ -7,7 +7,7 @@ import eu.dcotta.confis.eval.allowance.AllowanceQuestion
 import eu.dcotta.confis.eval.allowance.ask
 import eu.dcotta.confis.model.AllowanceResult.Allow
 import eu.dcotta.confis.model.AllowanceResult.Depends
-import eu.dcotta.confis.model.Clause.SentenceWithCircumstances
+import eu.dcotta.confis.model.Clause.PermissionWithCircumstances
 import eu.dcotta.confis.model.Month.August
 import eu.dcotta.confis.model.Month.December
 import io.kotest.core.spec.style.StringSpec
@@ -52,7 +52,7 @@ class PrecedentSentenceTest : StringSpec({
             }
         }
 
-        val agreementSentence = (a.clauses[1] as SentenceWithCircumstances).rule.sentence
+        val agreementSentence = (a.clauses[1] as PermissionWithCircumstances).permission.sentence
         (bobPaysAlice generalises agreementSentence) shouldBe true
         (agreementSentence generalises bobPaysAlice) shouldBe true
 

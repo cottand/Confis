@@ -59,7 +59,7 @@ class ComplianceQuestionTest : StringSpec({
 
         a.ask(ComplianceQuestion(PrecedentSentence(alicePaysBob))) shouldBe ComplianceResult.ComplianceImpossible(
             listOf(
-                Clause.Rule(Forbid, alicePaysBob)
+                Clause.Permission(Forbid, alicePaysBob)
             )
         )
     }

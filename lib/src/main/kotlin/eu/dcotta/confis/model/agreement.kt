@@ -15,12 +15,12 @@ sealed interface Clause {
     @JvmInline
     value class Text(val string: String) : Clause
 
-    data class SentenceWithCircumstances(
-        val rule: Rule,
+    data class PermissionWithCircumstances(
+        val permission: Permission,
         val circumstanceAllowance: Allowance,
         val circumstances: CircumstanceMap,
     ) : Clause {
-        val sentence by rule::sentence
+        val sentence by permission::sentence
     }
 
     data class RequirementWithCircumstances(
@@ -36,7 +36,7 @@ sealed interface Clause {
         override fun toString() = "Requirement($sentence)"
     }
 
-    data class Rule(val allowance: Allowance, val sentence: Sentence) : Clause, NoCircumstance {
+    data class Permission(val allowance: Allowance, val sentence: Sentence) : Clause, NoCircumstance {
         val subject by sentence::subject
         val obj by sentence::obj
         val action by sentence::action

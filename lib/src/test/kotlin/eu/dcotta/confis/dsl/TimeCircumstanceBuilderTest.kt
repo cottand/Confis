@@ -32,7 +32,7 @@ class TimeCircumstanceBuilderTest : StringSpec({
         }
 
         val c = a.clauses.first()
-        c as? Clause.SentenceWithCircumstances ?: fail("should be clause")
+        c as? Clause.PermissionWithCircumstances ?: fail("should be clause")
 
         c.circumstances[TimeRange] shouldBe Date(1, May, 2022)..Date(3, May, 2022)
     }

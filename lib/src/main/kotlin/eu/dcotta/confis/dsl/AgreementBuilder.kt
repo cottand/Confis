@@ -4,10 +4,10 @@ import eu.dcotta.confis.model.Action
 import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.model.Allowance.Allow
 import eu.dcotta.confis.model.Allowance.Forbid
+import eu.dcotta.confis.model.Clause.Permission
+import eu.dcotta.confis.model.Clause.PermissionWithCircumstances
 import eu.dcotta.confis.model.Clause.Requirement
 import eu.dcotta.confis.model.Clause.RequirementWithCircumstances
-import eu.dcotta.confis.model.Clause.Rule
-import eu.dcotta.confis.model.Clause.SentenceWithCircumstances
 import eu.dcotta.confis.model.Clause.Text
 import eu.dcotta.confis.model.Obj
 import eu.dcotta.confis.model.Obj.Named
@@ -23,8 +23,8 @@ open class AgreementBuilder {
     private val freeTextClauses = mutableListOf<Text>()
     private val parties = mutableListOf<Party>()
 
-    private val sentencesWithoutCircumstances = mutableListOf<Rule>()
-    private val clausesWithCircumstances = mutableListOf<SentenceWithCircumstances>()
+    private val sentencesWithoutCircumstances = mutableListOf<Permission>()
+    private val clausesWithCircumstances = mutableListOf<PermissionWithCircumstances>()
 
     private val requirements = mutableListOf<Requirement>()
     private val requirementsWithCircumstances = mutableListOf<RequirementWithCircumstances>()
@@ -38,20 +38,20 @@ open class AgreementBuilder {
      * Specifies that [Subject] may perform [sentence]
      */
     @CircumstanceDsl
-    infix fun Subject.may(sentence: SentenceBuilderWithSubject.() -> Sentence): Rule {
-        val rule = Rule(Allow, sentence(SentenceBuilderWithSubject(this)))
-        sentencesWithoutCircumstances += rule
-        return rule
+    infix fun Subject.may(sentence: SentenceBuilderWithSubject.() -> Sentence): Permission {
+        val permission = Permission(Allow, sentence(SentenceBuilderWithSubject(this)))
+        sentencesWithoutCircumstances += permission
+        return permission
     }
 
     /**
      * Specifies that [Subject] may not perform [sentence]
      */
     @CircumstanceDsl
-    infix fun Subject.mayNot(sentence: SentenceBuilderWithSubject.() -> Sentence): Rule {
-        val rule = Rule(Forbid, sentence(SentenceBuilderWithSubject(this)))
-        sentencesWithoutCircumstances += rule
-        return rule
+    infix fun Subject.mayNot(sentence: SentenceBuilderWithSubject.() -> Sentence): Permission {
+        val permission = Permission(Forbid, sentence(SentenceBuilderWithSubject(this)))
+        sentencesWithoutCircumstances += permission
+        return permission
     }
 
     operator fun Action.invoke(obj: Obj): ActionObject = ActionObject(this, obj)
@@ -64,21 +64,21 @@ open class AgreementBuilder {
     infix fun Subject.mayNot(s: ActionObject) = mayNot { s.action(s.obj) }
 
     /**
-     * Constrains the previous [Rule] to [init]
+     * Constrains the previous [Permission] to [init]
      *
      */
     @CircumstanceDsl
-    infix fun Rule.asLongAs(init: CircumstanceBuilder.() -> Unit) {
+    infix fun Permission.asLongAs(init: CircumstanceBuilder.() -> Unit) {
         val cs = CircumstanceBuilder().also(init).build()
-        val s = SentenceWithCircumstances(this, Allow, cs)
+        val s = PermissionWithCircumstances(this, Allow, cs)
         sentencesWithoutCircumstances.removeLastOccurrence(this)
         clausesWithCircumstances += s
     }
 
     @CircumstanceDsl
-    infix fun Rule.unless(init: CircumstanceBuilder.() -> Unit) {
+    infix fun Permission.unless(init: CircumstanceBuilder.() -> Unit) {
         val cs = CircumstanceBuilder().also(init).build()
-        val s = SentenceWithCircumstances(this, Forbid, cs)
+        val s = PermissionWithCircumstances(this, Forbid, cs)
         sentencesWithoutCircumstances.removeLastOccurrence(this)
         clausesWithCircumstances += s
     }

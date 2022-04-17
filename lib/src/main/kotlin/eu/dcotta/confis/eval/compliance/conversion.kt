@@ -3,10 +3,10 @@ package eu.dcotta.confis.eval.compliance
 import eu.dcotta.confis.model.Allowance.Allow
 import eu.dcotta.confis.model.Allowance.Forbid
 import eu.dcotta.confis.model.Clause
+import eu.dcotta.confis.model.Clause.Permission
+import eu.dcotta.confis.model.Clause.PermissionWithCircumstances
 import eu.dcotta.confis.model.Clause.Requirement
 import eu.dcotta.confis.model.Clause.RequirementWithCircumstances
-import eu.dcotta.confis.model.Clause.Rule
-import eu.dcotta.confis.model.Clause.SentenceWithCircumstances
 import eu.dcotta.confis.model.Clause.Text
 import eu.dcotta.confis.model.PrecedentSentence
 import eu.dcotta.confis.model.generalises
@@ -17,8 +17,8 @@ internal fun asComplianceRules(c: Clause): List<ComplianceRule> = when (c) {
     is Text -> emptyList()
     is Requirement -> asComplianceRules(c)
     is RequirementWithCircumstances -> TODO()
-    is Rule -> asComplianceRules(c)
-    is SentenceWithCircumstances -> TODO()
+    is Permission -> asComplianceRules(c)
+    is PermissionWithCircumstances -> TODO()
 }
 
 private fun asComplianceRules(c: Requirement): List<ComplianceRule> = listOf(
@@ -29,7 +29,7 @@ private fun asComplianceRules(c: Requirement): List<ComplianceRule> = listOf(
     )
 )
 
-private fun asComplianceRules(c: Rule): List<ComplianceRule> = when (c.allowance) {
+private fun asComplianceRules(c: Permission): List<ComplianceRule> = when (c.allowance) {
     Allow -> emptyList()
     Forbid -> listOf(
         ComplianceRule(
