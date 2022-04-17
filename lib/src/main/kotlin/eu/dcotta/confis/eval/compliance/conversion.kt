@@ -8,8 +8,8 @@ import eu.dcotta.confis.model.Clause.PermissionWithCircumstances
 import eu.dcotta.confis.model.Clause.Requirement
 import eu.dcotta.confis.model.Clause.RequirementWithCircumstances
 import eu.dcotta.confis.model.Clause.Text
+import eu.dcotta.confis.model.PastAction
 import eu.dcotta.confis.model.PrecedentSentence
-import eu.dcotta.confis.model.generalises
 import eu.dcotta.confis.util.plus
 import kotlinx.collections.immutable.plus
 
@@ -18,13 +18,13 @@ internal fun asComplianceRules(c: Clause): List<ComplianceRule> = when (c) {
     is Requirement -> asComplianceRules(c)
     is RequirementWithCircumstances -> TODO()
     is Permission -> asComplianceRules(c)
-    is PermissionWithCircumstances -> TODO()
+    is PermissionWithCircumstances -> asComplianceRules(c)
 }
 
 private fun asComplianceRules(c: Requirement): List<ComplianceRule> = listOf(
     // if requirement not already present in current circumstances
     ComplianceRule(
-        case = { !(PrecedentSentence(c.sentence) generalises q.cs) },
+        case = { !(c.sentence happenedIn q.state) },
         then = { required += PrecedentSentence(c.sentence) },
     )
 )
@@ -33,8 +33,32 @@ private fun asComplianceRules(c: Permission): List<ComplianceRule> = when (c.all
     Allow -> emptyList()
     Forbid -> listOf(
         ComplianceRule(
-            case = { PrecedentSentence(c.sentence) generalises q.cs },
+            case = { c.sentence happenedIn q.state },
             then = { breached += c },
         )
     )
+}
+
+private fun asComplianceRules(c: PermissionWithCircumstances): List<ComplianceRule> = when (c.permission.allowance) {
+    Allow -> emptyList()
+    Forbid -> when (c.circumstanceAllowance) {
+        // mayNot..asLongAs
+        Allow -> {
+            val pastAction = PastAction(c.sentence, c.circumstances)
+            listOf(
+                ComplianceRule(
+                    case = { pastAction happenedIn q.state },
+                    then = { breached += c }
+                ),
+                // possibly a breach, but the past action is too general to be sure it is compliant
+                ComplianceRule(
+                    case = {
+                        !(pastAction happenedIn q.state) && pastAction possiblyHappenedIn q.state
+                    },
+                    then = { possiblyBreached += c }
+                ),
+            )
+        }
+        Forbid -> TODO()
+    }
 }

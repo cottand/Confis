@@ -76,4 +76,6 @@ data class Sentence(val subject: Subject, val action: Action, val obj: Obj) {
         (subject == other.subject && action == other.action && obj == Anything)
 
     override fun toString(): String = "$subject $action $obj"
+
+    infix fun happenedIn(world: WorldState) = world.containsKey(this)
 }

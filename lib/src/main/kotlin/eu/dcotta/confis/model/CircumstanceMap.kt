@@ -22,7 +22,7 @@ class CircumstanceMap private constructor(
     override fun equals(other: Any?): Boolean = other is CircumstanceMap && other.map == map
 
     @Suppress("UNCHECKED_CAST")
-    operator fun <C : Circumstance> get(key: Circumstance.Key<C>): C? = map[key] as C?
+    operator fun <C : Circumstance> get(key: Key<C>): C? = map[key] as C?
 
     operator fun plus(value: Circumstance): CircumstanceMap =
         CircumstanceMap(map + (value.key to value))

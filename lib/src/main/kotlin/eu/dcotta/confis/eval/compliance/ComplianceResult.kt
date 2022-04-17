@@ -7,7 +7,12 @@ sealed interface ComplianceResult {
     /**
      * Compliance is not possible
      */
-    data class ComplianceImpossible(val clausesBreached: List<Clause>) : ComplianceResult
+    data class ComplianceImpossible(
+        val clausesBreached: List<Clause>,
+        val clausesPossiblyBreached: List<Clause> = emptyList(),
+    ) : ComplianceResult
+
+    data class PossibleBreach(val clausesPossiblyBreached: List<Clause>) : ComplianceResult
 
     /**
      * Compliant for now.
