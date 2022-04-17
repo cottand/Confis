@@ -21,7 +21,7 @@ fun Agreement.ask(q: ComplianceQuestion): ComplianceResult = askEngine(
     buildContext = { ComplianceContext(it, q) },
     buildResult = { ctx ->
         when {
-            ctx.breached.isNotEmpty() -> ComplianceResult.ComplianceImpossible(ctx.breached, ctx.possiblyBreached)
+            ctx.breached.isNotEmpty() -> ComplianceResult.Breach(ctx.breached, ctx.possiblyBreached)
             ctx.possiblyBreached.isNotEmpty() -> ComplianceResult.PossibleBreach(ctx.possiblyBreached)
             ctx.required.isNotEmpty() -> ComplianceResult.CompliantIf(ctx.required)
             else -> ComplianceResult.FullyCompliant

@@ -39,13 +39,14 @@ private fun asComplianceRules(c: Permission): List<ComplianceRule> = when (c.all
     )
 }
 
-private fun asComplianceRules(c: PermissionWithCircumstances): List<ComplianceRule> = when (c.permission.allowance) {
-    Allow -> emptyList()
-    Forbid -> when (c.circumstanceAllowance) {
-        // mayNot..asLongAs
-        Allow -> {
-            val pastAction = PastAction(c.sentence, c.circumstances)
-            listOf(
+private fun asComplianceRules(c: PermissionWithCircumstances): List<ComplianceRule> {
+    val pastAction by lazy { PastAction(c.sentence, c.circumstances) }
+
+    return when (c.permission.allowance) {
+        Allow -> emptyList()
+        Forbid -> when (c.circumstanceAllowance) {
+            // mayNot..asLongAs
+            Allow -> listOf(
                 ComplianceRule(
                     case = { pastAction happenedIn q.state },
                     then = { breached += c }
@@ -58,7 +59,14 @@ private fun asComplianceRules(c: PermissionWithCircumstances): List<ComplianceRu
                     then = { possiblyBreached += c }
                 ),
             )
+            // mayNot..unless
+            Forbid -> listOf(
+                // action did happen and it was outside of the exception -> breach
+                ComplianceRule(
+                    case = { c.sentence happenedIn q.state && !(pastAction happenedIn q.state) },
+                    then = { breached += c },
+                ),
+            )
         }
-        Forbid -> TODO()
     }
 }

@@ -5,6 +5,7 @@ import eu.dcotta.confis.asOrFail
 import eu.dcotta.confis.dsl.of
 import eu.dcotta.confis.dsl.rangeTo
 import eu.dcotta.confis.dsl.year
+import eu.dcotta.confis.eval.compliance.ComplianceResult.Breach
 import eu.dcotta.confis.eval.compliance.ComplianceResult.FullyCompliant
 import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.model.Allowance.Forbid
@@ -17,6 +18,7 @@ import eu.dcotta.confis.model.Month.May
 import eu.dcotta.confis.model.Party
 import eu.dcotta.confis.model.PrecedentSentence
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 
 class ComplianceQuestionTest : StringSpec({
@@ -64,7 +66,7 @@ class ComplianceQuestionTest : StringSpec({
             alice mayNot pay(bob)
         }
 
-        a.ask(ComplianceQuestion(alicePaysBob)) shouldBe ComplianceResult.ComplianceImpossible(
+        a.ask(ComplianceQuestion(alicePaysBob)) shouldBe ComplianceResult.Breach(
             listOf(
                 Clause.Permission(Forbid, alicePaysBob)
             )
@@ -84,6 +86,7 @@ class ComplianceQuestionTest : StringSpec({
     }
 
     val may = (1 of May)..(30 of May) year 2022
+    val jan = (1 of January)..(30 of January) year 2022
     val year2022 = (1 of January)..(31 of December) year 2022
 
     "non compliant if breached permission clause" {
@@ -98,7 +101,7 @@ class ComplianceQuestionTest : StringSpec({
         }
 
         a.ask(ComplianceQuestion(alicePaysBob to CircumstanceMap.of(may)))
-            .asOrFail<ComplianceResult.ComplianceImpossible>()
+            .asOrFail<ComplianceResult.Breach>()
     }
 
     "compliant dubious if past actions overlap but do not generalise" {
@@ -107,12 +110,38 @@ class ComplianceQuestionTest : StringSpec({
             val bob by party
             val pay by action
 
-            alice mayNot pay(bob) asLongAs {
-                within { may }
-            }
+            alice mayNot pay(bob) asLongAs { within { may } }
         }
 
         a.ask(ComplianceQuestion(alicePaysBob to CircumstanceMap.of(year2022)))
             .asOrFail<ComplianceResult.PossibleBreach>()
+    }
+
+    "non compliant for mayNot..unless permission outside of exception" {
+        val a = Agreement {
+            val alice by party
+            val bob by party
+            val pay by action
+
+            alice mayNot pay(bob) unless { within { may } }
+        }
+
+        val b = a.ask(ComplianceQuestion(alicePaysBob to CircumstanceMap.of(jan)))
+            .asOrFail<Breach>()
+
+        b.clausesBreached shouldHaveSize 1
+        b.clausesPossiblyBreached shouldBe emptyList()
+    }
+
+    "compliant for mayNot..unless permission inside of exception" {
+        val a = Agreement {
+            val alice by party
+            val bob by party
+            val pay by action
+
+            alice mayNot pay(bob) unless { within { may } }
+        }
+
+        a.ask(ComplianceQuestion(alicePaysBob to CircumstanceMap.of(may))).asOrFail<FullyCompliant>()
     }
 })

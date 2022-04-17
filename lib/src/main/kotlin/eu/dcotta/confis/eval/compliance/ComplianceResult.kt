@@ -5,9 +5,9 @@ import eu.dcotta.confis.model.Clause
 
 sealed interface ComplianceResult {
     /**
-     * Compliance is not possible
+     * Compliance is not possible - contract already breached
      */
-    data class ComplianceImpossible(
+    data class Breach(
         val clausesBreached: List<Clause>,
         val clausesPossiblyBreached: List<Clause> = emptyList(),
     ) : ComplianceResult
