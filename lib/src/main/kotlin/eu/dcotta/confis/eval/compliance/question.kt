@@ -9,10 +9,8 @@ import eu.dcotta.confis.model.Sentence
 import eu.dcotta.confis.model.WorldState
 import eu.dcotta.confis.util.with
 import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentHashMapOf
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toPersistentMap
 import org.jeasy.rules.api.Facts
 
@@ -22,7 +20,7 @@ fun Agreement.ask(q: ComplianceQuestion): ComplianceResult = askEngine(
     buildResult = { ctx ->
         when {
             ctx.breached.isNotEmpty() -> ComplianceResult.Breach(ctx.breached, ctx.possiblyBreached)
-            ctx.possiblyBreached.isNotEmpty() -> ComplianceResult.PossibleBreach(ctx.possiblyBreached)
+            ctx.possiblyBreached.isNotEmpty() -> ComplianceResult.PossibleBreach(ctx.possiblyBreached, ctx.required)
             ctx.required.isNotEmpty() -> ComplianceResult.CompliantIf(ctx.required)
             else -> ComplianceResult.FullyCompliant
         }
@@ -45,7 +43,7 @@ value class ComplianceQuestion(val state: WorldState) {
 
 internal class ComplianceContext(facts: Facts, q2: ComplianceQuestion) {
     val q by facts with q2
-    var required: PersistentSet<CircumstanceMap> by facts with persistentSetOf()
+    var required: WorldState by facts with persistentHashMapOf()
     var breached: PersistentList<Clause> by facts with persistentListOf()
     var possiblyBreached: PersistentList<Clause> by facts with persistentListOf()
 }
