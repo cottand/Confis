@@ -16,10 +16,14 @@ import eu.dcotta.confis.model.Clause
 import eu.dcotta.confis.model.Month.December
 import eu.dcotta.confis.model.Month.January
 import eu.dcotta.confis.model.Month.May
+import eu.dcotta.confis.model.Obj
 import eu.dcotta.confis.model.Party
+import eu.dcotta.confis.model.PrecedentSentence
+import eu.dcotta.confis.model.Purpose.Commercial
 import eu.dcotta.confis.model.Sentence
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import kotlinx.collections.immutable.persistentHashMapOf
 
@@ -130,7 +134,7 @@ class ComplianceQuestionTest : StringSpec({
         }
 
         a.ask(ComplianceQuestion(alicePaysBob to CircumstanceMap.of(year2022)))
-            .asOrFail<ComplianceResult.PossibleBreach>()
+            .asOrFail<PossibleBreach>()
     }
 
     "non compliant for mayNot..unless permission outside of exception" {
@@ -171,5 +175,44 @@ class ComplianceQuestionTest : StringSpec({
         }
 
         a.ask(ComplianceQuestion(alicePaysBob to CircumstanceMap.of(year2022))).asOrFail<PossibleBreach>()
+    }
+
+    "complex contract edge cases" {
+        val a = Agreement {
+            val alice by party
+            val bob by party
+
+            val payLicenseFeeTo by action
+            val use by action
+            val share by action
+
+            val data by thing
+
+            bob must payLicenseFeeTo(alice) underCircumstances {
+                within { jan }
+            }
+
+            alice must share(data) underCircumstances {
+                after { bob did payLicenseFeeTo(alice) }
+            }
+
+            bob may use(data) asLongAs {
+                after { bob did payLicenseFeeTo(alice) }
+            }
+
+            bob mayNot use(data) asLongAs {
+                with purpose Commercial
+            }
+        }
+
+        val r = a.ask(ComplianceQuestion()).asOrFail<CompliantIf>()
+
+        r.requirements shouldHaveSize 2
+
+        r.requirements[Sentence { "alice"("share", Obj("data")) }] shouldBe CircumstanceMap.of(
+            PrecedentSentence(Sentence { "bob"("payLicenseFeeTo", Party("alice")) })
+        )
+
+        r.requirements[Sentence { "bob"("payLicenseFeeTo", Party("alice")) }] shouldBe CircumstanceMap.of(jan)
     }
 })
