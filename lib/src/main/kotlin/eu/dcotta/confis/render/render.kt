@@ -19,6 +19,8 @@ fun Agreement.renderMarkdown(): String {
     return """
         |# ${title ?: "Confis Agreement"}
         |
+        |${introduction?.replace("\n", "|\n") ?: ""}
+        |
         |## 1 - Parties
         |
         $parties

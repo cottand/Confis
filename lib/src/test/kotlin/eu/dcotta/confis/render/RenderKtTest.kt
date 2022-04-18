@@ -35,9 +35,23 @@ class RenderKtTest : StringSpec({
                 with purpose Commercial
                 after { alice did pay(alice) }
             }
+
+            -"""
+                Some useless text clause
+            """
         }.renderMarkdown()
 
         md shouldContain """- 2.2 _"pay"_"""
         md shouldContain """- 2.1 _"notify"_ : Notify by email"""
+    }
+
+    "render title and intro" {
+        val md = Agreement {
+            title = "My Agreement"
+            introduction = "For specifying the terms and conditions of life"
+        }.renderMarkdown()
+
+        md shouldContain "# My Agreement"
+        md shouldContain "terms and conditions of life"
     }
 })
