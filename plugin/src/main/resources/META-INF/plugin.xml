@@ -6,10 +6,13 @@
 
     <depends>com.intellij.modules.platform</depends>
     <depends>org.jetbrains.kotlin</depends>
+    <depends>org.intellij.plugins.markdown</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <fileEditorProvider implementation="eu.dcotta.confis.plugin.ConfisEditorProvider"/>
+    </extensions>
 
     <extensions defaultExtensionNs="org.jetbrains.kotlin">
-        <scriptDefinitionsProvider
-                implementationClass="eu.dcotta.confis.plugin.ConfisDefinitionProvider"
-            />
+        <scriptDefinitionsProvider implementationClass="eu.dcotta.confis.plugin.ConfisDefinitionProvider"/>
     </extensions>
 </idea-plugin>
