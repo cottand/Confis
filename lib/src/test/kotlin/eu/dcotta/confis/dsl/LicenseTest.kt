@@ -15,6 +15,7 @@ import eu.dcotta.confis.model.PurposePolicy
 import io.kotest.assertions.fail
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldContainAll
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 
@@ -37,6 +38,16 @@ class LicenseTest : StringSpec({
 
             val copy by action
         }
+    }
+
+    "can declare title and description" {
+        val a = AgreementBuilder {
+            title = "The Big License"
+            introduction = "Relating to use of the cookie by alice"
+        }
+
+        a.title shouldBe "The Big License"
+        a.introduction shouldBe "Relating to use of the cookie by alice"
     }
 
     "can declare parties" {
@@ -153,5 +164,30 @@ class LicenseTest : StringSpec({
             alice may pay(money)
         }
         a.clauses.firstOrNull()?.asOrFail<Clause.Permission>()?.obj shouldBe Obj(named = "cash", description = "10€")
+    }
+
+    "can extract actions" {
+        val a = AgreementBuilder {
+            val pay by action
+            val text by action
+            val receive by action
+
+            val unused by action
+
+            val alice by party
+            val money by thing(named = "cash", description = "10€")
+
+            alice may pay(money)
+            alice may pay(money) asLongAs {
+                after { alice did receive(money) }
+            }
+            alice must pay(money) underCircumstances {
+                after { alice did text(alice) }
+            }
+        }
+
+        a.actions shouldHaveSize 3
+
+        a.actions shouldContainAll listOf("pay", "text", "receive").map(::Action)
     }
 })

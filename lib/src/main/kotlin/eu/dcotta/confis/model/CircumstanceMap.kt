@@ -24,6 +24,11 @@ class CircumstanceMap private constructor(
     @Suppress("UNCHECKED_CAST")
     operator fun <C : Circumstance> get(key: Key<C>): C? = map[key] as C?
 
+    operator fun <C : Circumstance> get(key: Circumstance.SetKey<C>): List<C> {
+        val set = map.keys.mapNotNull { with(key) { it.fromSetOrNull() } }
+        return set.mapNotNull { get(it) }
+    }
+
     operator fun plus(value: Circumstance): CircumstanceMap =
         CircumstanceMap(map + (value.key to value))
 

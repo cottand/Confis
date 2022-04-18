@@ -1,11 +1,16 @@
 package eu.dcotta.confis.model
 
 import eu.dcotta.confis.dsl.AgreementBuilder
+import eu.dcotta.confis.model.Clause.Permission
 
 data class Agreement(
     val clauses: List<Clause>,
     val parties: List<Party>,
-)
+    val title: String? = null,
+    val introduction: String? = null
+) {
+    val actions by lazy { clauses.flatMap { it.extractActions() }.toSet() }
+}
 
 fun Agreement(builder: AgreementBuilder.() -> Unit): Agreement = AgreementBuilder(builder)
 
@@ -13,7 +18,7 @@ sealed interface NoCircumstance
 
 sealed interface Clause {
     @JvmInline
-    value class Text(val string: String) : Clause
+    value class Text(val string: String) : Clause, NoCircumstance
 
     data class PermissionWithCircumstances(
         val permission: Permission,

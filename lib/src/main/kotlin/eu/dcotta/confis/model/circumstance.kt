@@ -11,6 +11,10 @@ interface Circumstance {
 
     interface Key<T : Circumstance>
 
+    interface SetKey<T : Circumstance> {
+        fun Key<*>.fromSetOrNull(): Key<T>?
+    }
+
     val key: Key<*>
 }
 
