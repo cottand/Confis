@@ -1,15 +1,15 @@
 package eu.dcotta.confis.model
 
 import eu.dcotta.confis.dsl.AgreementBuilder
-import eu.dcotta.confis.model.Clause.Permission
+import kotlinx.collections.immutable.toPersistentSet
 
 data class Agreement(
     val clauses: List<Clause>,
     val parties: List<Party>,
     val title: String? = null,
-    val introduction: String? = null
+    val introduction: String? = null,
 ) {
-    val actions by lazy { clauses.flatMap { it.extractActions() }.toSet() }
+    val actions by lazy { clauses.flatMap { it.extractActions() }.toPersistentSet() }
 }
 
 fun Agreement(builder: AgreementBuilder.() -> Unit): Agreement = AgreementBuilder(builder)

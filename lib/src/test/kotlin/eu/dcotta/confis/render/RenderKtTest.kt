@@ -37,7 +37,7 @@ class RenderKtTest : StringSpec({
             }
         }.renderMarkdown()
 
-        md shouldContain """- 2.1 _"pay"_"""
-        md shouldContain """- 2.2 _"notify"_ : Notify by email"""
+        md shouldContain """- 2.2 _"pay"_"""
+        md shouldContain """- 2.1 _"notify"_ : Notify by email"""
     }
 })
