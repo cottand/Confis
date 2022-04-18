@@ -14,6 +14,10 @@ data class PrecedentSentence(val sentence: Sentence) : Circumstance {
 
     override fun toString() = "PrecedentSentence($sentence)"
 
+    override fun render() = with(sentence) {
+        "only after ${subject.render()} did ${action.render()} ${obj.render()}"
+    }
+
     @JvmInline
     value class Key(val sentence: Sentence) : Circumstance.Key<PrecedentSentence>
 

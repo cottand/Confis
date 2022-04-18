@@ -1,6 +1,10 @@
 package eu.dcotta.confis.render
 
+import eu.dcotta.confis.dsl.of
+import eu.dcotta.confis.dsl.rangeTo
+import eu.dcotta.confis.dsl.year
 import eu.dcotta.confis.model.Agreement
+import eu.dcotta.confis.model.Month.May
 import eu.dcotta.confis.model.Purpose.Commercial
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.string.shouldContain
@@ -19,9 +23,9 @@ class RenderKtTest : StringSpec({
 
         md shouldContain "## 1 - Parties"
 
-        md shouldContain "- 1.1 Alice Pleasance Hargreaves of Westminster (**Alice Liddell**)"
-        md shouldContain "- 1.2 Bob the Builder (**bob**)"
-        md shouldContain "- 1.3 **Charlie**"
+        md shouldContain "1. Alice Pleasance Hargreaves of Westminster (**Alice Liddell**)"
+        md shouldContain "2. Bob the Builder (**bob**)"
+        md shouldContain "3. **Charlie**"
     }
 
     "agreement contains actions and lists them" {
@@ -41,8 +45,8 @@ class RenderKtTest : StringSpec({
             """
         }.renderMarkdown()
 
-        md shouldContain """- 2.2 _"pay"_"""
-        md shouldContain """- 2.1 _"notify"_ : Notify by email"""
+        md shouldContain """_"pay"_"""
+        md shouldContain """_"notify"_: Notify by email"""
     }
 
     "render title and intro" {
@@ -53,5 +57,30 @@ class RenderKtTest : StringSpec({
 
         md shouldContain "# My Agreement"
         md shouldContain "terms and conditions of life"
+    }
+
+    "render simple permission clause" {
+        val md = Agreement {
+            val alice by party
+            val pay by action
+
+            alice may pay(alice)
+        }
+
+        md.clauses.first().renderMd(1) shouldContain "1. alice may pay alice"
+    }
+
+    "render simple permission clause with time circumstances" {
+        val a = Agreement {
+            val alice by party
+            val pay by action
+
+            alice may pay(alice) asLongAs {
+                within { (1 of May)..(3 of May) year 2022 }
+            }
+        }
+
+        val rendered = a.clauses.first().renderMd(1)
+        rendered shouldContain "1. alice may pay alice under the following circumstances"
     }
 })

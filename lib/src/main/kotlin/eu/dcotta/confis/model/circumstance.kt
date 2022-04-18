@@ -16,6 +16,8 @@ interface Circumstance {
     }
 
     val key: Key<*>
+
+    fun render(): String = toString()
 }
 
 infix fun Circumstance.disjoint(other: Circumstance) = when (this) {

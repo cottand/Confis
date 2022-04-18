@@ -4,6 +4,7 @@ import eu.dcotta.confis.model.Circumstance.Key
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.plus
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.collections.immutable.toPersistentMap
 
 /**
@@ -70,6 +71,8 @@ class CircumstanceMap private constructor(
     }
 
     infix fun disjoint(other: CircumstanceMap) = !overlapsWith(other)
+
+    fun toList(): List<Circumstance> = map.values.toPersistentList()
 
     companion object {
         val empty = CircumstanceMap(persistentMapOf())
