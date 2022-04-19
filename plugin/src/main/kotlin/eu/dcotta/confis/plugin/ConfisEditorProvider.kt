@@ -23,33 +23,11 @@ class ConfisEditorProvider : FileEditorProvider {
     override fun createEditor(project: Project, file: VirtualFile): FileEditor {
         val editor: TextEditor = TextEditorProvider.getInstance().createEditor(project, file) as TextEditor
 
-        val t = """
-            # Confis Agreement
-
-            ## 1 - Parties
-
-            1. **alice**
-                    
-            ## 2 - Definitions
-
-            1. _"notify"_: Notify by email
-            2. _"pay"_
-
-            ## 3 - Terms
-
-            1. alice may notify alice under the following circumstances:
-            
-                  1. only after alice did pay alice
-                  2. Policies[Commercial]
-                  
-                 
-            2. alice may pay alice
-            3. Some useless text clause
-
-        """.trimIndent()
 
 
         val mdInMem = LightVirtualFile("${file.name}_temp-confis.md")
+
+
         mdInMem.language = MarkdownLanguage.INSTANCE
         val preview = MarkdownPreviewFileEditor(project, mdInMem)
 

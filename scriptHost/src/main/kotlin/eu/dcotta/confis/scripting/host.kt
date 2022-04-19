@@ -16,28 +16,13 @@ fun evalFile(scriptFile: File): ResultWithDiagnostics<EvaluationResult> {
     val compilationConfiguration = createJvmCompilationConfigurationFromTemplate<ConfisScriptDefinition> {
         jvm {
             dependenciesFromCurrentContext(
-                "lib", "script"
+                wholeClasspath = true
+                //"lib", "script"
             )
         }
     }
 
     return BasicJvmScriptingHost().eval(scriptFile.toScriptSource(), compilationConfiguration, null)
-}
-
-class ConfisHost {
-    val compilationConfiguration = createJvmCompilationConfigurationFromTemplate<ConfisScriptDefinition>()
-    val defaultHost = BasicJvmScriptingHost()
-
-    fun eval(script: SourceCode): Agreement? {
-        val res = defaultHost.eval(script, compilationConfiguration, null)
-        if (res !is ResultWithDiagnostics.Success) return null
-
-        val instance = res.value.returnValue.scriptInstance
-
-        val i = (instance as AgreementBuilder)
-
-        return AgreementBuilder.assemble(i)
-    }
 }
 
 

@@ -1,6 +1,7 @@
 package eu.dcotta.confis.plugin
 
-import com.intellij.ide.script.IdeScriptEngineManager
+import com.intellij.openapi.diagnostic.debug
+import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.editor.event.DocumentListener
 import com.intellij.openapi.fileEditor.FileDocumentManager
@@ -13,18 +14,13 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.testFramework.LightVirtualFile
 import com.intellij.util.Alarm
 import com.intellij.util.Alarm.ThreadToUse.POOLED_THREAD
-import eu.dcotta.confis.dsl.AgreementBuilder
-import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.render.renderMarkdown
-import eu.dcotta.confis.scripting.ConfisScriptDefinition
-import kotlin.script.experimental.api.ResultWithDiagnostics
-import kotlin.script.experimental.api.SourceCode
-import kotlin.script.experimental.jvm.BasicJvmScriptEvaluator
-import kotlin.script.experimental.jvmhost.BasicJvmScriptingHost
-import kotlin.script.experimental.jvmhost.createJvmCompilationConfigurationFromTemplate
+import kotlin.script.experimental.api.ResultWithDiagnostics.Failure
+import kotlin.script.experimental.api.ResultWithDiagnostics.Success
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import org.intellij.plugins.markdown.ui.preview.MarkdownPreviewFileEditor
-import org.jetbrains.kotlin.diagnostics.rendering.DefaultErrorMessages
-import org.jetbrains.kotlin.scripting.resolve.VirtualFileScriptSource
 
 class ConfisEditor(
     val editor: TextEditor,
@@ -37,8 +33,8 @@ class ConfisEditor(
 
     val PARENT_SPLIT_EDITOR_KEY: Key<ConfisEditor> = Key.create("parentSplit")
 
-    val markdownDocument = FileDocumentManager.getInstance().getDocument(mdInMem)
     val scriptDocument = FileDocumentManager.getInstance().getDocument(confisFile)
+    val logger = logger<ConfisEditor>()
 
     init {
         editor.putUserData(PARENT_SPLIT_EDITOR_KEY, this)
@@ -53,28 +49,32 @@ class ConfisEditor(
 
     private val alarm = Alarm(POOLED_THREAD, this)
 
-    val host = ConfisHost()
-    val host2 = IdeScriptEngineManager.getInstance().getEngineByName("kotlin", null)?.e
+    private val host = ConfisHost()
 
-    private fun documentToMarkdown(event: DocumentEvent): String? {
-        val source = ConfisSourceCode(confisFile.url, confisFile.name, event.document.text)
+    private fun documentToMarkdown(event: DocumentEvent): String {
+        val source =
+            //VirtualFileScriptSource(confisFile)
+            ConfisSourceCode(confisFile.url, confisFile.name, event.document.text)
 
-        return host.eval(source)?.renderMarkdown()
+        return when (val res = host.eval(source)) {
+            is Success -> res.value.renderMarkdown()
+            is Failure -> res.reportsAsMarkdown()
+        }
     }
 
-    val scriptListener = object : DocumentListener {
+    private val scriptListener = object : DocumentListener {
         override fun beforeDocumentChange(event: DocumentEvent) {
             alarm.cancelAllRequests()
         }
 
         override fun documentChanged(event: DocumentEvent) {
-            alarm.addRequest({
-                documentToMarkdown(event)?.let { md ->
-                    markdownDocument?.setText(md)
-                    mdInMem.setContent(this, md, true)
-                    editor.selectNotify()
-                }
-            }, 10)
+            //alarm.addRequest({
+                val md = documentToMarkdown(event)
+                logger.warn("Setting markdown $md")
+                mdInMem.setContent(this, md, true)
+                logger.warn("Set in-mem markdown: ${mdInMem.content}")
+                editor.selectNotify()
+            //}, 50)
         }
     }
 
@@ -86,20 +86,10 @@ class ConfisEditor(
         alarm.cancelAllRequests()
         scriptDocument?.removeDocumentListener(scriptListener)
     }
+
+    private fun Failure.reportsAsMarkdown(): String =
+        reports.joinToString(separator = "\n\n", prefix = "```\n", postfix = "\n```") {
+            it.render()
+        }
 }
 
-class ConfisHost {
-    val compilationConfiguration = createJvmCompilationConfigurationFromTemplate<ConfisScriptDefinition>()
-    val defaultHost = BasicJvmScriptingHost()
-
-    fun eval(script: SourceCode): Agreement? {
-        val res = defaultHost.eval(script, compilationConfiguration, null)
-        if (res !is ResultWithDiagnostics.Success null
-
-        val instance = res.value.returnValue.scriptInstance
-
-        val i = (instance as AgreementBuilder)
-
-        return AgreementBuilder.assemble(i)
-    }
-}
