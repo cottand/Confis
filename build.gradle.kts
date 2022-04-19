@@ -19,7 +19,6 @@ allprojects {
 }
 
 subprojects {
-    apply<JacocoPlugin>()
     apply<KtlintPlugin>()
     apply(plugin = "org.jetbrains.kotlin.jvm")
 
@@ -27,14 +26,16 @@ subprojects {
         //"implementation"("io.github.microutils:kotlin-logging-jvm:2.1.20")
 
     }
-    tasks {
-
-        jacocoTestReport {
-            reports {
-                xml.required.set(false)
-                html.required.set(false)
+    if ("plugin" !in name) {
+        apply<JacocoPlugin>()
+        tasks {
+            jacocoTestReport {
+                reports {
+                    xml.required.set(false)
+                    html.required.set(false)
+                }
+                dependsOn(test)
             }
-            dependsOn(test)
         }
     }
 
