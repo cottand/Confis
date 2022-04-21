@@ -1,6 +1,6 @@
 package eu.dcotta.confis.plugin
 
-import com.intellij.openapi.diagnostic.debug
+import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.editor.event.DocumentListener
@@ -11,15 +11,14 @@ import com.intellij.openapi.fileEditor.TextEditorWithPreview.Layout.SHOW_EDITOR_
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiFileFactory
 import com.intellij.testFramework.LightVirtualFile
 import com.intellij.util.Alarm
 import com.intellij.util.Alarm.ThreadToUse.POOLED_THREAD
+import com.intellij.util.Alarm.ThreadToUse.SWING_THREAD
 import eu.dcotta.confis.render.renderMarkdown
 import kotlin.script.experimental.api.ResultWithDiagnostics.Failure
 import kotlin.script.experimental.api.ResultWithDiagnostics.Success
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import org.intellij.plugins.markdown.ui.preview.MarkdownPreviewFileEditor
 
 class ConfisEditor(
@@ -48,6 +47,8 @@ class ConfisEditor(
     }
 
     private val alarm = Alarm(POOLED_THREAD, this)
+    private val uiAlarm = Alarm(SWING_THREAD, this)
+    val docFactory = FileDocumentManager.getInstance()
 
     private val host = ConfisHost()
 
@@ -62,21 +63,25 @@ class ConfisEditor(
         }
     }
 
-    private val scriptListener = object : DocumentListener {
-        override fun beforeDocumentChange(event: DocumentEvent) {
+    private val scriptListener = DocumentListenerImpl(
+        beforeDocChange = {
             alarm.cancelAllRequests()
-        }
-
-        override fun documentChanged(event: DocumentEvent) {
-            //alarm.addRequest({
+            uiAlarm.cancelAllRequests()
+        },
+        afterDocChange = { event ->
+            alarm.request(delayMillis = 100) {
                 val md = documentToMarkdown(event)
                 logger.warn("Setting markdown $md")
-                mdInMem.setContent(this, md, true)
-                logger.warn("Set in-mem markdown: ${mdInMem.content}")
-                editor.selectNotify()
-            //}, 50)
+                uiAlarm.request {
+                    WriteAction.run<Exception> {
+                        docFactory.getDocument(mdInMem)?.setText(md)
+                    }
+                    logger.debug("Set in-mem markdown: ${mdInMem.content}")
+                    preview.selectNotify()
+                }
+            }
         }
-    }
+    )
 
     init {
         scriptDocument?.addDocumentListener(scriptListener)
@@ -88,8 +93,17 @@ class ConfisEditor(
     }
 
     private fun Failure.reportsAsMarkdown(): String =
-        reports.joinToString(separator = "\n\n", prefix = "```\n", postfix = "\n```") {
+        reports.joinToString(separator = "\n\n", prefix = "```\nErrors where found:\n", postfix = "\n```") {
             it.render()
         }
 }
+
+data class DocumentListenerImpl(
+    val beforeDocChange: (DocumentEvent) -> Unit,
+    val afterDocChange: (DocumentEvent) -> Unit,
+) : DocumentListener {
+    override fun beforeDocumentChange(event: DocumentEvent) = beforeDocChange(event)
+    override fun documentChanged(event: DocumentEvent) = afterDocChange(event)
+}
+
 

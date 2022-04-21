@@ -10,5 +10,5 @@ alice may notify(alice) asLongAs {
 }
 
 -"""
- Some useless text clauses!!!!!!
+ Some useless text clauses
 """
