@@ -14,7 +14,7 @@ val kotlinVersion: String by rootProject.extra
 
 dependencies {
     api(project(":script"))
-    //compileOnly(project(":scriptHost"))
+    // compileOnly(project(":scriptHost"))
     implementation("org.jetbrains.kotlin:kotlin-scripting-jvm:$kotlinVersion")
     implementation("org.jetbrains.kotlin:kotlin-scripting-jvm-host:$kotlinVersion")
     api(project(":lib"))
@@ -22,9 +22,9 @@ dependencies {
 
 intellij {
     pluginName.set("Confis")
-    //version.set("2021.3")
+    // version.set("2021.3")
     version.set("2022.1")
-    //version.set("IC-213.5744.223")
+    // version.set("IC-213.5744.223")
     type.set("IC")
 
     plugins.set(
@@ -41,7 +41,6 @@ tasks.withType<KotlinCompile> {
         freeCompilerArgs += "-Xjvm-default=all"
     }
 }
-
 
 configurations.all {
     resolutionStrategy.sortArtifacts(ResolutionStrategy.SortOrder.DEPENDENCY_FIRST)

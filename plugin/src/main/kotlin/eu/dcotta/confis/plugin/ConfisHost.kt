@@ -2,7 +2,6 @@ package eu.dcotta.confis.plugin
 
 import com.intellij.openapi.diagnostic.logger
 import eu.dcotta.confis.dsl.AgreementBuilder
-import eu.dcotta.confis.dsl.AgreementBuilder.Builder
 import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.scripting.ConfisScriptDefinition
 import kotlin.script.experimental.api.ResultWithDiagnostics
@@ -20,14 +19,13 @@ class ConfisHost {
     private val compilationConfiguration = createJvmCompilationConfigurationFromTemplate<ConfisScriptDefinition>() {
         jvm {
             dependenciesFromCurrentContext(wholeClasspath = true)
-            //libraries = arrayOf(PathUtil.getResourcePathForClass(Agreement::class.java).path),
         }
         ide { acceptedLocations(Everywhere) }
     }
     private val defaultHost = BasicJvmScriptingHost()
 
     fun eval(script: SourceCode): ResultWithDiagnostics<Agreement> {
-        //val res = replHost.compile(script, compilationConfiguration)
+        // val res = replHost.compile(script, compilationConfiguration)
 
         val res = defaultHost.eval(script, compilationConfiguration, null)
         if (res !is Success) {

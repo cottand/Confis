@@ -7,7 +7,6 @@ import kotlin.script.experimental.api.ScriptAcceptedLocation.Everywhere
 import kotlin.script.experimental.api.ScriptCompilationConfiguration
 import kotlin.script.experimental.api.ScriptEvaluationConfiguration
 import kotlin.script.experimental.api.acceptedLocations
-import kotlin.script.experimental.api.baseClass
 import kotlin.script.experimental.api.defaultIdentifier
 import kotlin.script.experimental.api.defaultImports
 import kotlin.script.experimental.api.displayName
@@ -29,12 +28,11 @@ object CompilationConfig : ScriptCompilationConfiguration({
         "eu.dcotta.confis.dsl.*",
     )
 
-    baseClass(AgreementBuilder::class)
+    // baseClass(AgreementBuilder::class)
     fileExtension("confis.kts")
     displayName("Confis Agreement")
 
     defaultIdentifier("ConfisScript")
-    println("Using default imports:\n  " + this[defaultImports]?.joinToString("\n  "))
 
     jvm {
         // the dependenciesFromCurrentContext helper function extracts the classpath from current thread classloader

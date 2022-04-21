@@ -8,7 +8,7 @@ import com.intellij.openapi.fileEditor.TextEditor
 import com.intellij.openapi.fileEditor.impl.text.TextEditorProvider
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiFileFactory
+import com.intellij.testFramework.LightVirtualFile
 import org.intellij.plugins.markdown.lang.MarkdownLanguage
 import org.intellij.plugins.markdown.ui.preview.MarkdownPreviewFileEditor
 
@@ -22,15 +22,8 @@ class ConfisEditorProvider : FileEditorProvider {
 
         val mdFileName = "${file.name}_temp-confis.md"
         val mdLang = MarkdownLanguage.INSTANCE
-        //val mdInMem = LightVirtualFile(mdFileName)
-        val factory = PsiFileFactory.getInstance(project)
-
-        // preserve \r\n as it is done in MultiHostRegistrarImpl
-        val mdPsi = factory.createFileFromText(mdFileName, mdLang, "# init md1", true, false)
-        val mdInMem = (mdPsi.virtualFile as? com.intellij.testFramework.LightVirtualFile)!!
-        //myNewVirtualFile.setOriginalFile(injectedFile.getVirtualFile())
-
-        assert(mdPsi.textLength == mdInMem.content.length) { "PSI / Virtual file text mismatch" }
+        val mdInMem = LightVirtualFile(mdFileName, "# init md4")
+        mdInMem.language = mdLang
 
         val preview = MarkdownPreviewFileEditor(project, mdInMem)
 

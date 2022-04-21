@@ -11,15 +11,14 @@ import com.intellij.openapi.fileEditor.TextEditorWithPreview.Layout.SHOW_EDITOR_
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiFileFactory
 import com.intellij.testFramework.LightVirtualFile
 import com.intellij.util.Alarm
 import com.intellij.util.Alarm.ThreadToUse.POOLED_THREAD
 import com.intellij.util.Alarm.ThreadToUse.SWING_THREAD
 import eu.dcotta.confis.render.renderMarkdown
+import org.intellij.plugins.markdown.ui.preview.MarkdownPreviewFileEditor
 import kotlin.script.experimental.api.ResultWithDiagnostics.Failure
 import kotlin.script.experimental.api.ResultWithDiagnostics.Success
-import org.intellij.plugins.markdown.ui.preview.MarkdownPreviewFileEditor
 
 class ConfisEditor(
     val editor: TextEditor,
@@ -54,7 +53,7 @@ class ConfisEditor(
 
     private fun documentToMarkdown(event: DocumentEvent): String {
         val source =
-            //VirtualFileScriptSource(confisFile)
+            // VirtualFileScriptSource(confisFile)
             ConfisSourceCode(confisFile.url, confisFile.name, event.document.text)
 
         return when (val res = host.eval(source)) {
@@ -105,5 +104,3 @@ data class DocumentListenerImpl(
     override fun beforeDocumentChange(event: DocumentEvent) = beforeDocChange(event)
     override fun documentChanged(event: DocumentEvent) = afterDocChange(event)
 }
-
-

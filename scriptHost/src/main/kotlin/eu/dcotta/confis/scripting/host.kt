@@ -1,11 +1,8 @@
 package eu.dcotta.confis.scripting
 
-import eu.dcotta.confis.dsl.AgreementBuilder
-import eu.dcotta.confis.model.Agreement
 import java.io.File
 import kotlin.script.experimental.api.EvaluationResult
 import kotlin.script.experimental.api.ResultWithDiagnostics
-import kotlin.script.experimental.api.SourceCode
 import kotlin.script.experimental.host.toScriptSource
 import kotlin.script.experimental.jvm.dependenciesFromCurrentContext
 import kotlin.script.experimental.jvm.jvm
@@ -17,14 +14,13 @@ fun evalFile(scriptFile: File): ResultWithDiagnostics<EvaluationResult> {
         jvm {
             dependenciesFromCurrentContext(
                 wholeClasspath = true
-                //"lib", "script"
+                // "lib", "script"
             )
         }
     }
 
     return BasicJvmScriptingHost().eval(scriptFile.toScriptSource(), compilationConfiguration, null)
 }
-
 
 fun main() {
     TODO()
