@@ -11,7 +11,6 @@ import kotlin.script.experimental.api.ScriptAcceptedLocation.Everywhere
 import kotlin.script.experimental.api.SourceCode
 import kotlin.script.experimental.api.acceptedLocations
 import kotlin.script.experimental.api.baseClass
-import kotlin.script.experimental.api.dependencies
 import kotlin.script.experimental.api.ide
 import kotlin.script.experimental.host.ScriptingHostConfiguration
 import kotlin.script.experimental.jvm.baseClassLoader
@@ -30,8 +29,6 @@ class ConfisHost {
             //    ConfisScriptDefinition::class,
             //    PersistentList::class,
             // ))
-            val deps = this[dependencies] ?: emptyList()
-            logger<ConfisHost>().warn("Classpath contains following confis packages: $deps")
         }
         baseClass(ConfisScriptDefinition::class)
         ide { acceptedLocations(Everywhere) }

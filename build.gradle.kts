@@ -25,6 +25,10 @@ subprojects {
     dependencies {
         //"implementation"("io.github.microutils:kotlin-logging-jvm:2.1.20")
 
+        val kotestVersion = "5.1.0"
+        testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
+        testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
+
     }
     if ("plugin" !in name) {
         apply<JacocoPlugin>()
@@ -35,6 +39,13 @@ subprojects {
                     html.required.set(false)
                 }
                 dependsOn(test)
+            }
+        }
+    }
+    testing {
+        suites {
+            val test by getting(JvmTestSuite::class) {
+                useJUnitJupiter()
             }
         }
     }

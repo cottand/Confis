@@ -14,7 +14,6 @@ val kotlinVersion: String by rootProject.extra
 
 dependencies {
     api(project(":script"))
-    // compileOnly(project(":scriptHost"))
     implementation("org.jetbrains.kotlin:kotlin-scripting-jvm:$kotlinVersion")
     implementation("org.jetbrains.kotlin:kotlin-scripting-jvm-host:$kotlinVersion")
     api(project(":lib"))
@@ -44,6 +43,7 @@ tasks.runIde {
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs += "-Xjvm-default=all"
+        jvmTarget = "11"
     }
 }
 

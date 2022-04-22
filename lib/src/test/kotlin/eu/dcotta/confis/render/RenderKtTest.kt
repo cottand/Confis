@@ -45,8 +45,6 @@ class RenderKtTest : StringSpec({
             """
         }.renderMarkdown()
 
-        println(md)
-
         md shouldContain """_"pay"_"""
         md shouldContain """_"notify"_: Notify by email"""
     }
