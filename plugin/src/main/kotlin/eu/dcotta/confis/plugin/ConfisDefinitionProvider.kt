@@ -23,15 +23,4 @@ class ConfisDefinitionProvider : ScriptDefinitionsProvider {
         )
 
     override fun useDiscovery(): Boolean = false
-
-    // val def = ScriptDefinition(
-    //    CompilationConfig,
-    //    EvaluationConfig,
-    // )
-
-    // override fun provideDefinitions(
-    //    baseHostConfiguration: ScriptingHostConfiguration,
-    //    loadedScriptDefinitions: List<ScriptDefinition>,
-    // ): Iterable<ScriptDefinition> =
-    //    loadedScriptDefinitions.plus(def)
 }

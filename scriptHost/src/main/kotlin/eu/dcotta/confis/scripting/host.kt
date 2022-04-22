@@ -13,7 +13,8 @@ fun evalFile(scriptFile: File): ResultWithDiagnostics<EvaluationResult> {
     val compilationConfiguration = createJvmCompilationConfigurationFromTemplate<ConfisScriptDefinition> {
         jvm {
             dependenciesFromCurrentContext(
-                "lib", "script"
+                wholeClasspath = true
+                // "lib", "script"
             )
         }
     }

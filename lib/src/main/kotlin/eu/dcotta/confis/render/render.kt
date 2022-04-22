@@ -84,5 +84,5 @@ fun Clause.renderMd(index: Int): String {
 
 private fun CircumstanceMap.renderMdList(): String =
     toList()
-        .mapIndexed { index, circumstance -> "\n|  ${index + 1}. " + circumstance.render() }
-        .joinToString(separator = "")
+        .mapIndexed { index, circumstance -> "\n|    ${index + 1}. " + circumstance.render() }
+        .joinToString(prefix = "\n", separator = "")
