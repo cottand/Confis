@@ -34,6 +34,11 @@ intellij {
             "org.intellij.plugins.markdown"
         )
     )
+    downloadSources.set(true)
+}
+
+tasks.runIde {
+    autoReloadPlugins.set(true)
 }
 
 tasks.withType<KotlinCompile> {

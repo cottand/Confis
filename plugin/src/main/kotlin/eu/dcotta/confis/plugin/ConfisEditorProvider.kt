@@ -1,5 +1,6 @@
 package eu.dcotta.confis.plugin
 
+import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorPolicy
 import com.intellij.openapi.fileEditor.FileEditorPolicy.PLACE_AFTER_DEFAULT_EDITOR
@@ -20,14 +21,18 @@ class ConfisEditorProvider : FileEditorProvider {
     override fun createEditor(project: Project, file: VirtualFile): FileEditor {
         val editor: TextEditor = TextEditorProvider.getInstance().createEditor(project, file) as TextEditor
 
+        val scriptHost = ConfisHost()
+        val confisText = FileDocumentManager.getInstance().getDocument(file)?.text ?: ""
+        val initialMdText = scriptHost.eval(file.asConfisSourceCode(confisText)).renderMarkdownResult()
+
         val mdFileName = "${file.name}_temp-confis.md"
         val mdLang = MarkdownLanguage.INSTANCE
-        val mdInMem = LightVirtualFile(mdFileName, "# init md4")
+        val mdInMem = LightVirtualFile(mdFileName, initialMdText)
         mdInMem.language = mdLang
 
         val preview = MarkdownPreviewFileEditor(project, mdInMem)
 
-        return ConfisEditor(editor, file, preview, mdInMem, project)
+        return ConfisEditor(editor, file, preview, mdInMem, project, scriptHost)
     }
 
     override fun getEditorTypeId() = id
