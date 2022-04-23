@@ -103,6 +103,6 @@ class RenderKtTest : StringSpec({
         }
 
         val rendered = a.clauses.first().renderMd(1)
-        rendered shouldContain "1. alice must pay alice when:"
+        rendered shouldContain "1. alice must pay alice:"
     }
 })
