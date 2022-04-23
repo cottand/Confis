@@ -83,4 +83,18 @@ class RenderKtTest : StringSpec({
         val rendered = a.clauses.first().renderMd(1)
         rendered shouldContain "1. alice may pay alice under the following circumstances"
     }
+
+    "render simple requirement clause with time circumstances" {
+        val a = Agreement {
+            val alice by party
+            val pay by action
+
+            alice must pay(alice) underCircumstances {
+                within { (1 of May)..(3 of May) year 2022 }
+            }
+        }
+
+        val rendered = a.clauses.first().renderMd(1)
+        rendered shouldContain "1. alice must pay alice when:"
+    }
 })

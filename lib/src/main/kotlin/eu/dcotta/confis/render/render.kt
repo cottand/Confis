@@ -67,17 +67,27 @@ fun Clause.renderMd(index: Int): String {
         Allow -> "may"
         Forbid -> "may not"
     }
+
     fun Allowance.circumstancePermission() = when (this) {
         Allow -> "under the following circumstances"
         Forbid -> "except under the following circumstances"
     }
     return when (this) {
         is Permission -> """
-        |$index. ${sentence.subject.render()} ${allowance.clausePermission()} ${action.render()} ${obj.render()}"""
-        is PermissionWithCircumstances -> permission.renderMd(index) + " ${circumstanceAllowance
-            .circumstancePermission()}:" + circumstances.renderMdList()
-        is Requirement -> TODO()
-        is RequirementWithCircumstances -> TODO()
+            |$index. ${sentence.subject.render()} ${allowance.clausePermission()} ${action.render()} ${obj.render()}.
+        """
+
+        is PermissionWithCircumstances ->
+            permission.renderMd(index) +
+                " ${circumstanceAllowance.circumstancePermission().dropLast(1)}:" + circumstances.renderMdList()
+
+        is Requirement -> """
+            |$index. ${sentence.subject.render()} must ${action.render()} ${obj.render()}.
+        """
+
+        is RequirementWithCircumstances ->
+            "${Requirement(sentence).renderMd(index).dropLast(1)} when:${circumstances.renderMdList()}"
+
         is Text -> "|$index. ${string.replace("\n", "|\n")}"
     }.trimIndent()
 }
