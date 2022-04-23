@@ -12,7 +12,6 @@ import kotlin.script.experimental.api.ResultValue
 import kotlin.script.experimental.api.ResultWithDiagnostics
 import kotlin.script.experimental.jvmhost.BasicJvmScriptingHost
 
-// FIXME bloody classpath troubles
 class ConfisHostTest : StringSpec({
     val ktFile = LightVirtualFile("hello.confis.kts", "")
 

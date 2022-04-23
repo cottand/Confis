@@ -8,6 +8,4 @@ dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     implementation("org.jeasy:easy-rules-core:4.1.0")
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
-
-    implementation("org.slf4j:slf4j-log4j12:1.7.36")
 }
