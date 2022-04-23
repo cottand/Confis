@@ -12,6 +12,8 @@ import eu.dcotta.confis.model.Clause.PermissionWithCircumstances
 import eu.dcotta.confis.model.Clause.Requirement
 import eu.dcotta.confis.model.Clause.RequirementWithCircumstances
 import eu.dcotta.confis.model.Clause.Text
+import eu.dcotta.confis.model.Obj
+import eu.dcotta.confis.model.Obj.Named
 import eu.dcotta.confis.model.Party
 import org.intellij.lang.annotations.Language
 
@@ -24,6 +26,11 @@ fun Agreement.renderMarkdown(): String {
 
     val actions = actions
         .mapIndexed { index, action -> action.renderMdLine(index + 1) }
+        .joinToString(separator = "\n")
+
+    val things = objs
+        .filterIsInstance<Obj.Named>()
+        .mapIndexed { index, obj -> obj.renderMdLine(index + 1) }
         .joinToString(separator = "\n")
 
     val clauses = clauses
@@ -40,6 +47,7 @@ fun Agreement.renderMarkdown(): String {
         |        
         |## 2 - Definitions
         |
+        $things
         $actions
         |
         |## 3 - Terms
@@ -50,15 +58,21 @@ fun Agreement.renderMarkdown(): String {
 }
 
 @Language("markdown")
+private fun Obj.Named.renderMdLine(index: Int) = when {
+    description != null -> """|$index. _"$name"_: $description."""
+    else -> """|$index. _"$name"_. """
+}
+
+@Language("markdown")
 private fun Party.renderMdLine(index: Int): String = when {
-    description != null -> "|$index. $description (**$name**)"
-    else -> "|$index. **$name**"
+    description != null -> "|$index. $description (**$name**)."
+    else -> "|$index. **$name**."
 }
 
 @Language("markdown")
 private fun Action.renderMdLine(index: Int): String = when {
-    description != null -> """|$index. _"$name"_: $description"""
-    else -> """|$index. _"$name"_"""
+    description != null -> """|$index. _"$name"_: $description."""
+    else -> """|$index. _"$name"_."""
 }
 
 @Language("markdown")
@@ -78,17 +92,17 @@ fun Clause.renderMd(index: Int): String {
         """
 
         is PermissionWithCircumstances ->
-            permission.renderMd(index) +
-                " ${circumstanceAllowance.circumstancePermission().dropLast(1)}:" + circumstances.renderMdList()
+            permission.renderMd(index).dropLast(1) +
+                " ${circumstanceAllowance.circumstancePermission()}:" + circumstances.renderMdList()
 
         is Requirement -> """
             |$index. ${sentence.subject.render()} must ${action.render()} ${obj.render()}.
         """
 
         is RequirementWithCircumstances ->
-            "${Requirement(sentence).renderMd(index).dropLast(1)} when:${circumstances.renderMdList()}"
+            "${Requirement(sentence).renderMd(index).dropLast(1)}:${circumstances.renderMdList()}"
 
-        is Text -> "|$index. ${string.replace("\n", "|\n")}"
+        is Text -> "|$index. ${string.replace("\n", " ")}"
     }.trimIndent()
 }
 

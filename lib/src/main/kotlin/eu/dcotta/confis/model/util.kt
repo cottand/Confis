@@ -26,3 +26,24 @@ internal fun Clause.extractActions(): List<Action> {
 
     return actionInClause?.let { listOf(it) }.orEmpty() + actionsInCircumstances
 }
+
+internal fun Clause.extractObjs(): List<Obj> {
+
+    fun CircumstanceMap.extractObjs() = get(PrecedentSentence.KeySet).map { it.sentence.obj }
+
+    val objsInClause = when (this) {
+        is Permission -> obj
+        is PermissionWithCircumstances -> sentence.obj
+        is Requirement -> obj
+        is RequirementWithCircumstances -> sentence.obj
+        is Text -> null
+    }
+
+    val objsInCircumstances = when (this) {
+        is NoCircumstance -> emptyList()
+        is PermissionWithCircumstances -> circumstances.extractObjs()
+        is RequirementWithCircumstances -> circumstances.extractObjs()
+    }
+
+    return (objsInClause?.let { listOf(it) }.orEmpty() + objsInCircumstances).filter { it != Obj.Anything }
+}

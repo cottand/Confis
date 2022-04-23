@@ -1,5 +1,6 @@
 package eu.dcotta.confis.render
 
+import eu.dcotta.confis.dsl.CircumstanceBuilder.PastSentenceBuilder.did
 import eu.dcotta.confis.dsl.of
 import eu.dcotta.confis.dsl.rangeTo
 import eu.dcotta.confis.dsl.year
@@ -33,11 +34,16 @@ class RenderKtTest : StringSpec({
             val alice by party
             val pay by action
             val notify by action(description = "Notify by email")
+            val message by thing
+            val message2 by thing(description = "messaging2")
 
             alice may pay(alice)
             alice may notify(alice) asLongAs {
                 with purpose Commercial
                 after { alice did pay(alice) }
+            }
+            alice may notify(message) asLongAs {
+                after { alice did notify(message2) }
             }
 
             -"""
@@ -46,7 +52,9 @@ class RenderKtTest : StringSpec({
         }.renderMarkdown()
 
         md shouldContain """_"pay"_"""
+        md shouldContain """_"message"_"""
         md shouldContain """_"notify"_: Notify by email"""
+        md shouldContain """_"message2"_: messaging2"""
     }
 
     "render title and intro" {

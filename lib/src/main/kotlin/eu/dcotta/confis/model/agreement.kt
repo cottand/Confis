@@ -10,6 +10,7 @@ data class Agreement(
     val introduction: String? = null,
 ) {
     val actions by lazy { clauses.flatMap { it.extractActions() }.toPersistentSet() }
+    val objs by lazy { clauses.flatMap { it.extractObjs() }.toPersistentSet() }
 }
 
 fun Agreement(builder: AgreementBuilder.() -> Unit): Agreement = AgreementBuilder(builder)

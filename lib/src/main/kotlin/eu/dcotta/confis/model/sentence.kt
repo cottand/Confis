@@ -42,7 +42,7 @@ fun mostPermissive(left: AllowanceResult, other: AllowanceResult): AllowanceResu
  */
 fun computeAmbiguous(l: AllowanceResult, r: AllowanceResult) = if (l == r) l else Depends
 
-interface Obj {
+sealed interface Obj {
     fun render(): String
 
     class Named(val name: String, val description: String? = null) : Obj {
