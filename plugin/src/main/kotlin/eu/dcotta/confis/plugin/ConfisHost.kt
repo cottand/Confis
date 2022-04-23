@@ -12,14 +12,12 @@ import kotlin.script.experimental.api.SourceCode
 import kotlin.script.experimental.api.acceptedLocations
 import kotlin.script.experimental.api.baseClass
 import kotlin.script.experimental.api.ide
-import kotlin.script.experimental.host.ScriptingHostConfiguration
-import kotlin.script.experimental.jvm.baseClassLoader
 import kotlin.script.experimental.jvm.dependenciesFromClassloader
 import kotlin.script.experimental.jvm.jvm
 import kotlin.script.experimental.jvmhost.BasicJvmScriptingHost
 import kotlin.script.experimental.jvmhost.createJvmCompilationConfigurationFromTemplate
 
-class ConfisHost {
+class ConfisHost(private val defaultHost: BasicJvmScriptingHost) {
 
     private val compilationConfiguration = createJvmCompilationConfigurationFromTemplate<ConfisScriptDefinition> {
         jvm {
@@ -33,13 +31,6 @@ class ConfisHost {
         baseClass(ConfisScriptDefinition::class)
         ide { acceptedLocations(Everywhere) }
     }
-    private val defaultHost = BasicJvmScriptingHost(
-        ScriptingHostConfiguration {
-            jvm {
-                baseClassLoader.put(ConfisHost::class.java.classLoader)
-            }
-        }
-    )
 
     fun eval(script: SourceCode): ResultWithDiagnostics<Agreement> {
         // val res = replHost.compile(script, compilationConfiguration)

@@ -29,6 +29,10 @@ subprojects {
         testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
         testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
 
+        val mockkVerison ="1.12.3"
+        testImplementation("io.mockk:mockk:$mockkVerison")
+
+
     }
     if ("plugin" !in name) {
         apply<JacocoPlugin>()
