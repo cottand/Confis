@@ -6,6 +6,7 @@ import eu.dcotta.confis.model.Date
 import eu.dcotta.confis.model.Month.April
 import eu.dcotta.confis.model.Month.May
 import eu.dcotta.confis.model.TimeRange
+import eu.dcotta.confis.render.renderMarkdown
 import io.kotest.assertions.fail
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.should
@@ -70,6 +71,14 @@ class HostTest : StringSpec({
         val res = evalFile(File("src/test/resources/scripts/must.confis.kts"))
 
         if (res !is ResultWithDiagnostics.Success) failAndPrint(res)
+    }
+
+    "render" {
+        val res = evalFile(File("src/test/resources/scripts/simple.confis.kts"))
+        if (res !is ResultWithDiagnostics.Success) failAndPrint(res)
+
+        val i = res.value.returnValue.scriptInstance as AgreementBuilder
+        println(AgreementBuilder.assemble(i).renderMarkdown())
     }
 })
 
