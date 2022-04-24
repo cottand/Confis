@@ -16,27 +16,6 @@ enum class AllowanceResult {
     Allow, Forbid, Unspecified, Depends;
 }
 
-// takes the least permissive
-infix fun AllowanceResult.leastPermissive(other: AllowanceResult): AllowanceResult = when (this) {
-    Allow -> when (other) {
-        Allow -> Allow
-        Forbid -> Forbid
-        Unspecified, Depends -> Allow
-    }
-    Forbid -> Forbid
-    Unspecified, Depends -> other
-}
-
-fun mostPermissive(left: AllowanceResult, other: AllowanceResult): AllowanceResult = when (left) {
-    Forbid -> when (other) {
-        Allow -> Allow
-        Forbid -> Forbid
-        Unspecified, Depends -> Allow
-    }
-    Allow -> Allow
-    Unspecified, Depends -> other
-}
-
 /**
  * Returns [Depends] unless [l] equals [r]
  */
