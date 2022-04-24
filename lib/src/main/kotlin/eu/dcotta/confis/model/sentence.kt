@@ -3,7 +3,6 @@ package eu.dcotta.confis.model
 import eu.dcotta.confis.model.AllowanceResult.Allow
 import eu.dcotta.confis.model.AllowanceResult.Depends
 import eu.dcotta.confis.model.AllowanceResult.Forbid
-import eu.dcotta.confis.model.AllowanceResult.Unspecified
 import eu.dcotta.confis.model.Obj.Anything
 
 enum class Allowance {
