@@ -1,11 +1,17 @@
 package eu.dcotta.confis.model
 
 import eu.dcotta.confis.dsl.AgreementBuilder
+import kotlinx.collections.immutable.toPersistentSet
 
 data class Agreement(
     val clauses: List<Clause>,
     val parties: List<Party>,
-)
+    val title: String? = null,
+    val introduction: String? = null,
+) {
+    val actions by lazy { clauses.flatMap { it.extractActions() }.toPersistentSet() }
+    val objs by lazy { clauses.flatMap { it.extractObjs() }.toPersistentSet() }
+}
 
 fun Agreement(builder: AgreementBuilder.() -> Unit): Agreement = AgreementBuilder(builder)
 
@@ -13,7 +19,7 @@ sealed interface NoCircumstance
 
 sealed interface Clause {
     @JvmInline
-    value class Text(val string: String) : Clause
+    value class Text(val string: String) : Clause, NoCircumstance
 
     data class PermissionWithCircumstances(
         val permission: Permission,

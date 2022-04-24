@@ -10,23 +10,11 @@ dependencies {
     api(project(":script"))
 
     api("org.jetbrains.kotlin:kotlin-scripting-common:$kotlinVersion")
-    implementation("org.jetbrains.kotlin:kotlin-scripting-jvm:$kotlinVersion")
-    implementation("org.jetbrains.kotlin:kotlin-scripting-jvm-host:$kotlinVersion")
-
-    val kotestVersion = "5.1.0"
-    testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
-    testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
+    api("org.jetbrains.kotlin:kotlin-scripting-jvm:$kotlinVersion")
+    api("org.jetbrains.kotlin:kotlin-scripting-jvm-host:$kotlinVersion")
 
     kotlinScriptDef(project(":script"))
     testKotlinScriptDef(project(":script"))
-}
-
-testing {
-    suites {
-        val test by getting(JvmTestSuite::class) {
-            useJUnitJupiter()
-        }
-    }
 }
 
 afterEvaluate {

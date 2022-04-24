@@ -20,6 +20,10 @@ import eu.dcotta.confis.util.removeLastOccurrence
 // @ConfisDsl
 open class AgreementBuilder {
 
+    // metadata
+    var title: String? = null
+    var introduction: String? = null
+
     private val freeTextClauses = mutableListOf<Text>()
     private val parties = mutableListOf<Party>()
 
@@ -111,7 +115,9 @@ open class AgreementBuilder {
             clausesWithCircumstances +
             sentencesWithoutCircumstances +
             freeTextClauses,
-        parties = parties
+        parties = parties,
+        title = title,
+        introduction = introduction,
     )
 
     @ConfisDsl

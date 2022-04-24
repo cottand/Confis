@@ -76,3 +76,23 @@ Things are what Actions are performed on. They can also carry descriptions and n
         description = "10€ in cash"
     )
     ```
+
+## Sentences
+
+Parties, things, and actions together are used to form sentences, such as in [Permission Clauses](PermissionClauses.md):
+
+```kotlin
+val alice by party
+val eat by action
+val cake by thing
+
+
+alice may eat(cake)
+
+val bob by party
+val pay by action
+
+alice may pay(bob)
+```
+
+You also need to make sentences for [Requirement Clauses](RequirementClauses.md) and [Past Action Circumstances](Circumstances.md#past-actions)

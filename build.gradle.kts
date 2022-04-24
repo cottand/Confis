@@ -19,22 +19,38 @@ allprojects {
 }
 
 subprojects {
-    apply<JacocoPlugin>()
     apply<KtlintPlugin>()
     apply(plugin = "org.jetbrains.kotlin.jvm")
 
     dependencies {
         //"implementation"("io.github.microutils:kotlin-logging-jvm:2.1.20")
 
-    }
-    tasks {
+        val kotestVersion = "5.2.3"
+        testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
+        testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
 
-        jacocoTestReport {
-            reports {
-                xml.required.set(false)
-                html.required.set(false)
+        val mockkVerison ="1.12.3"
+        testImplementation("io.mockk:mockk:$mockkVerison")
+
+
+    }
+    if ("plugin" !in name) {
+        apply<JacocoPlugin>()
+        tasks {
+            jacocoTestReport {
+                reports {
+                    xml.required.set(false)
+                    html.required.set(false)
+                }
+                dependsOn(test)
             }
-            dependsOn(test)
+        }
+    }
+    testing {
+        suites {
+            val test by getting(JvmTestSuite::class) {
+                useJUnitJupiter()
+            }
         }
     }
 

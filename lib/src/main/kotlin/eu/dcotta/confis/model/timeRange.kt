@@ -1,5 +1,8 @@
 package eu.dcotta.confis.model
 
+import java.text.SimpleDateFormat
+import java.util.Calendar
+
 sealed interface TimeRange : OverlappingCircumstance {
 
     data class Range(override val start: Date, override val endInclusive: Date) : ClosedRange<Date>, TimeRange {
@@ -12,6 +15,8 @@ sealed interface TimeRange : OverlappingCircumstance {
         override fun contains(other: TimeRange) = other is Range && other.start in this && other.endInclusive in this
 
         override fun overlapsWith(other: Circumstance) = other is Range && (start in other || endInclusive in other)
+
+        override fun toString(): String = "from $start to $endInclusive inclusive"
     }
 
     operator fun contains(other: TimeRange): Boolean
@@ -43,4 +48,14 @@ data class Date(val day: Int, val month: Month, val year: Int) : Comparable<Date
         else -> 0
     }
     operator fun rangeTo(end: Date) = TimeRange.Range(this, end)
+
+    override fun toString(): String {
+        val cal = Calendar.getInstance().apply {
+            set(year, month.ordinal, day)
+        }
+
+        val f = SimpleDateFormat("dd/MM/yyyy")
+
+        return f.format(cal.time)
+    }
 }
