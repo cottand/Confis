@@ -29,11 +29,9 @@ class ConfisHost(private val defaultHost: BasicJvmScriptingHost) {
             // ))
         }
         baseClass(ConfisScriptDefinition::class)
-        ide { acceptedLocations(Everywhere) }
     }
 
     fun eval(script: SourceCode): ResultWithDiagnostics<Agreement> {
-        // val res = replHost.compile(script, compilationConfiguration)
         thisLogger().debug("class ${ConfisScriptDefinition::class.qualifiedName}")
         Thread.currentThread().contextClassLoader = ConfisHost::class.java.classLoader
         val res = defaultHost.eval(script, compilationConfiguration, null)

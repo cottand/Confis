@@ -1,5 +1,6 @@
 package eu.dcotta.confis.scripting
 
+import eu.dcotta.confis.scripting.eu.dcotta.confis.scripting.ConfisSourceCode
 import java.io.File
 import kotlin.script.experimental.api.EvaluationResult
 import kotlin.script.experimental.api.ResultWithDiagnostics
@@ -9,18 +10,17 @@ import kotlin.script.experimental.jvm.jvm
 import kotlin.script.experimental.jvmhost.BasicJvmScriptingHost
 import kotlin.script.experimental.jvmhost.createJvmCompilationConfigurationFromTemplate
 
-fun evalFile(scriptFile: File): ResultWithDiagnostics<EvaluationResult> {
-    val compilationConfiguration = createJvmCompilationConfigurationFromTemplate<ConfisScriptDefinition> {
-        jvm {
-            dependenciesFromCurrentContext(
-                wholeClasspath = true
-                // "lib", "script"
-            )
-        }
+private val compilationConfiguration = createJvmCompilationConfigurationFromTemplate<ConfisScriptDefinition> {
+    jvm {
+        dependenciesFromCurrentContext(wholeClasspath = true)
     }
-
-    return BasicJvmScriptingHost().eval(scriptFile.toScriptSource(), compilationConfiguration, null)
 }
+
+fun evalFile(scriptFile: File): ResultWithDiagnostics<EvaluationResult> =
+    BasicJvmScriptingHost().eval(scriptFile.toScriptSource(), compilationConfiguration, null)
+
+fun evalFile(source: ConfisSourceCode): ResultWithDiagnostics<EvaluationResult> =
+    BasicJvmScriptingHost().eval(source, compilationConfiguration, null)
 
 fun main() {
     TODO()

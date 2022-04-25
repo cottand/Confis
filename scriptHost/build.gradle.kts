@@ -16,11 +16,3 @@ dependencies {
     kotlinScriptDef(project(":script"))
     testKotlinScriptDef(project(":script"))
 }
-
-afterEvaluate {
-    configurations {
-        kotlinScriptDef {
-            println(files)
-        }
-    }
-}

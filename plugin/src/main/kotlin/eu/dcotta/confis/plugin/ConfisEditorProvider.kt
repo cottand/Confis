@@ -10,7 +10,7 @@ import com.intellij.openapi.fileEditor.impl.text.TextEditorProvider
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.testFramework.LightVirtualFile
-import eu.dcotta.confis.scripting.eu.dcotta.confis.scripting.CONFIS_FILE_EXTENSION
+import eu.dcotta.confis.scripting.CONFIS_FILE_EXTENSION
 import org.intellij.plugins.markdown.lang.MarkdownLanguage
 import org.intellij.plugins.markdown.ui.preview.MarkdownPreviewFileEditor
 import kotlin.script.experimental.host.ScriptingHostConfiguration

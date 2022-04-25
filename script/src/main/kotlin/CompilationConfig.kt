@@ -11,10 +11,15 @@ import kotlin.script.experimental.api.defaultIdentifier
 import kotlin.script.experimental.api.defaultImports
 import kotlin.script.experimental.api.displayName
 import kotlin.script.experimental.api.fileExtension
+import kotlin.script.experimental.api.hostConfiguration
 import kotlin.script.experimental.api.ide
 import kotlin.script.experimental.api.scriptsInstancesSharing
+import kotlin.script.experimental.host.ScriptingHostConfiguration
+import kotlin.script.experimental.jvm.JvmScriptingHostConfigurationBuilder
+import kotlin.script.experimental.jvm.compilationCache
 import kotlin.script.experimental.jvm.dependenciesFromCurrentContext
 import kotlin.script.experimental.jvm.jvm
+import java.io.File
 
 object CompilationConfig : ScriptCompilationConfiguration({
     defaultImports(
@@ -35,19 +40,40 @@ object CompilationConfig : ScriptCompilationConfiguration({
     defaultIdentifier("ConfisScript")
 
     jvm {
-        // the dependenciesFromCurrentContext helper function extracts the classpath from current thread classloader
-        // and take jars with mentioned names to the compilation classpath via `dependencies` key.
-        // to add the whole classpath for the classloader without check for jar presense, use
-        // `dependenciesFromCurrentContext(wholeClasspath = true)`
-        // dependenciesFromCurrentContext(wholeClasspath = true)
         dependenciesFromCurrentContext(wholeClasspath = true)
     }
 
     ide {
         acceptedLocations(Everywhere)
     }
+
+    hostConfiguration(ScriptingHostConfiguration {
+        jvm {
+            cacheConfiguration()
+        }
+    })
 })
 
 object EvaluationConfig : ScriptEvaluationConfiguration({
     scriptsInstancesSharing(false) // if a script is imported multiple times in the import hierarchy, use a single copy
 })
+
+const val compiledScriptsCacheDirProperty = "eu.dcotta.confis.scripting.compilation_cache_dir"
+const val compiledScriptsCacheDirEnvVar = "COMPILED_CONFIS_SCRIPTS_CACHE_DIR"
+fun JvmScriptingHostConfigurationBuilder.cacheConfiguration() {
+    val cacheDirSetting = System.getProperty(compiledScriptsCacheDirProperty)
+        ?: System.getenv(compiledScriptsCacheDirEnvVar)
+
+    val cacheBaseDir = when {
+        cacheDirSetting == null -> System.getProperty("java.io.tempdir")
+            ?.let(::File)
+            ?.takeIf { it.exists() && it.isDirectory }
+            ?.let { File(it, "confis.kts.compiled.cache") }
+            ?.also { it.mkdirs() }
+        cacheDirSetting.isBlank() || File(cacheDirSetting).let { it.exists() && !it.isDirectory } -> null
+        else -> File(cacheDirSetting)
+    }
+
+    if (cacheBaseDir != null) compilationCache(InMemAndFileSystemCache(cacheBaseDir, 20))
+}
+

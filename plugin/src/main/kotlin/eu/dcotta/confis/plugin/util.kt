@@ -4,6 +4,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.Alarm
 import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.render.renderMarkdown
+import eu.dcotta.confis.scripting.eu.dcotta.confis.scripting.ConfisSourceCode
 import kotlin.script.experimental.api.ResultWithDiagnostics
 import kotlin.script.experimental.api.ResultWithDiagnostics.Failure
 import kotlin.script.experimental.api.ResultWithDiagnostics.Success
