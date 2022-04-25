@@ -3,6 +3,7 @@ package eu.dcotta.confis.scripting
 import eu.dcotta.confis.dsl.AgreementBuilder
 import eu.dcotta.confis.model.Month
 import eu.dcotta.confis.model.Purpose
+import java.io.File
 import kotlin.script.experimental.api.ScriptAcceptedLocation.Everywhere
 import kotlin.script.experimental.api.ScriptCompilationConfiguration
 import kotlin.script.experimental.api.ScriptEvaluationConfiguration
@@ -11,15 +12,12 @@ import kotlin.script.experimental.api.defaultIdentifier
 import kotlin.script.experimental.api.defaultImports
 import kotlin.script.experimental.api.displayName
 import kotlin.script.experimental.api.fileExtension
-import kotlin.script.experimental.api.hostConfiguration
 import kotlin.script.experimental.api.ide
 import kotlin.script.experimental.api.scriptsInstancesSharing
-import kotlin.script.experimental.host.ScriptingHostConfiguration
 import kotlin.script.experimental.jvm.JvmScriptingHostConfigurationBuilder
 import kotlin.script.experimental.jvm.compilationCache
 import kotlin.script.experimental.jvm.dependenciesFromCurrentContext
 import kotlin.script.experimental.jvm.jvm
-import java.io.File
 
 object CompilationConfig : ScriptCompilationConfiguration({
     defaultImports(
@@ -46,12 +44,6 @@ object CompilationConfig : ScriptCompilationConfiguration({
     ide {
         acceptedLocations(Everywhere)
     }
-
-    hostConfiguration(ScriptingHostConfiguration {
-        jvm {
-            cacheConfiguration()
-        }
-    })
 })
 
 object EvaluationConfig : ScriptEvaluationConfiguration({
@@ -60,12 +52,12 @@ object EvaluationConfig : ScriptEvaluationConfiguration({
 
 const val compiledScriptsCacheDirProperty = "eu.dcotta.confis.scripting.compilation_cache_dir"
 const val compiledScriptsCacheDirEnvVar = "COMPILED_CONFIS_SCRIPTS_CACHE_DIR"
-fun JvmScriptingHostConfigurationBuilder.cacheConfiguration() {
+fun JvmScriptingHostConfigurationBuilder.hybridCacheConfiguration() {
     val cacheDirSetting = System.getProperty(compiledScriptsCacheDirProperty)
         ?: System.getenv(compiledScriptsCacheDirEnvVar)
 
     val cacheBaseDir = when {
-        cacheDirSetting == null -> System.getProperty("java.io.tempdir")
+        cacheDirSetting == null -> System.getProperty("java.io.tmpdir")
             ?.let(::File)
             ?.takeIf { it.exists() && it.isDirectory }
             ?.let { File(it, "confis.kts.compiled.cache") }
@@ -76,4 +68,3 @@ fun JvmScriptingHostConfigurationBuilder.cacheConfiguration() {
 
     if (cacheBaseDir != null) compilationCache(InMemAndFileSystemCache(cacheBaseDir, 20))
 }
-

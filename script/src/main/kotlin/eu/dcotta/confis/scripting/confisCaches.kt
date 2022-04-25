@@ -1,12 +1,12 @@
 package eu.dcotta.confis.scripting
 
+import java.io.File
+import java.security.MessageDigest
 import kotlin.script.experimental.api.CompiledScript
 import kotlin.script.experimental.api.ScriptCompilationConfiguration
 import kotlin.script.experimental.api.SourceCode
 import kotlin.script.experimental.jvm.CompiledJvmScriptsCache
 import kotlin.script.experimental.jvmhost.CompiledScriptJarsCache
-import java.io.File
-import java.security.MessageDigest
 
 class ConfisFileSystemCache(dir: File) : CompiledJvmScriptsCache by CompiledScriptJarsCache({ source, config ->
     File(dir, compiledScriptUniqueName(source, config) + ".jar")

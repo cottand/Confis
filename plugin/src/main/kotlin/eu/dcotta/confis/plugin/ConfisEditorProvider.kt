@@ -11,10 +11,12 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.testFramework.LightVirtualFile
 import eu.dcotta.confis.scripting.CONFIS_FILE_EXTENSION
+import eu.dcotta.confis.scripting.InMemoryCache
 import org.intellij.plugins.markdown.lang.MarkdownLanguage
 import org.intellij.plugins.markdown.ui.preview.MarkdownPreviewFileEditor
 import kotlin.script.experimental.host.ScriptingHostConfiguration
 import kotlin.script.experimental.jvm.baseClassLoader
+import kotlin.script.experimental.jvm.compilationCache
 import kotlin.script.experimental.jvm.jvm
 import kotlin.script.experimental.jvmhost.BasicJvmScriptingHost
 
@@ -30,6 +32,7 @@ class ConfisEditorProvider : FileEditorProvider {
             ScriptingHostConfiguration {
                 jvm {
                     baseClassLoader.put(ConfisHost::class.java.classLoader)
+                    compilationCache(InMemoryCache(maxSize = 40))
                 }
             }
         )

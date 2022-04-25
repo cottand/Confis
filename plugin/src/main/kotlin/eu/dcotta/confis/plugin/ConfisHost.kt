@@ -7,11 +7,8 @@ import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.scripting.ConfisScriptDefinition
 import kotlin.script.experimental.api.ResultWithDiagnostics
 import kotlin.script.experimental.api.ResultWithDiagnostics.Success
-import kotlin.script.experimental.api.ScriptAcceptedLocation.Everywhere
 import kotlin.script.experimental.api.SourceCode
-import kotlin.script.experimental.api.acceptedLocations
 import kotlin.script.experimental.api.baseClass
-import kotlin.script.experimental.api.ide
 import kotlin.script.experimental.jvm.dependenciesFromClassloader
 import kotlin.script.experimental.jvm.jvm
 import kotlin.script.experimental.jvmhost.BasicJvmScriptingHost

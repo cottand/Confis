@@ -24,7 +24,6 @@ class InMemoryCacheTest : StringSpec({
 
     val source = source(0)
 
-
     "can put and remove stuff form cache" {
 
         val cache = InMemoryCache(2)
@@ -36,12 +35,10 @@ class InMemoryCacheTest : StringSpec({
         )
 
         cache.get(source, config) shouldBe compiled[0]
-
     }
 
     "latest access entry gets evicted when full" {
         val cache = InMemoryCache(3)
-
 
         for (i in 0..2) {
             cache.store(compiled[i], source(i), config)
@@ -57,13 +54,11 @@ class InMemoryCacheTest : StringSpec({
         // 4th entry: 2nd script should get evicted, not the 1st
         cache.store(compiled[3], source(3), config)
 
-
         cache.get(source(1), config) shouldBe null
     }
 
     "can dispose" {
         val cache = InMemoryCache(3)
-
 
         for (i in 0..2) {
             cache.store(compiled[i], source(i), config)

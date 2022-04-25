@@ -4,16 +4,14 @@ import eu.dcotta.confis.scripting.eu.dcotta.confis.scripting.ConfisSourceCode
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlin.script.experimental.api.CompiledScript
+import java.io.File
 import kotlin.script.experimental.api.ResultWithDiagnostics
 import kotlin.script.experimental.jvm.impl.KJvmCompiledModuleInMemory
 import kotlin.script.experimental.jvm.impl.KJvmCompiledScript
-import java.io.File
 
 class InMemAndFileSystemCacheTest : StringSpec({
 
