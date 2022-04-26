@@ -1,4 +1,4 @@
-package eu.dcotta.confis.plugin
+package eu.dcotta.confis.scripting.eu.dcotta.confis.scripting
 
 import kotlin.script.experimental.api.SourceCode
 

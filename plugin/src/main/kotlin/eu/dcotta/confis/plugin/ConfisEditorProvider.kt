@@ -10,7 +10,8 @@ import com.intellij.openapi.fileEditor.impl.text.TextEditorProvider
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.testFramework.LightVirtualFile
-import eu.dcotta.confis.scripting.eu.dcotta.confis.scripting.CONFIS_FILE_EXTENSION
+import eu.dcotta.confis.scripting.CONFIS_FILE_EXTENSION
+import eu.dcotta.confis.scripting.hybridCacheConfiguration
 import org.intellij.plugins.markdown.lang.MarkdownLanguage
 import org.intellij.plugins.markdown.ui.preview.MarkdownPreviewFileEditor
 import kotlin.script.experimental.host.ScriptingHostConfiguration
@@ -19,9 +20,8 @@ import kotlin.script.experimental.jvm.jvm
 import kotlin.script.experimental.jvmhost.BasicJvmScriptingHost
 
 class ConfisEditorProvider : FileEditorProvider {
-    override fun accept(project: Project, file: VirtualFile): Boolean {
-        return file.name.endsWith(CONFIS_FILE_EXTENSION)
-    }
+    override fun accept(project: Project, file: VirtualFile): Boolean =
+        file.name.endsWith(CONFIS_FILE_EXTENSION)
 
     override fun createEditor(project: Project, file: VirtualFile): FileEditor {
         val editor: TextEditor = TextEditorProvider.getInstance().createEditor(project, file) as TextEditor
@@ -30,6 +30,8 @@ class ConfisEditorProvider : FileEditorProvider {
             ScriptingHostConfiguration {
                 jvm {
                     baseClassLoader.put(ConfisHost::class.java.classLoader)
+                    // compilationCache(InMemoryCache(maxSize = 40))
+                    hybridCacheConfiguration()
                 }
             }
         )

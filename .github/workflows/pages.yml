@@ -18,7 +18,7 @@ jobs:
         env:
           GRGIT_USER: ${{ secrets.GRGIT_USER }}
         with:
-          job-id: jdk8
+          job-id: jdk11
           arguments: --no-daemon mkdocsPublish
           gradle-version: wrapper
 

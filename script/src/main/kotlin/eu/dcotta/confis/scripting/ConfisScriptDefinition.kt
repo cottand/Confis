@@ -1,7 +1,6 @@
 package eu.dcotta.confis.scripting
 
 import eu.dcotta.confis.dsl.AgreementBuilder
-import eu.dcotta.confis.scripting.eu.dcotta.confis.scripting.CONFIS_FILE_EXTENSION
 import kotlin.script.experimental.annotations.KotlinScript
 
 // The KotlinScript annotation marks a class that can serve as a reference to the script definition for

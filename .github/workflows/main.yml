@@ -18,10 +18,11 @@ jobs:
       - uses: burrunan/gradle-cache-action@v1
         name: Gradle check
         env:
-          VARIABLE: VALUE
+           COMPILED_CONFIS_SCRIPTS_CACHE_DIR: ""
+#          VARIABLE: VALUE
         with:
-          job-id: jdk8
-          arguments: --no-daemon build
+          job-id: jdk11
+          arguments: --no-daemon -i build
           gradle-version: wrapper
 
       - uses: codecov/codecov-action@v2
