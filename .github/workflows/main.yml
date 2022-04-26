@@ -22,7 +22,7 @@ jobs:
 #          VARIABLE: VALUE
         with:
           job-id: jdk11
-          arguments: --no-daemon build
+          arguments: --no-daemon -i build
           gradle-version: wrapper
 
       - uses: codecov/codecov-action@v2
