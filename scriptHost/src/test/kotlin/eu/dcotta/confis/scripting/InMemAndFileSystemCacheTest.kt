@@ -35,20 +35,21 @@ class InMemAndFileSystemCacheTest : StringSpec({
         }
     }
 
-    val temp = System.getProperty("java.io.tmpdir")
-        ?: error("Expected a temp fir to be available")
+    val temp by lazy {
+        System.getProperty("java.io.tmpdir")
+            ?: error("Expected a temp fir to be available")
+    }
     val confisCacheFolder = "confis.kts.cache"
-    val tempDir = File(temp, confisCacheFolder)
-        .also(File::mkdirs)
-
-    beforeTest {
-        if (tempDir.exists()) {
-            tempDir.deleteRecursively()
-        }
-        tempDir.mkdirs()
+    val tempDir by lazy {
+        File(temp, confisCacheFolder)
+            .also(File::mkdirs)
     }
 
-    "stores in fs even when in mem has room" {
+    beforeTest {
+        tempDir.listFiles().forEach { it.delete() }
+    }
+
+    "stores in fs even when in mem has room".config(enabled = false) {
         val cache = InMemAndFileSystemCache(tempDir, 2)
 
         cache.store(compiled[0], source(0), config)
@@ -56,7 +57,7 @@ class InMemAndFileSystemCacheTest : StringSpec({
         tempDir.list() shouldHaveSize 1
     }
 
-    "fetch from fs after evicting from fs and keep in mem afterwards" {
+    "fetch from fs after evicting from fs and keep in mem afterwards".config(enabled = false) {
         val cache = InMemAndFileSystemCache(tempDir, 1)
 
         cache.store(compiled[1], source(1), config)
