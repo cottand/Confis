@@ -17,7 +17,8 @@ jobs:
 
       - uses: burrunan/gradle-cache-action@v1
         name: Gradle check
-#        env:
+        env:
+           COMPILED_CONFIS_SCRIPTS_CACHE_DIR: "~/.gradle/caches/modules-confis_ci_caching"
 #          VARIABLE: VALUE
         with:
           job-id: jdk11
