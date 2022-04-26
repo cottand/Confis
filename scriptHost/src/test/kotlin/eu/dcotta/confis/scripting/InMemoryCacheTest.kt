@@ -1,3 +1,5 @@
+package eu.dcotta.confis.scripting
+
 import eu.dcotta.confis.scripting.CompilationConfig
 import eu.dcotta.confis.scripting.InMemoryCache
 import eu.dcotta.confis.scripting.eu.dcotta.confis.scripting.ConfisSourceCode
