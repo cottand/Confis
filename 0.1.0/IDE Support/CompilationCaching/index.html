@@ -12,14 +12,14 @@
         <meta name="author" content="Nico D'Cotta">
       
       
-        <link rel="canonical" href="https://cottand.github.io/MEngProject/0.1.0/IDE%20Support/IDEAPlugin/">
+        <link rel="canonical" href="https://cottand.github.io/MEngProject/0.1.0/IDE%20Support/CompilationCaching/">
       
       <link rel="icon" href="../../pics/law-16-deep_orange.svg">
       <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.8">
     
     
       
-        <title>IDEA Plugin - Confis Documentation</title>
+        <title>Compilation Caching - Confis Documentation</title>
       
     
     
@@ -71,7 +71,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#idea-plugin" class="md-skip">
+        <a href="#compilation-caching" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              IDEA Plugin
+              Compilation Caching
             
           </span>
         </div>
@@ -300,20 +300,6 @@
               
   
   
-  
-    <li class="md-nav__item">
-      <a href="../CompilationCaching/" class="md-nav__link">
-        Compilation Caching
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
     
   
   
@@ -325,48 +311,24 @@
         
       
       
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          IDEA Plugin
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
       <a href="./" class="md-nav__link md-nav__link--active">
-        IDEA Plugin
+        Compilation Caching
       </a>
       
-        
+    </li>
+  
 
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+            
+          
+            
+              
   
   
   
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#intelligent-editing" class="md-nav__link">
-    Intelligent Editing
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#confis-document-previews" class="md-nav__link">
-    Confis Document Previews
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
+    <li class="md-nav__item">
+      <a href="../IDEAPlugin/" class="md-nav__link">
+        IDEA Plugin
+      </a>
     </li>
   
 
@@ -504,28 +466,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#intelligent-editing" class="md-nav__link">
-    Intelligent Editing
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#confis-document-previews" class="md-nav__link">
-    Confis Document Previews
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -536,21 +476,17 @@
             <article class="md-content__inner md-typeset">
               
                 
-<a href="https://github.com/cottand/mengproject/edit/master/docs/src/doc/docs/IDE Support/IDEAPlugin.md" title="Edit this page" class="md-content__button md-icon">
+<a href="https://github.com/cottand/mengproject/edit/master/docs/src/doc/docs/IDE Support/CompilationCaching.md" title="Edit this page" class="md-content__button md-icon">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
 </a>
 
 
 
-<h1 id="idea-plugin">IDEA Plugin<a class="headerlink" href="#idea-plugin" title="Permanent link">&para;</a></h1>
-<p>If you wish to write contracts in your computer directly, you can get syntax highlighting support inside IntelliJ IDEA thanks to the Confis IDEA plugin.</p>
-<h2 id="intelligent-editing">Intelligent Editing<a class="headerlink" href="#intelligent-editing" title="Permanent link">&para;</a></h2>
-<p>The plugin brings the usual commodities of developing inside an IDE, like syntax highlighting, reporting of errors in-the-fly, and autocompletion for contract syntax (<code>unless</code>, <code>asLongAs</code>) and for contract variables (circumstances, parties, and action names, for example)</p>
-<p><img alt="Syntax highlighting in action" src="../../pics/syntax.png" /></p>
-<h2 id="confis-document-previews">Confis Document Previews<a class="headerlink" href="#confis-document-previews" title="Permanent link">&para;</a></h2>
-<p>Confis code can be converted to a better-looking <a href="../../AgreementsAsDocuments/">Document</a>. The Document that results from the contract you are writing can be previewed by the Confis Editor provided by the plugin:</p>
-<p><img alt="Document Preview" src="../../pics/documentPreviewZoomed.png" />
-<img alt="Confis Editor" src="../../pics/contractRenderedIdea.png" /></p>
+<h1 id="compilation-caching">Compilation Caching<a class="headerlink" href="#compilation-caching" title="Permanent link">&para;</a></h1>
+<p>In order to speed up intelligent editing and <a href="../IDEAPlugin/#confis-document-previews">rendering Document previews</a> in the plugin, scripts are cached in the filesystem and in memory.</p>
+<p>By default, the cache is in your operating system's temporary directory (aka, <code>/tmp</code> in Linux) if set through the JVM proeprty <code>java.io.tmpdir</code>.
+In order to choose where scripts are cached, you can set the environment variable <code>COMPILED_CONFIS_SCRIPTS_CACHE_DIR</code>.</p>
+<p>To disable caching entirely, you can set <code>COMPILED_CONFIS_SCRIPTS_CACHE_DIR</code> to an empty string <code>""</code>.</p>
 
               
             </article>
@@ -564,7 +500,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href="../CompilationCaching/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Compilation Caching" rel="prev">
+        <a href="../../AgreementsAsDocuments/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Agreements As Documents" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -573,20 +509,20 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Compilation Caching
+              Agreements As Documents
             </div>
           </div>
         </a>
       
       
         
-        <a href="../NativeKotlin/" class="md-footer__link md-footer__link--next" aria-label="Next: IDEA Kotlin Scripting Native Support" rel="next">
+        <a href="../IDEAPlugin/" class="md-footer__link md-footer__link--next" aria-label="Next: IDEA Plugin" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              IDEA Kotlin Scripting Native Support
+              IDEA Plugin
             </div>
           </div>
           <div class="md-footer__button md-icon">
