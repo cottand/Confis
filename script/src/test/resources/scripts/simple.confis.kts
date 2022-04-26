@@ -34,5 +34,3 @@ bob must send(data) underCircumstances {
     after { alice did pay(bob) }
     within { (7 of June)..(14 of June) year 2022 }
 }
-
-
