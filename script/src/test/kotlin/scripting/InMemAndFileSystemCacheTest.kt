@@ -49,7 +49,7 @@ class InMemAndFileSystemCacheTest : StringSpec({
         tempDir.listFiles().forEach { it.delete() }
     }
 
-    "stores in fs even when in mem has room".config(enabled = false) {
+    "stores in fs even when in mem has room" {
         val cache = InMemAndFileSystemCache(tempDir, 2)
 
         cache.store(compiled[0], source(0), config)
@@ -57,7 +57,7 @@ class InMemAndFileSystemCacheTest : StringSpec({
         tempDir.list() shouldHaveSize 1
     }
 
-    "fetch from fs after evicting from fs and keep in mem afterwards".config(enabled = false) {
+    "fetch from fs after evicting from fs and keep in mem afterwards" {
         val cache = InMemAndFileSystemCache(tempDir, 1)
 
         cache.store(compiled[1], source(1), config)
