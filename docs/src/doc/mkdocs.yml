@@ -22,6 +22,7 @@ theme:
   favicon: pics/law-16-deep_orange.svg
   icon:
     logo: octicons/law-16
+  font: false
   palette:
     - scheme: default
       primary: deep orange

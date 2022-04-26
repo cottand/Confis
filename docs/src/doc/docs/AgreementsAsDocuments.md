@@ -6,7 +6,6 @@ Take the following example:
 
 
 !!! note "`example.confis.kts` as Document"
-    <br/>
     # Confis Agreement
 
     ## 1 - Parties
