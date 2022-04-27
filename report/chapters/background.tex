@@ -543,3 +543,47 @@ where parties put a hash of a signed copy of a contract in the Bitcoin~(see~\ref
 blockchain.
 
 This allows irrevocable proof of agreement verifiable by third parties.
+
+\subsection{Ricardian Contracts}\label{subsec:ricardian-contracts}
+
+First introduced by~\cite{grigg2004ricardian, ricardianWeb}, Ricardian Contracts aim to encode a legal agreement as a huan-readable document (handwritten legal prose) accompanied by machine-readable metadata.
+Additionally, it is cryptographically signed (see~\ref{fig:pubkey-signing}) by parties and uniquely identifiable;
+giving it some extra cryptographic guarantees (for example, signatures cannot be plausibly denied and terms cannot be tampered with after signing).
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\begin{definition}[Ricardian Contract]
+    \label{def:ricardian}
+    A Ricardian contract can be defined as a document that is~\cite{grigg2004ricardian}:
+    \begin{itemize}
+        \item a contract offered by an issuer to holders,
+        \item for a valuable right held by holders
+        \item such valuable right is managed by the issuer,
+        \item human-written,
+        \item readable by programs,
+        \item digitally signed,
+        \item carrying public keys (necessary to verify signatures),
+        \item uniquely identifiable through a hash digest.
+    \end{itemize}
+\end{definition}
+
+Using human-written legal prose has the advantages of leading to faster dispute resolution, better enforceability and more transparency when operating within the classical framework of agreements -- for all purposes, there is no difference between a traditional agreement and a Ricardian contract in this area.\\
+
+\subsubsection{Drawbacks}
+
+While Ricardian contracts can represent any type of agreement, they do not actually try to capture the \emph{meaning} of an agreement.
+For example, a Ricardian contract may capture all the necessary information related to a Tenancy Agreement in a format that may allow a machine to enquire about the monthly rent -- but such a machine would need to know how tenancy agreements are structured.
+In short, Ricardian contracts must follow a template and it is instances of this template that are easily read and queried by machines.\\
+
+\subsubsection{Confis as a type of Ricardian Contract}
+
+For this one to be a successful project, it should be able to capture the meaning of an agreement it encloses.
+For example, a party could be able to query about their compliance with the contract without needing to know whether the contract is a tenancy agreement, a bond, or a license.
+
+% TODO this probably deserves its own section on how Confis tries to generalise Ricardian contracts
+
+This project is a generalisation of Ricardian contracts in that they meet all the requirements given by Definition~\ref{def:ricardian}, but it also tries to convey and capture the meaning of the contract, so that both a machine and a human can take every single possible state into account.
+
+Another crucial difference from what is described in~\cite{grigg2004ricardian} is that Confis does not intend to let a user write legal prose.
+Rather, it hopes to produce machine-generated but human-readable prose legal prose from its internal encoding of the agreement.
