@@ -6,9 +6,14 @@
 [![Documentation](https://img.shields.io/static/v1?label=docs&message=exist&logo=markdown&color=orange)](https://confis.dcotta.eu)
 
 
+> "O ye who believe! When ye deal with each other, in transactions involving future obligations in a fixed period of time, reduce them to writing."
+*-- Holy Qur'an, 2:282*
 
-**Confis** (In Spanish, slang for _trust_ and short for _confianzas_) is a Domain Specific
-Language (DSL) that allows defining legal agreements in a computer-readable format.
+**Confis** (In Spanish, slang for _trust_ and short for _confianzas_) is a framework for writing and representing legal agreements.
+
+It includes its own language to write legal contracts and the ability to ask questions in order to allow parties to figure out their legal capabilities and responsibilities.
+
+It is meant to be a generalisation of a [Ricardian Contract](https://en.wikipedia.org/wiki/Ricardian_contract).
 
 This project is part of the requirements to complete my Master's degree in Computer Science at
 Imperial College London and is currently a WIP. Ideally, it should enable:

@@ -1,8 +1,13 @@
 # About
 
-**Confis** is a framework for representing legal agreements.
+> "O ye who believe! When ye deal with each other, in transactions involving future obligations in a fixed period of time, reduce them to writing."
+*-- Holy Qur'an, 2:282*
 
-It includes its own language to write legal contracts and the ability to ask questions in order to allow parties to figure out their legal capabilities.
+**Confis** (In Spanish, slang for _trust_ and short for _confianzas_) is a framework for writing and representing legal agreements.
+
+It includes its own language to write legal contracts and the ability to ask questions in order to allow parties to figure out their legal capabilities and responsibilities.
+
+It is meant to be a generalisation of a [Ricardian Contract](https://en.wikipedia.org/wiki/Ricardian_contract).
 
 ## Quick example
 
