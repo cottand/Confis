@@ -588,3 +588,16 @@ This project is a generalisation of Ricardian contracts in that they meet all th
 
 Another crucial difference from what is described in~\cite{grigg2004ricardian} is that Confis does not intend to let a user write legal prose.
 Rather, it hopes to produce machine-generated but human-readable prose legal prose from its internal encoding of the agreement.
+
+\section{Domain-Specific Languages}\label{sec:dsls}
+
+The use-case of representing complex abstractions in a machine-readable formats is a common one, and general-purpose programming languages (Java, Python, etc) are designed with exactly this goal in mind.
+
+According to~\cite{fowlerDsl}: "From  A DSL is a computer language that's targeted to a particular kind of problem, rather than a general purpose language that's aimed at any kind of software problem".
+In order to write legal agreements and lower the barrier of entry as much as possible (ideally, no software engineering training should be required) a well-documented and easy-to-use DSL is a good solution: expressive enough to be able to represent a large range of agreements, but restrictive enough that language features should not require extensive training.
+
+Several modalities of DSLs exist that can be used.
+The compromises they make are in cost (for developing a framework for them), ease of writing, readability, and expressiveness.
+
+% TODO external, internal, GUI, etc
+
