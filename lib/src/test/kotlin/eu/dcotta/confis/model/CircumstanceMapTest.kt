@@ -2,8 +2,9 @@ package eu.dcotta.confis.model
 
 import eu.dcotta.confis.dsl.of
 import eu.dcotta.confis.dsl.year
-import eu.dcotta.confis.model.Circumstance.Key
-import eu.dcotta.confis.model.Month.May
+import eu.dcotta.confis.model.circumstance.Circumstance
+import eu.dcotta.confis.model.circumstance.Circumstance.Key
+import eu.dcotta.confis.model.circumstance.Month.May
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 

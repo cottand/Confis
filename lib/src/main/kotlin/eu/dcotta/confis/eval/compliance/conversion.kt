@@ -9,7 +9,7 @@ import eu.dcotta.confis.model.Clause.PermissionWithCircumstances
 import eu.dcotta.confis.model.Clause.Requirement
 import eu.dcotta.confis.model.Clause.RequirementWithCircumstances
 import eu.dcotta.confis.model.Clause.Text
-import eu.dcotta.confis.model.PastAction
+import eu.dcotta.confis.model.circumstance.PastAction
 import kotlinx.collections.immutable.plus
 
 internal fun asComplianceRules(c: Clause): List<ComplianceRule> = when (c) {

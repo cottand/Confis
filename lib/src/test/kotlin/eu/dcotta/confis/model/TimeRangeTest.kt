@@ -1,11 +1,10 @@
 package eu.dcotta.confis.model
 
 import eu.dcotta.confis.dsl.of
-import eu.dcotta.confis.dsl.rangeTo
 import eu.dcotta.confis.dsl.year
-import eu.dcotta.confis.model.Month.June
-import eu.dcotta.confis.model.Month.May
-import eu.dcotta.confis.model.Month.September
+import eu.dcotta.confis.model.circumstance.Month.June
+import eu.dcotta.confis.model.circumstance.Month.May
+import eu.dcotta.confis.model.circumstance.Month.September
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 

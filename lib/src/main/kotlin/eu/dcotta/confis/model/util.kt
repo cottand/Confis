@@ -5,10 +5,14 @@ import eu.dcotta.confis.model.Clause.PermissionWithCircumstances
 import eu.dcotta.confis.model.Clause.Requirement
 import eu.dcotta.confis.model.Clause.RequirementWithCircumstances
 import eu.dcotta.confis.model.Clause.Text
+import eu.dcotta.confis.model.circumstance.Consent
+import eu.dcotta.confis.model.circumstance.PrecedentSentence
 
 internal fun Clause.extractActions(): List<Action> {
 
-    fun CircumstanceMap.extractActions() = get(PrecedentSentence.KeySet).map { it.sentence.action }
+    fun CircumstanceMap.extractActions() =
+        get(PrecedentSentence.KeySet).map { it.sentence.action } +
+            get(Consent.KeySet).map { it.sentence.action }
 
     val actionInClause = when (this) {
         is Permission -> action
@@ -29,7 +33,9 @@ internal fun Clause.extractActions(): List<Action> {
 
 internal fun Clause.extractObjs(): List<Obj> {
 
-    fun CircumstanceMap.extractObjs() = get(PrecedentSentence.KeySet).map { it.sentence.obj }
+    fun CircumstanceMap.extractObjs() =
+        get(PrecedentSentence.KeySet).map { it.sentence.obj } +
+            get(Consent.KeySet).map { it.sentence.obj }
 
     val objsInClause = when (this) {
         is Permission -> obj

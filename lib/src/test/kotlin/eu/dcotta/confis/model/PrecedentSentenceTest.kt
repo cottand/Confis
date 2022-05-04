@@ -8,8 +8,9 @@ import eu.dcotta.confis.eval.allowance.ask
 import eu.dcotta.confis.model.AllowanceResult.Allow
 import eu.dcotta.confis.model.AllowanceResult.Depends
 import eu.dcotta.confis.model.Clause.PermissionWithCircumstances
-import eu.dcotta.confis.model.Month.August
-import eu.dcotta.confis.model.Month.December
+import eu.dcotta.confis.model.circumstance.Month.August
+import eu.dcotta.confis.model.circumstance.Month.December
+import eu.dcotta.confis.model.circumstance.PrecedentSentence
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 

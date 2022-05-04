@@ -1,7 +1,7 @@
 package eu.dcotta.confis.eval.compliance
 
 import eu.dcotta.confis.model.Clause
-import eu.dcotta.confis.model.WorldState
+import eu.dcotta.confis.model.circumstance.WorldState
 
 sealed interface ComplianceResult {
     /**

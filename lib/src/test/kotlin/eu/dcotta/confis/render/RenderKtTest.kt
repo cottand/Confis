@@ -1,12 +1,11 @@
 package eu.dcotta.confis.render
 
-import eu.dcotta.confis.dsl.CircumstanceBuilder.PastSentenceBuilder.did
 import eu.dcotta.confis.dsl.of
 import eu.dcotta.confis.dsl.rangeTo
 import eu.dcotta.confis.dsl.year
 import eu.dcotta.confis.model.Agreement
-import eu.dcotta.confis.model.Month.May
-import eu.dcotta.confis.model.Purpose.Commercial
+import eu.dcotta.confis.model.circumstance.Month.May
+import eu.dcotta.confis.model.circumstance.Purpose.Commercial
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.string.shouldContain
 

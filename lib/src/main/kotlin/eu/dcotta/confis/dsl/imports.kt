@@ -1,8 +1,8 @@
 package eu.dcotta.confis.dsl
 
-import eu.dcotta.confis.model.Date
-import eu.dcotta.confis.model.Month
-import eu.dcotta.confis.model.MonthDate
+import eu.dcotta.confis.model.circumstance.Date
+import eu.dcotta.confis.model.circumstance.Month
+import eu.dcotta.confis.model.circumstance.MonthDate
 
 infix fun Int.of(month: Month) = MonthDate(this, month)
 infix fun MonthDate.year(year: Int): Date = Date(day, month, year)

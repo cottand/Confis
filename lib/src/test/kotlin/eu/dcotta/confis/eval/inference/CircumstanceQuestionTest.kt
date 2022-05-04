@@ -8,14 +8,15 @@ import eu.dcotta.confis.model.Action
 import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.model.CircumstanceMap
 import eu.dcotta.confis.model.Clause
-import eu.dcotta.confis.model.Month.December
-import eu.dcotta.confis.model.Month.January
-import eu.dcotta.confis.model.Month.May
 import eu.dcotta.confis.model.Party
-import eu.dcotta.confis.model.Purpose.Commercial
-import eu.dcotta.confis.model.Purpose.Research
-import eu.dcotta.confis.model.PurposePolicy
 import eu.dcotta.confis.model.Sentence
+import eu.dcotta.confis.model.circumstance.Consent
+import eu.dcotta.confis.model.circumstance.Month.December
+import eu.dcotta.confis.model.circumstance.Month.January
+import eu.dcotta.confis.model.circumstance.Month.May
+import eu.dcotta.confis.model.circumstance.Purpose.Commercial
+import eu.dcotta.confis.model.circumstance.Purpose.Research
+import eu.dcotta.confis.model.circumstance.PurposePolicy
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.should
@@ -322,6 +323,23 @@ class CircumstanceQuestionTest : StringSpec({
 
         b.ask(CircumstanceQuestion(alicePayBob)).asOrFail<UnderCircumstances>() should {
             it.circumstances shouldBe setOf(CircumstanceMap.of(may))
+            it.unless shouldBe emptySet()
+        }
+    }
+
+    "permission with consent circumstance" {
+        val a = Agreement {
+            val alice by party
+            val bob by party
+            val pay by action
+
+            alice may pay(bob) asLongAs {
+                with consentFrom alice
+            }
+        }
+
+        a.ask(CircumstanceQuestion(alicePayBob)).asOrFail<UnderCircumstances>() should {
+            it.circumstances shouldBe setOf(CircumstanceMap.of(Consent(alicePayBob, Party("alice"))))
             it.unless shouldBe emptySet()
         }
     }

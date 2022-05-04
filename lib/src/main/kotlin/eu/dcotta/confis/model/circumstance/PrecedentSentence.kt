@@ -1,6 +1,7 @@
-package eu.dcotta.confis.model
+package eu.dcotta.confis.model.circumstance
 
-import eu.dcotta.confis.model.Circumstance.Key
+import eu.dcotta.confis.model.Sentence
+import eu.dcotta.confis.model.circumstance.Circumstance.SetKey
 
 /**
  * A [Circumstance] that represents a [Sentence] that may have happened in the past
@@ -21,7 +22,7 @@ data class PrecedentSentence(val sentence: Sentence) : Circumstance {
     @JvmInline
     value class Key(val sentence: Sentence) : Circumstance.Key<PrecedentSentence>
 
-    companion object KeySet : Circumstance.SetKey<PrecedentSentence> {
+    companion object KeySet : SetKey<PrecedentSentence> {
         override fun Circumstance.Key<*>.fromSetOrNull() = this as? Key
     }
 }

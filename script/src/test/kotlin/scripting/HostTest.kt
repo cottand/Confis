@@ -2,10 +2,10 @@ package eu.dcotta.confis.scripting
 
 import eu.dcotta.confis.dsl.AgreementBuilder
 import eu.dcotta.confis.model.Clause
-import eu.dcotta.confis.model.Date
-import eu.dcotta.confis.model.Month.April
-import eu.dcotta.confis.model.Month.May
-import eu.dcotta.confis.model.TimeRange
+import eu.dcotta.confis.model.circumstance.Date
+import eu.dcotta.confis.model.circumstance.Month.April
+import eu.dcotta.confis.model.circumstance.Month.May
+import eu.dcotta.confis.model.circumstance.TimeRange
 import eu.dcotta.confis.render.renderMarkdown
 import io.kotest.assertions.fail
 import io.kotest.core.spec.style.StringSpec

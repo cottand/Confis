@@ -1,17 +1,19 @@
 package eu.dcotta.confis.dsl
 
 import eu.dcotta.confis.model.CircumstanceMap
-import eu.dcotta.confis.model.PrecedentSentence
-import eu.dcotta.confis.model.Purpose
-import eu.dcotta.confis.model.PurposePolicy
+import eu.dcotta.confis.model.Party
 import eu.dcotta.confis.model.Sentence
 import eu.dcotta.confis.model.Subject
-import eu.dcotta.confis.model.TimeRange
+import eu.dcotta.confis.model.circumstance.Consent
+import eu.dcotta.confis.model.circumstance.PrecedentSentence
+import eu.dcotta.confis.model.circumstance.Purpose
+import eu.dcotta.confis.model.circumstance.PurposePolicy
+import eu.dcotta.confis.model.circumstance.TimeRange
 
 annotation class CircumstanceDsl
 
 @ConfisDsl
-class CircumstanceBuilder {
+class CircumstanceBuilder(val sentence: Sentence) {
     private val purposePolicies = mutableListOf<Purpose>()
     private var circumstances = CircumstanceMap.empty
 
@@ -31,6 +33,11 @@ class CircumstanceBuilder {
     @ConfisDsl
     infix fun PurposeReceiver.purpose(purpose: Purpose) {
         purposePolicies += purpose
+    }
+
+    @ConfisDsl
+    infix fun PurposeReceiver.consentFrom(party: Party) {
+        circumstances += Consent(sentence, party)
     }
 
     // time

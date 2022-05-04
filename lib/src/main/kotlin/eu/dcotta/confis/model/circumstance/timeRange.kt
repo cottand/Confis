@@ -1,5 +1,6 @@
-package eu.dcotta.confis.model
+package eu.dcotta.confis.model.circumstance
 
+import eu.dcotta.confis.model.circumstance.TimeRange.Range
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
@@ -47,7 +48,7 @@ data class Date(val day: Int, val month: Month, val year: Int) : Comparable<Date
         day.compareTo(other.day) != 0 -> day.compareTo(other.day)
         else -> 0
     }
-    operator fun rangeTo(end: Date) = TimeRange.Range(this, end)
+    operator fun rangeTo(end: Date) = Range(this, end)
 
     override fun toString(): String {
         val cal = Calendar.getInstance().apply {

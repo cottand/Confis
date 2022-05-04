@@ -1,6 +1,8 @@
 package eu.dcotta.confis.model
 
-import eu.dcotta.confis.model.Circumstance.Key
+import eu.dcotta.confis.model.circumstance.Circumstance
+import eu.dcotta.confis.model.circumstance.Circumstance.Key
+import eu.dcotta.confis.model.circumstance.disjoint
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.plus
