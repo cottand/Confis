@@ -3,7 +3,7 @@ package eu.dcotta.confis.model.circumstance
 import eu.dcotta.confis.model.circumstance.Circumstance.Key
 
 enum class Purpose {
-    Commercial, Research;
+    Commercial, Research, Internal;
 }
 
 data class PurposePolicy(val purposes: List<Purpose>) : Circumstance {
