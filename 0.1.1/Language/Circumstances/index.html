@@ -449,6 +449,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#consent" class="md-nav__link">
+    Consent
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -586,6 +593,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#consent" class="md-nav__link">
+    Consent
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -679,6 +693,16 @@ They are the best way of saying <em>"X if Y happened"</em>.</p>
 </code></pre></div>
 <p>...states that <code>alice</code> is <em>Allowed</em> to<code>see</code> the <code>data</code>, under the circumstance of having <code>Research</code> purposes.</p>
 <p>If the circumstance is not <code>Research</code>, then the answer to 'May Alice see the data?' will be <code>Unspecified</code>. See <a href="../PermissionClauses/">Clauses</a> for more details.</p>
+<h3 id="consent">Consent<a class="headerlink" href="#consent" title="Permanent link">&para;</a></h3>
+<p>It is a common case in legal agreement to have a legal capability, but subject to consent from some party that is taking part of the agreement.
+Confis allows writing this through Consent circumstances.</p>
+<p>To write a consent circumstance, you only require a defined <a href="../Declarations/#parties">party</a>:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">val</span> <span class="nv">bob</span> <span class="k">by</span> <span class="n">party</span>
+
+<span class="n">alice</span> <span class="n">may</span> <span class="p">{</span> <span class="n">see</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="p">}</span> <span class="n">asLongAs</span> <span class="p">{</span>
+    <span class="n">with</span> <span class="n">consentFrom</span> <span class="n">bob</span>
+<span class="p">}</span>
+</code></pre></div>
 <h2 id="mixing-circumstances">Mixing Circumstances<a class="headerlink" href="#mixing-circumstances" title="Permanent link">&para;</a></h2>
 <p>To write specific cases, you can mix different circumstances in the same clause to create very specific scenarios.
 For example:</p>
