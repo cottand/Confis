@@ -1,4 +1,6 @@
-package eu.dcotta.confis.model
+package eu.dcotta.confis.model.circumstance
+
+import eu.dcotta.confis.model.CircumstanceMap
 
 interface Circumstance {
 

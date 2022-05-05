@@ -36,10 +36,11 @@ fun Agreement.renderMarkdown(): String {
     val clauses = clauses
         .mapIndexed { index, clause -> clause.renderMd(index + 1) }
         .joinToString(separator = "\n")
+
     return """
         |# ${title ?: "Confis Agreement"}
         |
-        |${introduction?.replace("\n", "|\n") ?: ""}
+        |${introduction?.replace("\n", "|\n")?.trimMargin("|") ?: ""}
         |
         |## 1 - Parties
         |

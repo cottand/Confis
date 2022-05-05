@@ -1,7 +1,7 @@
 package eu.dcotta.confis.util
 
-import eu.dcotta.confis.model.Circumstance
 import eu.dcotta.confis.model.CircumstanceMap
+import eu.dcotta.confis.model.circumstance.Circumstance
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentSetOf
 import kotlin.properties.PropertyDelegateProvider

@@ -73,7 +73,7 @@ open class AgreementBuilder {
      */
     @CircumstanceDsl
     infix fun Permission.asLongAs(init: CircumstanceBuilder.() -> Unit) {
-        val cs = CircumstanceBuilder().also(init).build()
+        val cs = CircumstanceBuilder(sentence).also(init).build()
         val s = PermissionWithCircumstances(this, Allow, cs)
         sentencesWithoutCircumstances.removeLastOccurrence(this)
         clausesWithCircumstances += s
@@ -81,7 +81,7 @@ open class AgreementBuilder {
 
     @CircumstanceDsl
     infix fun Permission.unless(init: CircumstanceBuilder.() -> Unit) {
-        val cs = CircumstanceBuilder().also(init).build()
+        val cs = CircumstanceBuilder(sentence).also(init).build()
         val s = PermissionWithCircumstances(this, Forbid, cs)
         sentencesWithoutCircumstances.removeLastOccurrence(this)
         clausesWithCircumstances += s
@@ -104,7 +104,7 @@ open class AgreementBuilder {
     infix fun Subject.must(s: ActionObject) = must { s.action(s.obj) }
 
     infix fun Requirement.underCircumstances(init: CircumstanceBuilder.() -> Unit) {
-        val cs = CircumstanceBuilder().also(init).build()
+        val cs = CircumstanceBuilder(sentence).also(init).build()
         requirements.removeLastOccurrence(this)
         requirementsWithCircumstances += RequirementWithCircumstances(sentence, cs)
     }

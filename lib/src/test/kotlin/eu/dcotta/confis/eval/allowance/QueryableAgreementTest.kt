@@ -2,7 +2,6 @@ package eu.dcotta.confis.eval.allowance
 
 import eu.dcotta.confis.dsl.of
 import eu.dcotta.confis.dsl.year
-import eu.dcotta.confis.eval.inference.ask
 import eu.dcotta.confis.model.Action
 import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.model.AllowanceResult.Allow
@@ -10,12 +9,12 @@ import eu.dcotta.confis.model.AllowanceResult.Depends
 import eu.dcotta.confis.model.AllowanceResult.Forbid
 import eu.dcotta.confis.model.AllowanceResult.Unspecified
 import eu.dcotta.confis.model.CircumstanceMap
-import eu.dcotta.confis.model.Month.May
 import eu.dcotta.confis.model.Obj
 import eu.dcotta.confis.model.Party
-import eu.dcotta.confis.model.Purpose.Commercial
-import eu.dcotta.confis.model.Purpose.Research
 import eu.dcotta.confis.model.Sentence
+import eu.dcotta.confis.model.circumstance.Month.May
+import eu.dcotta.confis.model.circumstance.Purpose.Commercial
+import eu.dcotta.confis.model.circumstance.Purpose.Research
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 

@@ -5,9 +5,9 @@ import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.model.AllowanceResult
 import eu.dcotta.confis.model.AllowanceResult.Unspecified
 import eu.dcotta.confis.model.CircumstanceMap
-import eu.dcotta.confis.model.Purpose
-import eu.dcotta.confis.model.PurposePolicy
 import eu.dcotta.confis.model.Sentence
+import eu.dcotta.confis.model.circumstance.Purpose
+import eu.dcotta.confis.model.circumstance.PurposePolicy
 import eu.dcotta.confis.util.with
 import org.jeasy.rules.api.Facts
 

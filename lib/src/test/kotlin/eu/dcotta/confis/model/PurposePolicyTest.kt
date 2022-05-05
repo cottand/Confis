@@ -1,7 +1,8 @@
 package eu.dcotta.confis.model
 
-import eu.dcotta.confis.model.Purpose.Commercial
-import eu.dcotta.confis.model.Purpose.Research
+import eu.dcotta.confis.model.circumstance.Purpose.Commercial
+import eu.dcotta.confis.model.circumstance.Purpose.Research
+import eu.dcotta.confis.model.circumstance.PurposePolicy
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 

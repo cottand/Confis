@@ -6,7 +6,7 @@ import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.model.CircumstanceMap
 import eu.dcotta.confis.model.Clause
 import eu.dcotta.confis.model.Sentence
-import eu.dcotta.confis.model.WorldState
+import eu.dcotta.confis.model.circumstance.WorldState
 import eu.dcotta.confis.util.with
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentHashMapOf

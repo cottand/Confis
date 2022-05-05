@@ -1,5 +1,7 @@
-package eu.dcotta.confis.model
+package eu.dcotta.confis.model.circumstance
 
+import eu.dcotta.confis.model.CircumstanceMap
+import eu.dcotta.confis.model.Sentence
 import kotlinx.collections.immutable.PersistentMap
 
 typealias WorldState = PersistentMap<Sentence, CircumstanceMap>

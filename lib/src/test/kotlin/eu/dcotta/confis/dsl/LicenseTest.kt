@@ -1,5 +1,6 @@
 package eu.dcotta.confis.dsl
 
+import eu.dcotta.confis.Sentence
 import eu.dcotta.confis.asOrFail
 import eu.dcotta.confis.model.Action
 import eu.dcotta.confis.model.Allowance
@@ -7,11 +8,13 @@ import eu.dcotta.confis.model.Allowance.Allow
 import eu.dcotta.confis.model.Allowance.Forbid
 import eu.dcotta.confis.model.CircumstanceMap
 import eu.dcotta.confis.model.Clause
+import eu.dcotta.confis.model.Clause.PermissionWithCircumstances
 import eu.dcotta.confis.model.Obj
 import eu.dcotta.confis.model.Party
-import eu.dcotta.confis.model.Purpose.Commercial
-import eu.dcotta.confis.model.Purpose.Research
-import eu.dcotta.confis.model.PurposePolicy
+import eu.dcotta.confis.model.circumstance.Consent
+import eu.dcotta.confis.model.circumstance.Purpose.Commercial
+import eu.dcotta.confis.model.circumstance.Purpose.Research
+import eu.dcotta.confis.model.circumstance.PurposePolicy
 import io.kotest.assertions.fail
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldContainAll
@@ -189,5 +192,25 @@ class LicenseTest : StringSpec({
         a.actions shouldHaveSize 3
 
         a.actions shouldContainAll listOf("pay", "text", "receive").map(::Action)
+    }
+
+    "add consent clauses" {
+        val a = AgreementBuilder {
+            val pay by action
+            val alice by party
+            val money by thing
+
+            alice may pay(money) asLongAs {
+                with consentFrom alice
+            }
+        }
+
+        a.clauses.first().asOrFail<PermissionWithCircumstances>().circumstances shouldBe
+            CircumstanceMap.of(
+                Consent(
+                    sentence = Sentence { "alice"("pay", Obj("money")) },
+                    from = Party("alice")
+                )
+            )
     }
 })

@@ -1,8 +1,8 @@
 package eu.dcotta.confis.scripting
 
 import eu.dcotta.confis.dsl.AgreementBuilder
-import eu.dcotta.confis.model.Month
-import eu.dcotta.confis.model.Purpose
+import eu.dcotta.confis.model.circumstance.Month
+import eu.dcotta.confis.model.circumstance.Purpose
 import java.io.File
 import kotlin.script.experimental.api.ScriptAcceptedLocation.Everywhere
 import kotlin.script.experimental.api.ScriptCompilationConfiguration

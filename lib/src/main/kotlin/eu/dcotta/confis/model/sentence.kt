@@ -1,9 +1,8 @@
 package eu.dcotta.confis.model
 
-import eu.dcotta.confis.model.AllowanceResult.Allow
 import eu.dcotta.confis.model.AllowanceResult.Depends
-import eu.dcotta.confis.model.AllowanceResult.Forbid
 import eu.dcotta.confis.model.Obj.Anything
+import eu.dcotta.confis.model.circumstance.WorldState
 
 enum class Allowance {
     Allow, Forbid;
@@ -24,7 +23,7 @@ sealed interface Obj {
     fun render(): String
 
     class Named(val name: String, val description: String? = null) : Obj {
-        override fun toString() = "Obj($name ${description ?: ""})"
+        override fun toString() = render()
         override fun equals(other: Any?) = other === this || other is Named && name == other.name
         override fun hashCode(): Int = name.hashCode() * 7
         override fun render() = name
@@ -49,7 +48,7 @@ class Action(val name: String, val description: String? = null) {
 }
 
 class Party(val name: String, val description: String? = null) : Subject, Obj {
-    override fun toString() = "Party($name ${description ?: ""})"
+    override fun toString() = render()
     override fun equals(other: Any?) = other === this || other is Party && name == other.name
     override fun hashCode(): Int = name.hashCode() * 71
     override fun render() = name
