@@ -81,6 +81,21 @@ alice may { see(data) } asLongAs {
 
 If the circumstance is not `Research`, then the answer to 'May Alice see the data?' will be `Unspecified`. See [Clauses](PermissionClauses.md) for more details.
 
+### Consent
+
+It is a common case in legal agreement to have a legal capability, but subject to consent from some party that is taking part of the agreement.
+Confis allows writing this through Consent circumstances.
+
+To write a consent circumstance, you only require a defined [party](Declarations.md#parties):
+
+```kotlin
+val bob by party
+
+alice may { see(data) } asLongAs {
+    with consentFrom bob
+}
+```
+
 
 ## Mixing Circumstances
 
