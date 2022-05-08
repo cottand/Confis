@@ -47,7 +47,3 @@ tasks.withType<KotlinCompile> {
         jvmTarget = "11"
     }
 }
-
-configurations.all {
-    resolutionStrategy.sortArtifacts(ResolutionStrategy.SortOrder.DEPENDENCY_FIRST)
-}

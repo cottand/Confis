@@ -1,5 +1,14 @@
 package eu.dcotta.confis.plugin
 
+import com.intellij.notification.Notification
+import com.intellij.notification.NotificationType
+import com.intellij.notification.Notifications
+import com.intellij.openapi.actionSystem.ActionGroup
+import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.actionSystem.impl.ActionToolbarImpl
 import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.logger
@@ -17,9 +26,12 @@ import com.intellij.util.Alarm
 import com.intellij.util.Alarm.ThreadToUse.POOLED_THREAD
 import com.intellij.util.Alarm.ThreadToUse.SWING_THREAD
 import org.intellij.plugins.markdown.ui.preview.MarkdownPreviewFileEditor
+import java.awt.Dimension
+import javax.swing.JComponent
+import javax.swing.JLayeredPane
 
 class ConfisEditor(
-    editor: TextEditor,
+    private val editor: TextEditor,
     private val confisFile: VirtualFile,
     private val preview: MarkdownPreviewFileEditor,
     mdInMem: LightVirtualFile,
@@ -74,9 +86,43 @@ class ConfisEditor(
         scriptDocument?.addDocumentListener(scriptListener)
     }
 
+    private val myComponent: JComponent by lazy {
+        val editorLayerWrapper = super.getComponent()
+        val actionGroup = DefaultActionGroup(AskQuestionAction())
+        val toolbar = QuestionToolbar(editorLayerWrapper, actionGroup)
+        editorLayerWrapper.add(toolbar, JLayeredPane.DEFAULT_LAYER)
+
+        editorLayerWrapper
+    }
+
+    override fun getComponent(): JComponent = myComponent
+
+    class QuestionToolbar(parentComponent: JComponent, actionGroup: ActionGroup) :
+        ActionToolbarImpl(ActionPlaces.CONTEXT_TOOLBAR, actionGroup, true) {
+
+        init {
+            // Disposer.register(this, visibilityController)
+            targetComponent = parentComponent
+            setReservePlaceAutoPopupIcon(false)
+            setMinimumButtonSize(Dimension(28, 28))
+            setSkipWindowAdjustments(true)
+            isOpaque = false
+            layoutPolicy = NOWRAP_LAYOUT_POLICY
+        }
+    }
+
+    class AskQuestionAction : AnAction("Ask Question", "Initiates a Confis Query", ConfisIcons.ConfisOrange) {
+        override fun actionPerformed(e: AnActionEvent) {
+            Notifications.Bus.notify(Notification("Confis Plugin", "Noti3!", NotificationType.INFORMATION))
+        }
+    }
+
     override fun dispose() {
         alarm.cancelAllRequests()
+        uiAlarm.cancelAllRequests()
         scriptDocument?.removeDocumentListener(scriptListener)
+        // disposes editor, preview
+        super.dispose()
     }
 }
 

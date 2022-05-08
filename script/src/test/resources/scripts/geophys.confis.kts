@@ -40,7 +40,7 @@ licensee mayNot provideServicesWith(data)
 thirdParty may access(data) asLongAs {
     with consentFrom licensee
     after { thirdParty did agreeTo(licence) }
-    after  { thirdParty did agreeTo(nda)}
+    after  { thirdParty did agreeTo(nda) }
 }
 
 licensee mayNot adapt(data) unless  {

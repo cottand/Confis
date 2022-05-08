@@ -1,5 +1,6 @@
 package eu.dcotta.confis.plugin
 
+import com.intellij.openapi.util.IconLoader
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.Alarm
 import eu.dcotta.confis.model.Agreement
@@ -27,3 +28,8 @@ private fun Failure.reportsAsMarkdown(): String =
     reports.joinToString(separator = "\n\n", prefix = "```\nErrors where found:\n", postfix = "\n```") {
         it.render()
     }
+
+object ConfisIcons {
+    @JvmField
+    val ConfisOrange = IconLoader.getIcon("/law-16-deep_orange.svg", ConfisIcons::class.java)
+}
