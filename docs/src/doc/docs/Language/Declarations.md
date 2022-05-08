@@ -26,7 +26,7 @@ Parties have names and can be named after the name of the variable (`alice`, in 
     ```kotlin
     val alice by party(
         named = "Alice Liddell",
-        description = "born 4 May 1852 in Westminser, London",
+        description = "born 4 May 1852 in Westminster, London",
     )
     ```
 
