@@ -4,7 +4,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm")
-    id("org.jetbrains.intellij") version "1.5.3"
+    // until 1.5.4+
+    id("org.jetbrains.intellij") version "1.6.0-SNAPSHOT"
 }
 
 repositories {
@@ -41,9 +42,19 @@ tasks.runIde {
     autoReloadPlugins.set(true)
 }
 
+tasks.buildSearchableOptions {
+    enabled = false
+}
+
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs += "-Xjvm-default=all"
         jvmTarget = "11"
+    }
+}
+configurations {
+    all {
+        // Allows using project dependencies instead of IDE dependencies during compilation and test running
+        resolutionStrategy.sortArtifacts(ResolutionStrategy.SortOrder.DEPENDENCY_FIRST)
     }
 }

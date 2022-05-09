@@ -90,7 +90,7 @@ class ConfisEditor(
         val editorLayerWrapper = super.getComponent()
         val actionGroup = DefaultActionGroup(AskQuestionAction())
         val toolbar = QuestionToolbar(editorLayerWrapper, actionGroup)
-        editorLayerWrapper.add(toolbar, JLayeredPane.DEFAULT_LAYER)
+        editorLayerWrapper.add(toolbar, null, JLayeredPane.DEFAULT_LAYER)
 
         editorLayerWrapper
     }
@@ -111,9 +111,9 @@ class ConfisEditor(
         }
     }
 
-    class AskQuestionAction : AnAction("Ask Question", "Initiates a Confis Query", ConfisIcons.ConfisOrange) {
+    class AskQuestionAction : AnAction("Ask Question", "Initiates a Confis query", ConfisIcons.ConfisOrange) {
         override fun actionPerformed(e: AnActionEvent) {
-            Notifications.Bus.notify(Notification("Confis Plugin", "Noti3!", NotificationType.INFORMATION))
+            Notifications.Bus.notify(Notification("Confis Plugin", "Noti8!", NotificationType.INFORMATION))
         }
     }
 
