@@ -7,9 +7,9 @@ import com.intellij.ui.content.ContentFactory.SERVICE
 
 class ConfisToolWindowFactory : ToolWindowFactory {
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
-        val model = ToolWindowModel(project)
+        val model = QuestionWindowModel(project)
 
-        val myToolWindow = QuestionToolWindow(toolWindow, project)
+        val myToolWindow = QuestionToolWindow(toolWindow, project, model)
 
         model.addListener(
             ConfisAgreementListener(

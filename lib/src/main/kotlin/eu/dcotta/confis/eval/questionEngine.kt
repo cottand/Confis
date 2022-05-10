@@ -41,3 +41,7 @@ fun <Ctx, R : ConfisRule<Ctx>, E> Agreement.askEngine(
 
     return buildResult(buildContext(facts))
 }
+
+interface QueryResponse {
+    fun render(): String
+}
