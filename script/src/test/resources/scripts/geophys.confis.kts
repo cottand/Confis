@@ -18,7 +18,7 @@ val adapt by action(
     named = "copy or adapt",
     description = "as in deriving data and statistics from, copying, or distributing"
 )
-val thirdParty by party("a person not employed by $licensee")
+val thirdParty by party("a 3rd party", description = "not employed by $licensee")
 val access by action
 val agreeTo by action("agree to")
 

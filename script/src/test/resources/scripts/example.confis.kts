@@ -4,6 +4,7 @@ val pay by action
 val notify by action(description = "Notify by email")
 
 alice may pay(bob)
+alice may pay(bob)
 
 alice may notify(alice) asLongAs {
     with purpose Commercial
@@ -13,5 +14,5 @@ alice may notify(alice) asLongAs {
 
 
 -"""
- This license is governed by england law!
+ This license is governed by england law
 """

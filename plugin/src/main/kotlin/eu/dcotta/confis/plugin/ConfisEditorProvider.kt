@@ -1,5 +1,6 @@
 package eu.dcotta.confis.plugin
 
+import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorPolicy
@@ -10,43 +11,56 @@ import com.intellij.openapi.fileEditor.impl.text.TextEditorProvider
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.testFramework.LightVirtualFile
+import com.intellij.util.Alarm
+import com.intellij.util.Alarm.ThreadToUse.SWING_THREAD
 import eu.dcotta.confis.scripting.CONFIS_FILE_EXTENSION
-import eu.dcotta.confis.scripting.hybridCacheConfiguration
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.intellij.plugins.markdown.lang.MarkdownLanguage
 import org.intellij.plugins.markdown.ui.preview.MarkdownPreviewFileEditor
-import kotlin.script.experimental.host.ScriptingHostConfiguration
-import kotlin.script.experimental.jvm.baseClassLoader
-import kotlin.script.experimental.jvm.jvm
-import kotlin.script.experimental.jvmhost.BasicJvmScriptingHost
 
 class ConfisEditorProvider : FileEditorProvider {
     override fun accept(project: Project, file: VirtualFile): Boolean =
         file.name.endsWith(CONFIS_FILE_EXTENSION)
 
+    private val tempScope = CoroutineScope(Dispatchers.Default)
+    private val uiAlarm = Alarm(SWING_THREAD)
+
     override fun createEditor(project: Project, file: VirtualFile): FileEditor {
+
         val editor: TextEditor = TextEditorProvider.getInstance().createEditor(project, file) as TextEditor
 
-        val ktsHost = BasicJvmScriptingHost(
-            ScriptingHostConfiguration {
-                jvm {
-                    baseClassLoader.put(ConfisHost::class.java.classLoader)
-                    // compilationCache(InMemoryCache(maxSize = 40))
-                    hybridCacheConfiguration()
-                }
-            }
-        )
-        val scriptHost = ConfisHost(ktsHost)
         val confisText = FileDocumentManager.getInstance().getDocument(file)?.text ?: ""
-        val initialMdText = scriptHost.eval(file.asConfisSourceCode(confisText)).renderMarkdownResult()
 
         val mdFileName = "${file.name}_temp-confis.md"
         val mdLang = MarkdownLanguage.INSTANCE
-        val mdInMem = LightVirtualFile(mdFileName, initialMdText)
+        val mdInMem = LightVirtualFile(mdFileName, "")
         mdInMem.language = mdLang
 
         val preview = MarkdownPreviewFileEditor(project, mdInMem)
 
-        return ConfisEditor(editor, file, preview, mdInMem, project, scriptHost)
+        val confisEditor = ConfisEditor(editor, file, preview, mdInMem, project)
+
+        // so we do not interrupt UI
+        tempScope.launch {
+            val agreement = Resources.scriptHost.eval(file.asConfisSourceCode(confisText))
+            // to notify to tool window
+            project.messageBus.syncPublisher(ConfisCompiledNotifier.CHANGE_ACTION_TOPIC)
+                .afterCompile(file, agreement)
+
+            val initialMdText = agreement.renderMarkdownResult()
+            uiAlarm.request {
+                val doc = FileDocumentManager.getInstance().getDocument(mdInMem)
+                WriteAction.run<Exception> {
+                    doc?.setText(initialMdText)
+                }
+                if (confisEditor.latestAgreement == null) {
+                    confisEditor.latestAgreement = agreement
+                }
+            }
+        }
+        return confisEditor
     }
 
     override fun getEditorTypeId() = id
