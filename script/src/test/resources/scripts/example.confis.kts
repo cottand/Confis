@@ -3,8 +3,9 @@ val bob by party(named = "Bobby", description = "Bob The Builder")
 val pay by action
 val notify by action(description = "Notify by email")
 
-alice may pay(bob)
-alice may pay(bob)
+alice must pay(bob) underCircumstances  {
+    with purpose Internal
+}
 
 alice may notify(alice) asLongAs {
     with purpose Commercial

@@ -44,7 +44,7 @@ interface Subject {
 }
 
 class Action(val name: String, val description: String? = null) {
-    override fun toString() = "Action($name ${description ?: ""})"
+    override fun toString() = render()
     override fun equals(other: Any?) = other === this || other is Action && name == other.name
     override fun hashCode(): Int = name.hashCode() * 71
     fun render() = name

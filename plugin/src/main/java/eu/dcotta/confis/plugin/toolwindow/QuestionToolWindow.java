@@ -25,7 +25,7 @@ class QuestionToolWindow {
   private JComboBox<Obj> objectCombo;
   private JComboBox<Action> actionCombo;
   private JList<String> circumstancesList;
-  private CollectionListModel<String> resultsModel = new CollectionListModel<>();
+  private final CollectionListModel<String> resultsModel = new CollectionListModel<>();
   private JButton addButton;
   private JButton removeButton;
   private JList<String> resultsList;

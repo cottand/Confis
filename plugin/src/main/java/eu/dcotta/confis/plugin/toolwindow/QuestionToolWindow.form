@@ -18,10 +18,7 @@
           <component id="c4048" class="javax.swing.JComboBox" binding="qComboBox">
             <constraints/>
             <properties>
-              <model>
-                <item value="Allowance"/>
-                <item value="Compliance"/>
-              </model>
+              <model/>
             </properties>
           </component>
         </children>

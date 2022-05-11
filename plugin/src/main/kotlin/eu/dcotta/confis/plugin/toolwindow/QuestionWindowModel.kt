@@ -46,7 +46,6 @@ class QuestionWindowModel(project: Project) : Disposable {
 
     init {
         project.messageBus.connect(this).subscribe(ConfisCompiledNotifier.CHANGE_ACTION_TOPIC, topicListener)
-        // ConfisCompiledNotifier.CHANGE_ACTION_TOPIC.subscribe(this, topicListener)
     }
 
     fun addListener(listener: ConfisAgreementListener) {
