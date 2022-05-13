@@ -6,6 +6,9 @@ import com.intellij.util.Alarm
 import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.render.renderMarkdown
 import eu.dcotta.confis.scripting.eu.dcotta.confis.scripting.ConfisSourceCode
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Runnable
+import kotlin.coroutines.CoroutineContext
 import kotlin.script.experimental.api.ResultWithDiagnostics
 import kotlin.script.experimental.api.ResultWithDiagnostics.Failure
 import kotlin.script.experimental.api.ResultWithDiagnostics.Success
@@ -32,4 +35,10 @@ private fun Failure.reportsAsMarkdown(): String =
 object ConfisIcons {
     @JvmField
     val ConfisOrange = IconLoader.getIcon("/law-16-deep_orange.svg", ConfisIcons::class.java)
+}
+
+class AlarmDispatcher(private val alarm: Alarm) : CoroutineDispatcher() {
+    override fun dispatch(context: CoroutineContext, block: Runnable) {
+        alarm.addRequest(block, 0)
+    }
 }

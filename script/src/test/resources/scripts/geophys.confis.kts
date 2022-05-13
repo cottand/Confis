@@ -38,6 +38,7 @@ licensee mayNot sell(data)
 licensee mayNot provideServicesWith(data)
 
 thirdParty may access(data) asLongAs {
+
     with consentFrom licensee
     after { thirdParty did agreeTo(licence) }
     after  { thirdParty did agreeTo(nda) }
@@ -46,4 +47,8 @@ thirdParty may access(data) asLongAs {
 licensee mayNot adapt(data) unless  {
     with purpose Internal
     with consentFrom library
+}
+
+val builder: CircumstanceBuilder.() -> Unit = {
+
 }

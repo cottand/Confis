@@ -1,12 +1,15 @@
 package eu.dcotta.confis.plugin.toolwindow;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.CollectionListModel;
+import com.intellij.uiDesigner.core.GridConstraints;
 import eu.dcotta.confis.model.Action;
 import eu.dcotta.confis.model.Obj;
 import eu.dcotta.confis.model.Sentence;
 import eu.dcotta.confis.model.Subject;
+import kotlin.Unit;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -16,7 +19,6 @@ import java.util.Set;
 class QuestionToolWindow {
   private ToolWindow toolWindow;
   private Project project;
-  private QuestionWindowModel model;
 //  val toolWindow: ToolWindow, val project: Project
 
   private JPanel content;
@@ -24,23 +26,29 @@ class QuestionToolWindow {
   private JComboBox<Subject> subjectCombo;
   private JComboBox<Obj> objectCombo;
   private JComboBox<Action> actionCombo;
-  private JList<String> circumstancesList;
   private final CollectionListModel<String> resultsModel = new CollectionListModel<>();
-  private JButton addButton;
-  private JButton removeButton;
   private JList<String> resultsList;
   private JButton askQuestionButton;
   private JLabel title;
+  private JPanel circumstancePanel;
 
-  public QuestionToolWindow(ToolWindow toolWindow, Project project, QuestionWindowModel model) {
+  public QuestionToolWindow(
+      ToolWindow toolWindow,
+      Project project,
+      QuestionWindowModel model,
+      CircumstanceEditor circumstanceEditor
+  ) {
     this.toolWindow = toolWindow;
     this.project = project;
-    this.model = model;
 
     for (var t : ConfisQueryType.values()) qComboBox.addItem(t);
     qComboBox.setSelectedIndex(0);
 
     resultsList.setModel(resultsModel);
+    var circumstanceEditorComponent = circumstanceEditor.getEditorComponent();
+    GridConstraints gc = new GridConstraints();
+    gc.setFill(GridConstraints.FILL_HORIZONTAL);
+    circumstancePanel.add(circumstanceEditorComponent, gc, 0);
 
     askQuestionButton.addActionListener(actionEvent -> {
       int subjectIndex = subjectCombo.getSelectedIndex();
@@ -53,9 +61,18 @@ class QuestionToolWindow {
         var obj = objectCombo.getItemAt(objectIndex);
         var sentence = new Sentence(subject, action, obj);
         var type = ConfisQueryType.values()[typeIndex];
-        var result = model.ask(type, sentence);
 
-        if (result != null) resultsModel.add(result.render());
+        model.askAsync(
+            type,
+            sentence,
+            circumstanceEditor.getExpression(),
+            (res) -> {
+              ApplicationManager.getApplication().invokeLater(() -> {
+                if (res != null) resultsModel.add(res.render());
+              });
+              return Unit.INSTANCE;
+            }
+        );
       }
     });
   }
@@ -88,6 +105,7 @@ class QuestionToolWindow {
 
 
   void createUIComponents() {
+
   }
 
   public JPanel getContent() {

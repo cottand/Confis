@@ -1,18 +1,17 @@
 package eu.dcotta.confis.plugin.toolwindow
 
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.content.ContentFactory.SERVICE
-import com.intellij.ui.dsl.builder.panel
 
 class ConfisToolWindowFactory : ToolWindowFactory {
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
         val model = QuestionWindowModel(project)
 
-        val myToolWindow = QuestionToolWindow(toolWindow, project, model)
+        val circumstanceEditor = CircumstanceEditor(project)
+        val myToolWindow = QuestionToolWindow(toolWindow, project, model, circumstanceEditor)
         Disposer.register(toolWindow.disposable, model)
 
         model.addListener(
@@ -23,6 +22,7 @@ class ConfisToolWindowFactory : ToolWindowFactory {
                 onDocument = myToolWindow::setDocName,
                 onResults = {},
                 onObjectsUpdated = myToolWindow::setObjects,
+                onNewCircumstanceContext = circumstanceEditor::setContext
             )
         )
 
