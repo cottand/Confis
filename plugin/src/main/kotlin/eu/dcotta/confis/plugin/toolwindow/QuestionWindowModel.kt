@@ -5,6 +5,7 @@ import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.fileEditor.FileDocumentManager
+import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
@@ -12,11 +13,11 @@ import com.intellij.psi.PsiManager
 import com.intellij.testFramework.LightVirtualFile
 import com.intellij.xdebugger.XExpression
 import eu.dcotta.confis.dsl.CircumstanceBuilder
+import eu.dcotta.confis.eval.AllowanceQuestion
+import eu.dcotta.confis.eval.CircumstanceQuestion
 import eu.dcotta.confis.eval.QueryResponse
-import eu.dcotta.confis.eval.allowance.AllowanceQuestion
 import eu.dcotta.confis.eval.allowance.ask
-import eu.dcotta.confis.eval.compliance.ComplianceQuestion
-import eu.dcotta.confis.eval.compliance.ask
+import eu.dcotta.confis.eval.inference.ask
 import eu.dcotta.confis.model.Action
 import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.model.CircumstanceMap
@@ -27,8 +28,6 @@ import eu.dcotta.confis.model.Subject
 import eu.dcotta.confis.plugin.ConfisCompiledNotifier
 import eu.dcotta.confis.plugin.Resources
 import eu.dcotta.confis.plugin.map
-import eu.dcotta.confis.plugin.toolwindow.ConfisQueryType.Allowance
-import eu.dcotta.confis.plugin.toolwindow.ConfisQueryType.Compliance
 import eu.dcotta.confis.scripting.ConfisScriptDefinition
 import eu.dcotta.confis.scripting.eu.dcotta.confis.scripting.ConfisSourceCode
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -39,12 +38,12 @@ import kotlin.script.experimental.api.ResultWithDiagnostics
 import kotlin.script.experimental.api.ResultWithDiagnostics.Success
 
 data class ConfisAgreementListener(
-    val onSubjectsUpdated: (List<Subject>) -> Unit,
-    val onActionsUpdated: (Set<Action>) -> Unit,
-    val onObjectsUpdated: (Set<Obj>) -> Unit,
-    val onResults: (List<String>) -> Unit,
-    val onCircumstances: (List<String>) -> Unit,
-    val onDocument: (name: String?) -> Unit,
+    val onSubjectsUpdated: (List<Subject>) -> Unit = {},
+    val onActionsUpdated: (List<Action>) -> Unit = {},
+    val onObjectsUpdated: (List<Obj>) -> Unit = {},
+    val onResults: (List<String>) -> Unit = {},
+    val onCircumstances: (List<String>) -> Unit = {},
+    val onDocument: (name: String?) -> Unit = {},
     val onNewCircumstanceContext: (ctx: PsiElement) -> Unit = {},
 )
 
@@ -56,6 +55,9 @@ class QuestionWindowModel(project: Project) : Disposable {
     var latestCircumstanceContext: PsiElement? = null
     var latestConfisFile: VirtualFile? = null
 
+    val _currentDocTitle = AtomicProperty("Please open a valid Confis agreement")
+    var currentDocTitle by _currentDocTitle
+
     val scope = CoroutineScope(
         Dispatchers.Default + CoroutineExceptionHandler { _, throwable ->
             thisLogger().error("Error during QuestionWindowModel coroutine", throwable)
@@ -66,6 +68,7 @@ class QuestionWindowModel(project: Project) : Disposable {
         if (result is Success) {
             latestConfisFile = file
             latestAgreement = result.value
+            currentDocTitle = "Examining Confis agreement ${file.name}"
             scope.launch {
                 val crafted = craftCircumstanceContextFor(file)
                 latestCircumstanceContext = crafted
@@ -75,8 +78,8 @@ class QuestionWindowModel(project: Project) : Disposable {
                 val a = result.value
                 l.onDocument(file.name)
                 l.onSubjectsUpdated(a.parties)
-                l.onActionsUpdated(a.actions)
-                l.onObjectsUpdated(a.objs)
+                l.onActionsUpdated(a.actions.toList())
+                l.onObjectsUpdated(a.objs.toList())
             }
         } else for (l in listeners) l.onDocument(null)
     }
@@ -118,11 +121,10 @@ class QuestionWindowModel(project: Project) : Disposable {
         }
     }
 
-    fun askAsync(
-        type: ConfisQueryType,
+    fun askAllowance(
         sentence: Sentence,
-        circumstancesText: XExpression?,
-        onResult: (QueryResponse) -> Unit,
+        circumstancesText: XExpression,
+        onResult: (QueryResponse) -> Unit
     ) {
         scope.launch {
             val cs = compileCircumstances(circumstancesText, latestConfisFile)
@@ -130,12 +132,17 @@ class QuestionWindowModel(project: Project) : Disposable {
                 // TODO POPUP
                 return@launch
             }
-            val res = latestAgreement?.let { agreement ->
-                when (type) {
-                    Allowance -> agreement.ask(AllowanceQuestion(sentence, cs.value))
-                    Compliance -> agreement.ask(ComplianceQuestion())
-                }
-            }
+            val res = latestAgreement?.ask(AllowanceQuestion(sentence, cs.value))
+            if (res != null) onResult(res)
+        }
+    }
+
+    fun askCircumstance(
+        sentence: Sentence,
+        onResult: (QueryResponse) -> Unit,
+    ) {
+        scope.launch {
+            val res = latestAgreement?.ask(CircumstanceQuestion(sentence))
             if (res != null) onResult(res)
         }
     }

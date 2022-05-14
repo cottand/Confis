@@ -59,6 +59,8 @@ class CircumstanceMap private constructor(
 
     override fun toString(): String = "CircumstanceMap{${map.values.joinToString()}}"
 
+    fun render(): String = map.values.joinToString(transform = Circumstance::render)
+
     fun isEmpty(): Boolean = map.isEmpty()
 
     infix fun overlapsWith(other: CircumstanceMap): Boolean {

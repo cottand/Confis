@@ -3,6 +3,7 @@ package eu.dcotta.confis.eval.inference
 import eu.dcotta.confis.asOrFail
 import eu.dcotta.confis.dsl.of
 import eu.dcotta.confis.dsl.year
+import eu.dcotta.confis.eval.CircumstanceQuestion
 import eu.dcotta.confis.eval.inference.CircumstanceResult.UnderCircumstances
 import eu.dcotta.confis.model.Action
 import eu.dcotta.confis.model.Agreement

@@ -1,22 +1,16 @@
 package eu.dcotta.confis.eval.inference
 
+import eu.dcotta.confis.eval.CircumstanceQuestion
 import eu.dcotta.confis.eval.ConfisRule
 import eu.dcotta.confis.eval.askEngine
 import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.model.Clause
-import eu.dcotta.confis.model.Sentence
 import eu.dcotta.confis.util.with
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.persistentSetOf
 import org.jeasy.rules.api.Facts
 import org.jeasy.rules.core.InferenceRulesEngine
-
-/**
- * Question meant to represent _'Under what circumstances may A do X?'_
- */
-@JvmInline
-value class CircumstanceQuestion(val s: Sentence)
 
 class CircumstanceContext(facts: Facts, q2: CircumstanceQuestion) {
 

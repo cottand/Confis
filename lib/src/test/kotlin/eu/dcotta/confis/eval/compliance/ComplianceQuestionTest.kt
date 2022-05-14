@@ -5,6 +5,7 @@ import eu.dcotta.confis.asOrFail
 import eu.dcotta.confis.dsl.of
 import eu.dcotta.confis.dsl.rangeTo
 import eu.dcotta.confis.dsl.year
+import eu.dcotta.confis.eval.ComplianceQuestion
 import eu.dcotta.confis.eval.compliance.ComplianceResult.Breach
 import eu.dcotta.confis.eval.compliance.ComplianceResult.CompliantIf
 import eu.dcotta.confis.eval.compliance.ComplianceResult.FullyCompliant

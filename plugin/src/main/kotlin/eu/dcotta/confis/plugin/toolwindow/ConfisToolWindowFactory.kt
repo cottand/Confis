@@ -11,17 +11,20 @@ class ConfisToolWindowFactory : ToolWindowFactory {
         val model = QuestionWindowModel(project)
 
         val circumstanceEditor = CircumstanceEditor(project)
-        val myToolWindow = QuestionToolWindow(toolWindow, project, model, circumstanceEditor)
+        val allowanceTab = AllowanceTab(circumstanceEditor, model)
+        val tabs = listOf(allowanceTab, InferenceTab(model))
+        val myToolWindow = ToolWindowView(
+            model,
+            tabs,
+        )
         Disposer.register(toolWindow.disposable, model)
 
+        tabs.mapNotNull { it.listener }.forEach(model::addListener)
         model.addListener(
             ConfisAgreementListener(
-                onSubjectsUpdated = myToolWindow::setSubjects,
-                onActionsUpdated = myToolWindow::setActions,
                 onCircumstances = {},
-                onDocument = myToolWindow::setDocName,
+                // onDocument = myToolWindow::setDocName,
                 onResults = {},
-                onObjectsUpdated = myToolWindow::setObjects,
                 onNewCircumstanceContext = circumstanceEditor::setContext
             )
         )
