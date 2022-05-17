@@ -47,41 +47,4 @@ class CircumstanceEditor(
             super.setContext(context)
         }
     }
-
-    class DebugProvider : XDebuggerEditorsProvider() {
-        override fun getFileType(): FileType {
-            return kotlinFileType
-        }
-
-        override fun createDocument(
-            project: Project,
-            expression: XExpression,
-            sourcePosition: XSourcePosition?,
-            mode: EvaluationMode
-        ): Document {
-            val file = LightVirtualFile(
-                "confisDebugProviderLVF",
-                expression.language ?: kotlinLang ?: error("Expected Kotlin Language Available"),
-                expression.expression,
-            )
-
-            return ReadAction.compute<Document, Exception> {
-                FileDocumentManager.getInstance().getDocument(file)
-                    ?: error("Expected document from temp Kotlin file")
-            }
-        }
-
-        override fun getSupportedLanguages(
-            project: Project,
-            sourcePosition: XSourcePosition?
-        ): MutableCollection<Language> = mutableListOf(kotlinLang!!)
-
-        override fun getInlineDebuggerHelper(): InlineDebuggerHelper {
-            return object : InlineDebuggerHelper() {
-                override fun shouldEvaluateChildrenByDefault(node: XNamedTreeNode?): Boolean {
-                    return true
-                }
-            }
-        }
-    }
 }
