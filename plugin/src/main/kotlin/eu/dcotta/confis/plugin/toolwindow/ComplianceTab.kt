@@ -2,6 +2,7 @@ package eu.dcotta.confis.plugin.toolwindow
 
 import com.intellij.codeInspection.javaDoc.JavadocUIUtil.bindItem
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.wm.StatusBar
 import com.intellij.openapi.wm.WindowManager
 import com.intellij.ui.dsl.builder.RightGap.SMALL
 import com.intellij.ui.dsl.builder.panel
@@ -12,8 +13,8 @@ import javax.swing.JComponent
 
 @Suppress("UnstableApiUsage")
 class ComplianceTab(
-    val questionWindowModel: QuestionWindowModel,
-    val project: Project,
+    private val questionWindowModel: QuestionWindowModel,
+    private val project: Project,
 ) : QuestionTab {
 
     override val title: String = "Compliance"
@@ -25,9 +26,9 @@ class ComplianceTab(
         onObjectsUpdated = { obj -> worldState.forEach { it.sentence.setObjects(obj) } },
     )
 
-    val resultsPanel = ScrollPane()
+    private val resultsPanel = ScrollPane()
 
-    val statusBar = WindowManager.getInstance().getStatusBar(project)
+    private val statusBar: StatusBar = WindowManager.getInstance().getStatusBar(project)
 
     private fun askQuestion() {
         val state = worldState.filter { it.sentence.sentence() != null }

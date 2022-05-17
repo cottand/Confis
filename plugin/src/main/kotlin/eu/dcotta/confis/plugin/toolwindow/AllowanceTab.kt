@@ -1,5 +1,7 @@
 package eu.dcotta.confis.plugin.toolwindow
 
+import com.intellij.openapi.wm.StatusBar
+import com.intellij.openapi.wm.WindowManager
 import com.intellij.ui.CollectionListModel
 import com.intellij.ui.dsl.builder.RightGap.SMALL
 import com.intellij.ui.dsl.builder.enableIf
@@ -15,6 +17,8 @@ class AllowanceTab(
 
     val model = SentenceComboBoxesModel()
 
+    private val statusBar: StatusBar = WindowManager.getInstance().getStatusBar(project)
+
     override val title get() = "Allowance"
 
     override val listener = ConfisAgreementListener(
@@ -28,8 +32,10 @@ class AllowanceTab(
 
     private fun askQuestion() {
         model.sentence.get()?.let { sentence ->
+            statusBar.startRefreshIndication("Asking Confis question...")
             questionWindowModel.askAllowance(sentence, circumstanceEditor.expression) {
                 if (it != null) results.add(0, it.render())
+                statusBar.stopRefreshIndication()
             }
         }
     }
@@ -52,7 +58,9 @@ class AllowanceTab(
         }
         indent {
             row {
-                button("Ask Allowance Question") { askQuestion() }
+                button("Ask Allowance Question") {
+                    askQuestion()
+                }
                     .bold()
                     .enableIf(model.questionReady)
                     .horizontalAlign(FILL)
