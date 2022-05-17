@@ -25,7 +25,9 @@ import eu.dcotta.confis.model.circumstance.Purpose.Commercial
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.maps.shouldHaveSize
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.beOfType
 import kotlinx.collections.immutable.persistentHashMapOf
 
 class ComplianceQuestionTest : StringSpec({
@@ -215,5 +217,29 @@ class ComplianceQuestionTest : StringSpec({
         )
 
         r.requirements[Sentence { "bob"("payLicenseFeeTo", Party("alice")) }] shouldBe CircumstanceMap.of(jan)
+    }
+
+    "transitivity in past events" {
+        val a = Agreement {
+            val alice by party
+            val bob by party
+            val pay by action
+            val eat by action
+            val cake by thing
+
+            alice must pay(bob) underCircumstances {
+                after { alice did eat(cake) }
+            }
+
+            alice may eat(cake) asLongAs {
+                after { bob did eat(cake) }
+            }
+        }
+
+        val r = a.ask(
+            ComplianceQuestion(Sentence { "alice"("eat", Obj("cake")) }, Sentence { "bob"("eat", Obj("cake")) }, alicePaysBob)
+        )
+
+        r should beOfType<FullyCompliant>()
     }
 })

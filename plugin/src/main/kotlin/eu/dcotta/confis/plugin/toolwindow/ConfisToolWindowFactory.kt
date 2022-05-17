@@ -11,7 +11,7 @@ class ConfisToolWindowFactory : ToolWindowFactory {
         val model = QuestionWindowModel(project)
 
         val circumstanceEditor = CircumstanceEditor(project)
-        val allowanceTab = AllowanceTab(circumstanceEditor, model)
+        val allowanceTab = AllowanceTab(circumstanceEditor, model, project)
         val tabs = listOf(allowanceTab, InferenceTab(model), ComplianceTab(model, project))
         val myToolWindow = ToolWindowView(
             model,

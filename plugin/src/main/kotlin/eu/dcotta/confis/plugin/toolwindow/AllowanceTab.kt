@@ -1,5 +1,6 @@
 package eu.dcotta.confis.plugin.toolwindow
 
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.StatusBar
 import com.intellij.openapi.wm.WindowManager
 import com.intellij.ui.CollectionListModel
@@ -13,6 +14,7 @@ import javax.swing.JList
 class AllowanceTab(
     private val circumstanceEditor: CircumstanceEditor,
     private val questionWindowModel: QuestionWindowModel,
+    project: Project
 ) : QuestionTab {
 
     val model = SentenceComboBoxesModel()
