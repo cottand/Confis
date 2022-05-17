@@ -1,9 +1,8 @@
 package eu.dcotta.confis.plugin.toolwindow
 
 import com.intellij.codeInspection.javaDoc.JavadocUIUtil.bindItem
-import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.dsl.builder.Panel
-import java.awt.BorderLayout
+import java.awt.Component
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
 import javax.swing.JComponent
@@ -30,35 +29,34 @@ fun Panel.sentenceGroup(
         }
     }
 
-class ScrollPane : JPanel() {
-
-    private val gbc = GridBagConstraints().apply {
-        weightx = 1.0
-        weighty = 1.0
-        gridwidth = GridBagConstraints.REMAINDER
-    }
+class ScrollPane : JPanel(GridBagLayout()) {
 
     init {
-        layout = BorderLayout()
+        add(JPanel(), Companion.gbc)
     }
 
-    val mainList = JPanel(GridBagLayout()).also {
-        it.add(JPanel(), gbc)
-    }
-
-    init {
-        add(JBScrollPane(mainList))
-    }
+    val children: MutableList<Component> = mutableListOf()
 
     fun addScroll(panel: JComponent) {
 
-        val container = JPanel()
-
-        container.add(panel)
-
-        mainList.add(container, gbc, 0)
+        add(panel, Companion.gbc, 0)
+        children += panel
 
         validate()
         repaint()
+    }
+
+    fun clear() {
+        children.forEach(::remove)
+        children.clear()
+    }
+
+    companion object {
+        private val gbc = GridBagConstraints().apply {
+            weightx = 1.0
+            weighty = 1.0
+            gridwidth = GridBagConstraints.REMAINDER
+            gridheight = GridBagConstraints.NORTH
+        }
     }
 }

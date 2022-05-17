@@ -3,7 +3,8 @@ package eu.dcotta.confis.plugin.toolwindow
 import com.intellij.ui.components.JBTabbedPane
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
-import com.intellij.ui.dsl.gridLayout.VerticalAlign.FILL
+import com.intellij.ui.dsl.gridLayout.HorizontalAlign
+import com.intellij.ui.dsl.gridLayout.VerticalAlign
 import javax.swing.SwingConstants
 
 class ToolWindowView(
@@ -20,7 +21,8 @@ class ToolWindowView(
             for (t in tabs) tabbedPane.add(t.title, t.component)
             cell(tabbedPane)
                 .resizableColumn()
-                .verticalAlign(FILL)
+                .verticalAlign(VerticalAlign.FILL)
+                .horizontalAlign(HorizontalAlign.FILL)
         }
     }
 }

@@ -15,8 +15,10 @@ import com.intellij.xdebugger.XExpression
 import eu.dcotta.confis.dsl.CircumstanceBuilder
 import eu.dcotta.confis.eval.AllowanceQuestion
 import eu.dcotta.confis.eval.CircumstanceQuestion
+import eu.dcotta.confis.eval.ComplianceQuestion
 import eu.dcotta.confis.eval.QueryResponse
 import eu.dcotta.confis.eval.allowance.ask
+import eu.dcotta.confis.eval.compliance.ask
 import eu.dcotta.confis.eval.inference.ask
 import eu.dcotta.confis.model.Action
 import eu.dcotta.confis.model.Agreement
@@ -30,12 +32,16 @@ import eu.dcotta.confis.plugin.Resources
 import eu.dcotta.confis.plugin.map
 import eu.dcotta.confis.scripting.ConfisScriptDefinition
 import eu.dcotta.confis.scripting.eu.dcotta.confis.scripting.ConfisSourceCode
+import eu.dcotta.confis.util.mapValuesNotNull
+import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.script.experimental.api.ResultWithDiagnostics
 import kotlin.script.experimental.api.ResultWithDiagnostics.Success
+import kotlin.script.experimental.api.valueOrNull
+import kotlin.system.measureTimeMillis
 
 data class ConfisAgreementListener(
     val onSubjectsUpdated: (List<Subject>) -> Unit = {},
@@ -89,6 +95,11 @@ class QuestionWindowModel(project: Project) : Disposable {
     }
 
     fun addListener(listener: ConfisAgreementListener) {
+        latestAgreement?.let { a ->
+            listener.onSubjectsUpdated(a.parties)
+            listener.onActionsUpdated(a.actions.toList())
+            listener.onObjectsUpdated(a.objs.toList())
+        }
         listeners += listener
     }
 
@@ -124,7 +135,7 @@ class QuestionWindowModel(project: Project) : Disposable {
     fun askAllowance(
         sentence: Sentence,
         circumstancesText: XExpression,
-        onResult: (QueryResponse) -> Unit
+        onResult: (QueryResponse) -> Unit,
     ) {
         scope.launch {
             val cs = compileCircumstances(circumstancesText, latestConfisFile)
@@ -142,32 +153,49 @@ class QuestionWindowModel(project: Project) : Disposable {
         onResult: (QueryResponse) -> Unit,
     ) {
         scope.launch {
-            val res = latestAgreement?.ask(CircumstanceQuestion(sentence))
-            if (res != null) onResult(res)
+            latestAgreement?.ask(CircumstanceQuestion(sentence))?.run(onResult)
         }
     }
 
-    private fun compileCircumstances(text: XExpression?, agreementFile: VirtualFile?): ResultWithDiagnostics<CircumstanceMap>? {
-        if (text == null || agreementFile == null) return null
-        val fieldName = ConfisScriptDefinition::`$$questionCircumstances$$`.name
-        val doc = ReadAction.compute<Document?, Exception> { docManager.getDocument(agreementFile) }
-        val syntheticContents = buildString {
-            append(doc?.text ?: "")
-            append('\n')
-            append("`$fieldName` = circumstanceContainer {")
-            append(text.expression)
-            append("\n}\n")
-        }
+    fun askCompliance(worldState: Map<Sentence, XExpression>, onResult: (QueryResponse) -> Unit) {
+        scope.launch {
+            val compiled =
+                worldState.mapValuesNotNull { compileCircumstances(it.value, latestConfisFile)?.valueOrNull() }
 
-        val src = ConfisSourceCode(null, "circumstances.confis.kts", syntheticContents)
-        val result = Resources.scriptHost.rawEval(src)
-        return result.map {
-            val init = it.`$$questionCircumstances$$`
-
-            CircumstanceBuilder(Sentence(Party(""), Action(""), Obj("")))
-                .apply(init)
-                .`$$build$$`()
+            latestAgreement?.ask(ComplianceQuestion(compiled.toPersistentMap()))?.run(onResult)
         }
+    }
+
+    private fun compileCircumstances(
+        text: XExpression?,
+        agreementFile: VirtualFile?,
+    ): ResultWithDiagnostics<CircumstanceMap>? {
+        val assembled: ResultWithDiagnostics<CircumstanceMap>
+        val duration = measureTimeMillis {
+            if (text == null || agreementFile == null) return null
+            val fieldName = ConfisScriptDefinition::`$$questionCircumstances$$`.name
+            val doc = ReadAction.compute<Document?, Exception> { docManager.getDocument(agreementFile) }
+            val syntheticContents = buildString {
+                append(doc?.text ?: "")
+                append('\n')
+                append("`$fieldName` = circumstanceContainer {")
+                append(text.expression)
+                append("\n}\n")
+            }
+
+            val src = ConfisSourceCode(null, "circumstances.confis.kts", syntheticContents)
+            val result = Resources.scriptHost.rawEval(src)
+
+            assembled = result.map {
+                val init = it.`$$questionCircumstances$$`
+
+                CircumstanceBuilder(Sentence(Party(""), Action(""), Obj("")))
+                    .apply(init)
+                    .`$$build$$`()
+            }
+        }
+        logger.info("Compiled circumstances for `$text` in ${duration}ms")
+        return assembled
     }
 
     override fun dispose() {

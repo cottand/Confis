@@ -15,3 +15,16 @@ data class PastAction(val sentence: Sentence, val circumstances: CircumstanceMap
         circumstances overlapsWith pastCircumstances
     } ?: false
 }
+
+fun WorldState.render(): String = toList().joinToString { (sentence, cs) ->
+    buildString {
+        append("  - '")
+        append(sentence.subject)
+        append(' ')
+        append(sentence.action)
+        append(' ')
+        append(sentence.obj)
+        append(".' under the following circumstances:")
+        append(cs.toList().joinToString { "\n    - ${it.render()}" })
+    }
+}

@@ -1,6 +1,7 @@
 package eu.dcotta.confis.plugin.toolwindow
 
 import com.intellij.lang.Language
+import com.intellij.openapi.application.Application
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.editor.Document
@@ -35,7 +36,7 @@ class CircumstanceEditor(
     true,
     true,
 ) {
-    val app = ApplicationManager.getApplication()
+    private val app: Application = ApplicationManager.getApplication()
 
     override fun setContext(context: PsiElement?) {
         // ensure we are executing async on UI thread

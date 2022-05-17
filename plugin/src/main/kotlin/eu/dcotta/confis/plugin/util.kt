@@ -1,13 +1,16 @@
 package eu.dcotta.confis.plugin
 
+import com.intellij.markdown.utils.MarkdownToHtmlConverter
 import com.intellij.openapi.util.IconLoader
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.ui.dsl.builder.Row
 import com.intellij.util.Alarm
 import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.render.renderMarkdown
 import eu.dcotta.confis.scripting.eu.dcotta.confis.scripting.ConfisSourceCode
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Runnable
+import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
 import kotlin.coroutines.CoroutineContext
 import kotlin.script.experimental.api.ResultWithDiagnostics
 import kotlin.script.experimental.api.ResultWithDiagnostics.Failure
@@ -42,3 +45,6 @@ class AlarmDispatcher(private val alarm: Alarm) : CoroutineDispatcher() {
         alarm.addRequest(block, 0)
     }
 }
+
+val md by lazy { MarkdownToHtmlConverter(GFMFlavourDescriptor()) }
+fun Row.mdLabel(markdownSource: String) = label("<html>" + md.convertMarkdownToHtml(markdownSource) + "</html>")

@@ -37,7 +37,7 @@ class AllowanceTab(
     override val component = panel {
         gap(SMALL)
         row {
-            comment("Is S allowed under the given circumstances?").horizontalAlign(CENTER)
+            comment("Is (Sentence) allowed under the given circumstances?").horizontalAlign(CENTER)
         }
         sentenceGroup(model)
 
@@ -52,9 +52,9 @@ class AllowanceTab(
         }
         indent {
             row {
-                button("Ask Allowance Question") {
-                    askQuestion()
-                }.bold().horizontalAlign(FILL)
+                button("Ask Allowance Question") { askQuestion() }
+                    .bold()
+                    .horizontalAlign(FILL)
             }
         }
         group("Results") {

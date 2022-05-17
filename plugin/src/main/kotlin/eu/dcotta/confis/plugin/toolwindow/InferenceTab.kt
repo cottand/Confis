@@ -5,6 +5,7 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.gridLayout.HorizontalAlign.CENTER
 import com.intellij.ui.dsl.gridLayout.HorizontalAlign.FILL
 import eu.dcotta.confis.model.Sentence
+import eu.dcotta.confis.plugin.mdLabel
 
 class InferenceTab(private val questionWindowModel: QuestionWindowModel) : QuestionTab {
     override val title get() = "Circumstance"
@@ -25,7 +26,7 @@ class InferenceTab(private val questionWindowModel: QuestionWindowModel) : Quest
                 sp.addScroll(
                     panel {
                         row {
-                            label(it.render())
+                            mdLabel(it.render())
                         }
                         separator()
                     }
@@ -52,10 +53,11 @@ class InferenceTab(private val questionWindowModel: QuestionWindowModel) : Quest
         }
         group("Results") {
             row {
-                cell(sp)
+                scrollCell(sp)
                     // scrollCell(JList(results))
                     .resizableColumn()
                     .horizontalAlign(FILL)
+                // resizableRow()
             }
         }
     }

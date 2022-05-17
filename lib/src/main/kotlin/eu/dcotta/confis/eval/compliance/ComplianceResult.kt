@@ -3,6 +3,8 @@ package eu.dcotta.confis.eval.compliance
 import eu.dcotta.confis.eval.QueryResponse
 import eu.dcotta.confis.model.Clause
 import eu.dcotta.confis.model.circumstance.WorldState
+import eu.dcotta.confis.model.circumstance.render
+import eu.dcotta.confis.render.renderMd
 
 sealed interface ComplianceResult : QueryResponse {
     /**
@@ -12,14 +14,24 @@ sealed interface ComplianceResult : QueryResponse {
         val clausesBreached: List<Clause>,
         val clausesPossiblyBreached: List<Clause> = emptyList(),
     ) : ComplianceResult {
-        override fun render() = "Breached the following clauses $clausesBreached"
+        override fun render() = "Breached the following clauses:\n" +
+            clausesBreached
+                .mapIndexed { index, clause -> clause.renderMd(index + 1).trimMargin() }
+                .joinToString(separator = "") { "\n" + it }
     }
 
     data class PossibleBreach(
         val clausesPossiblyBreached: List<Clause>,
         val requirements: WorldState,
     ) : ComplianceResult {
-        override fun render() = "Compliant under the following circumstances:\n$requirements"
+        override fun render() = buildString {
+            append("Compliant if then following happens:\n\n")
+            append(requirements.render())
+            append("\n\nPossibly breached:\n\n")
+            clausesPossiblyBreached
+                .mapIndexed { index, clause -> clause.renderMd(index + 1).trimMargin() }
+                .forEach { append("\n$it") }
+        }
     }
 
     /**
@@ -27,7 +39,7 @@ sealed interface ComplianceResult : QueryResponse {
      * If [requirements] are fulfilled, then [FullyCompliant] status can be reached
      */
     data class CompliantIf(val requirements: WorldState) : ComplianceResult {
-        override fun render() = "Compliant under the following circumstances:\n$requirements"
+        override fun render() = "Compliant if the following happens:\n\n${requirements.render()}"
     }
 
     /**
