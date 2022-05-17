@@ -1,8 +1,18 @@
 package eu.dcotta.confis.plugin
 
+import com.intellij.notification.Notification
+import com.intellij.notification.NotificationType
+import com.intellij.notification.Notifications
+import com.intellij.openapi.actionSystem.ActionGroup
+import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.actionSystem.impl.ActionToolbarImpl
 import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.editor.event.DocumentListener
 import com.intellij.openapi.fileEditor.FileDocumentManager
@@ -16,22 +26,27 @@ import com.intellij.testFramework.LightVirtualFile
 import com.intellij.util.Alarm
 import com.intellij.util.Alarm.ThreadToUse.POOLED_THREAD
 import com.intellij.util.Alarm.ThreadToUse.SWING_THREAD
+import eu.dcotta.confis.model.Agreement
 import org.intellij.plugins.markdown.ui.preview.MarkdownPreviewFileEditor
+import java.awt.Dimension
+import javax.swing.JComponent
+import javax.swing.JLayeredPane
+import kotlin.script.experimental.api.ResultWithDiagnostics
 
 class ConfisEditor(
-    editor: TextEditor,
+    private val editor: TextEditor,
     private val confisFile: VirtualFile,
     private val preview: MarkdownPreviewFileEditor,
     mdInMem: LightVirtualFile,
-    val project: Project,
-    private val scriptHost: ConfisHost,
+    private val project: Project,
 ) :
     TextEditorWithPreview(editor, preview, "ConfisEditor", SHOW_EDITOR_AND_PREVIEW, false) {
 
     val PARENT_SPLIT_EDITOR_KEY: Key<ConfisEditor> = Key.create("parentSplit")
 
     private val scriptDocument = FileDocumentManager.getInstance().getDocument(confisFile)
-    private val logger = logger<ConfisEditor>()
+    private val logger = thisLogger()
+    private val scriptHost by lazy { Resources.scriptHost }
 
     init {
         editor.putUserData(PARENT_SPLIT_EDITOR_KEY, this)
@@ -45,10 +60,20 @@ class ConfisEditor(
     private val docFactory = FileDocumentManager.getInstance()
     private val mdDocument = docFactory.getDocument(mdInMem)
 
-    private fun documentToMarkdown(event: DocumentEvent): String {
+    private val publisher by lazy {
+        project.messageBus.syncPublisher(ConfisCompiledNotifier.CHANGE_ACTION_TOPIC)
+    }
+
+    var latestAgreement: ResultWithDiagnostics<Agreement>? = null
+    fun publishLatestAgreement() {
+        latestAgreement?.let {
+            publisher.afterCompile(confisFile, it)
+        }
+    }
+    private fun documentToAgreement(event: DocumentEvent): ResultWithDiagnostics<Agreement> {
         val source = confisFile.asConfisSourceCode(event.document.text)
 
-        return scriptHost.eval(source).renderMarkdownResult()
+        return scriptHost.eval(source)
     }
 
     private val scriptListener = DocumentListenerImpl(
@@ -58,7 +83,10 @@ class ConfisEditor(
         },
         afterDocChange = { event ->
             alarm.request(delayMillis = 100) {
-                val md = documentToMarkdown(event)
+                val agreement = documentToAgreement(event)
+                latestAgreement = agreement
+                publishLatestAgreement()
+                val md = agreement.renderMarkdownResult()
                 uiAlarm.request {
                     WriteAction.run<Exception> {
                         mdDocument?.setText(md)
@@ -74,9 +102,47 @@ class ConfisEditor(
         scriptDocument?.addDocumentListener(scriptListener)
     }
 
+    private val myComponent: JComponent by lazy {
+        val editorLayerWrapper = super.getComponent()
+        val actionGroup = DefaultActionGroup(AskQuestionAction())
+        val toolbar = QuestionToolbar(editorLayerWrapper, actionGroup)
+        editorLayerWrapper.add(toolbar, null, JLayeredPane.DEFAULT_LAYER)
+
+        editorLayerWrapper
+    }
+
+    override fun getComponent(): JComponent = myComponent
+
+    class QuestionToolbar(parentComponent: JComponent, actionGroup: ActionGroup) :
+        ActionToolbarImpl(ActionPlaces.CONTEXT_TOOLBAR, actionGroup, true) {
+
+        init {
+            // Disposer.register(this, visibilityController)
+            targetComponent = parentComponent
+            setReservePlaceAutoPopupIcon(false)
+            setMinimumButtonSize(Dimension(28, 28))
+            setSkipWindowAdjustments(true)
+            isOpaque = false
+            layoutPolicy = NOWRAP_LAYOUT_POLICY
+        }
+    }
+
+    class AskQuestionAction : AnAction("Ask Question", "Initiates a Confis query", ConfisIcons.ConfisOrange) {
+        override fun actionPerformed(e: AnActionEvent) {
+            Notifications.Bus.notify(Notification("Confis Plugin", "Noti8!", NotificationType.INFORMATION))
+        }
+    }
+
+    override fun selectNotify() {
+        super.selectNotify()
+        publishLatestAgreement()
+    }
     override fun dispose() {
         alarm.cancelAllRequests()
+        uiAlarm.cancelAllRequests()
         scriptDocument?.removeDocumentListener(scriptListener)
+        // disposes editor, preview
+        super.dispose()
     }
 }
 

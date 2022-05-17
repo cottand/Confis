@@ -18,7 +18,7 @@ val adapt by action(
     named = "copy or adapt",
     description = "as in deriving data and statistics from, copying, or distributing"
 )
-val thirdParty by party("a person not employed by $licensee")
+val thirdParty by party("a 3rd party", description = "not employed by $licensee")
 val access by action
 val agreeTo by action("agree to")
 
@@ -27,7 +27,7 @@ val agreeTo by action("agree to")
 introduction = """Seismic data acquired pursuant to operations conducted subject to the Petroleum Act 1998 and
     landward area regulations made in exercise of powers conferred thereby are Crown Copyright
     material. $library, pursuant to worldwide exclusive rights granted by $controller hereby
-    grants $licensee a non-exclusive Licence to use $data on the following terms
+    grants $licensee a non-exclusive Licence to use $data on the following term
 """
 
 licensee mayNot transfer(licence) unless {
@@ -38,12 +38,17 @@ licensee mayNot sell(data)
 licensee mayNot provideServicesWith(data)
 
 thirdParty may access(data) asLongAs {
+
     with consentFrom licensee
     after { thirdParty did agreeTo(licence) }
-    after  { thirdParty did agreeTo(nda)}
+    after  { thirdParty did agreeTo(nda) }
 }
 
 licensee mayNot adapt(data) unless  {
     with purpose Internal
     with consentFrom library
+}
+
+val builder: CircumstanceBuilder.() -> Unit = {
+
 }

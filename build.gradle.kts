@@ -44,15 +44,18 @@ subprojects {
                 }
                 dependsOn(test)
             }
-        }
-    }
-    testing {
-        suites {
-            val test by getting(JvmTestSuite::class) {
-                useJUnitJupiter()
+            test {
+                useJUnitPlatform()
             }
         }
     }
+    //testing {
+    //    suites {
+    //        val test by getting(JvmTestSuite::class) {
+    //            useJUnitJupiter()
+    //        }
+    //    }
+    //}
 
 }
 

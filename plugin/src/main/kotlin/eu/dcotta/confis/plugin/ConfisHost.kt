@@ -1,7 +1,6 @@
 package eu.dcotta.confis.plugin
 
 import com.intellij.openapi.diagnostic.logger
-import com.intellij.openapi.diagnostic.thisLogger
 import eu.dcotta.confis.dsl.AgreementBuilder
 import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.scripting.ConfisScriptDefinition
@@ -28,8 +27,10 @@ class ConfisHost(private val defaultHost: BasicJvmScriptingHost) {
         baseClass(ConfisScriptDefinition::class)
     }
 
-    fun eval(script: SourceCode): ResultWithDiagnostics<Agreement> {
-        thisLogger().debug("class ${ConfisScriptDefinition::class.qualifiedName}")
+    fun eval(script: SourceCode): ResultWithDiagnostics<Agreement> =
+        rawEval(script).map { AgreementBuilder.assemble(it) }
+
+    fun rawEval(script: SourceCode): ResultWithDiagnostics<ConfisScriptDefinition> {
         Thread.currentThread().contextClassLoader = ConfisHost::class.java.classLoader
         val res = defaultHost.eval(script, compilationConfiguration, null)
         if (res !is Success) {
@@ -41,8 +42,7 @@ class ConfisHost(private val defaultHost: BasicJvmScriptingHost) {
         return res.map {
             val scriptInstance = it.returnValue.scriptInstance
             if (scriptInstance is Throwable) throw IllegalStateException("Confis compilation failure", scriptInstance)
-            val builder = (scriptInstance as ConfisScriptDefinition)
-            AgreementBuilder.assemble(builder)
+            (scriptInstance as ConfisScriptDefinition)
         }
     }
 }

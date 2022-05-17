@@ -3,6 +3,7 @@ package eu.dcotta.confis.util
 import eu.dcotta.confis.model.CircumstanceMap
 import eu.dcotta.confis.model.circumstance.Circumstance
 import kotlinx.collections.immutable.PersistentSet
+import kotlinx.collections.immutable.persistentHashMapOf
 import kotlinx.collections.immutable.persistentSetOf
 import kotlin.properties.PropertyDelegateProvider
 import kotlin.properties.ReadOnlyProperty
@@ -17,6 +18,12 @@ fun <C, V> oneTimeProperty(instantiate: (prop: KProperty<*>) -> V) =
 fun <K, V> Map<K, V?>.filterValuesNotNull(): Map<K, V> =
     mapNotNull { (k, v) -> if (v == null) null else (k to v) }
         .toMap()
+
+fun <K, V, W> Map<K, V>.mapValuesNotNull(transform: (Map.Entry<K, V>) -> W?): Map<K, W> {
+    val dest = persistentHashMapOf<K, W>().builder()
+    forEach { entry -> transform(entry)?.let { dest += entry.key to it } }
+    return dest.build()
+}
 
 fun <T> MutableList<T>.removeLastOccurrence(item: T) = removeAt(lastIndexOf(item))
 

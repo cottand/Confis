@@ -1,5 +1,6 @@
 package eu.dcotta.confis.model
 
+import eu.dcotta.confis.eval.QueryResponse
 import eu.dcotta.confis.model.AllowanceResult.Depends
 import eu.dcotta.confis.model.Obj.Anything
 import eu.dcotta.confis.model.circumstance.WorldState
@@ -10,8 +11,10 @@ enum class Allowance {
     val asResult get() = if (this == Allow) AllowanceResult.Allow else AllowanceResult.Forbid
 }
 
-enum class AllowanceResult {
+enum class AllowanceResult : QueryResponse {
     Allow, Forbid, Unspecified, Depends;
+
+    override fun render(): String = toString()
 }
 
 /**
@@ -41,7 +44,7 @@ interface Subject {
 }
 
 class Action(val name: String, val description: String? = null) {
-    override fun toString() = "Action($name ${description ?: ""})"
+    override fun toString() = render()
     override fun equals(other: Any?) = other === this || other is Action && name == other.name
     override fun hashCode(): Int = name.hashCode() * 71
     fun render() = name

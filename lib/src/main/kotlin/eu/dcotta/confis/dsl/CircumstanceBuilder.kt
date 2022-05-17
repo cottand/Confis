@@ -67,8 +67,10 @@ class CircumstanceBuilder(val sentence: Sentence) {
         circumstances += PrecedentSentence(sentence(PastSentenceBuilder))
     }
 
-    internal fun build(): CircumstanceMap {
+    fun `$$build$$`(): CircumstanceMap {
         if (purposePolicies.isNotEmpty()) circumstances += PurposePolicy(purposePolicies)
         return circumstances
     }
 }
+
+fun circumstanceContainer(init: CircumstanceBuilder.() -> Unit) = init

@@ -1,10 +1,17 @@
 package eu.dcotta.confis.plugin
 
+import com.intellij.markdown.utils.MarkdownToHtmlConverter
+import com.intellij.openapi.util.IconLoader
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.ui.dsl.builder.Row
 import com.intellij.util.Alarm
 import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.render.renderMarkdown
 import eu.dcotta.confis.scripting.eu.dcotta.confis.scripting.ConfisSourceCode
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Runnable
+import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
+import kotlin.coroutines.CoroutineContext
 import kotlin.script.experimental.api.ResultWithDiagnostics
 import kotlin.script.experimental.api.ResultWithDiagnostics.Failure
 import kotlin.script.experimental.api.ResultWithDiagnostics.Success
@@ -27,3 +34,17 @@ private fun Failure.reportsAsMarkdown(): String =
     reports.joinToString(separator = "\n\n", prefix = "```\nErrors where found:\n", postfix = "\n```") {
         it.render()
     }
+
+object ConfisIcons {
+    @JvmField
+    val ConfisOrange = IconLoader.getIcon("/law-16-deep_orange.svg", ConfisIcons::class.java)
+}
+
+class AlarmDispatcher(private val alarm: Alarm) : CoroutineDispatcher() {
+    override fun dispatch(context: CoroutineContext, block: Runnable) {
+        alarm.addRequest(block, 0)
+    }
+}
+
+val md by lazy { MarkdownToHtmlConverter(GFMFlavourDescriptor()) }
+fun Row.mdLabel(markdownSource: String) = label("<html>" + md.convertMarkdownToHtml(markdownSource) + "</html>")

@@ -4,6 +4,7 @@ import eu.dcotta.confis.model.circumstance.Circumstance
 import eu.dcotta.confis.model.circumstance.Circumstance.Key
 import eu.dcotta.confis.model.circumstance.disjoint
 import kotlinx.collections.immutable.PersistentMap
+import kotlinx.collections.immutable.minus
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.plus
 import kotlinx.collections.immutable.toPersistentList
@@ -57,7 +58,14 @@ class CircumstanceMap private constructor(
             }
     }
 
+    infix fun <T : Circumstance> except(keySet: Circumstance.SetKey<T>): CircumstanceMap {
+        val set = get(keySet)
+        return CircumstanceMap(map.minus(set.map { it.key }))
+    }
+
     override fun toString(): String = "CircumstanceMap{${map.values.joinToString()}}"
+
+    fun render(): String = map.values.joinToString(transform = Circumstance::render)
 
     fun isEmpty(): Boolean = map.isEmpty()
 

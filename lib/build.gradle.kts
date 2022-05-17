@@ -6,6 +6,10 @@ plugins {
 
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-    implementation("org.jeasy:easy-rules-core:4.1.0")
+    implementation("org.jeasy:easy-rules-core:4.1.0") {
+        exclude(group = "org.slf4j")
+    }
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
+
+    testImplementation("org.slf4j:slf4j-log4j12:1.7.29")
 }

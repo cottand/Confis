@@ -2,7 +2,6 @@ package eu.dcotta.confis.eval
 
 import eu.dcotta.confis.dsl.of
 import eu.dcotta.confis.dsl.year
-import eu.dcotta.confis.eval.allowance.AllowanceQuestion
 import eu.dcotta.confis.eval.allowance.ask
 import eu.dcotta.confis.model.Action
 import eu.dcotta.confis.model.Agreement

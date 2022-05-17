@@ -1,17 +1,15 @@
 package eu.dcotta.confis.eval.compliance
 
+import eu.dcotta.confis.eval.ComplianceQuestion
 import eu.dcotta.confis.eval.ConfisRule
 import eu.dcotta.confis.eval.askEngine
 import eu.dcotta.confis.model.Agreement
-import eu.dcotta.confis.model.CircumstanceMap
 import eu.dcotta.confis.model.Clause
-import eu.dcotta.confis.model.Sentence
 import eu.dcotta.confis.model.circumstance.WorldState
 import eu.dcotta.confis.util.with
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentHashMapOf
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toPersistentMap
 import org.jeasy.rules.api.Facts
 
 fun Agreement.ask(q: ComplianceQuestion): ComplianceResult = askEngine(
@@ -26,20 +24,6 @@ fun Agreement.ask(q: ComplianceQuestion): ComplianceResult = askEngine(
         }
     },
 )
-
-/**
- * Question meant to represent _'What do I need to do in order to comply to the agreement?'_
- */
-@JvmInline
-value class ComplianceQuestion(val state: WorldState) {
-    constructor() : this(persistentHashMapOf())
-
-    constructor(vararg sentences: Sentence) :
-        this(persistentHashMapOf(*sentences.map { it to CircumstanceMap.empty }.toTypedArray()))
-
-    constructor(vararg sentences: Pair<Sentence, CircumstanceMap>) :
-        this(sentences.toList().toMap().toPersistentMap())
-}
 
 internal class ComplianceContext(facts: Facts, q2: ComplianceQuestion) {
     val q by facts with q2

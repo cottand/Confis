@@ -10,9 +10,11 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <fileEditorProvider implementation="eu.dcotta.confis.plugin.ConfisEditorProvider"/>
+        <notificationGroup id="Confis Plugin" displayType="BALLOON"/>
+        <toolWindow factoryClass="eu.dcotta.confis.plugin.toolwindow.ConfisToolWindowFactory" id="Confis Questions"/>
     </extensions>
 
     <extensions defaultExtensionNs="org.jetbrains.kotlin">
-        <scriptDefinitionsProvider implementationClass="eu.dcotta.confis.plugin.ConfisDefinitionProvider"/>
+        <scriptDefinitionsProvider implementation="eu.dcotta.confis.plugin.ConfisDefinitionProvider"/>
     </extensions>
 </idea-plugin>
