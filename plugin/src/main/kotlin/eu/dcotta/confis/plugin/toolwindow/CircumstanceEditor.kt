@@ -12,12 +12,15 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.testFramework.LightVirtualFile
 import com.intellij.xdebugger.XExpression
+import com.intellij.xdebugger.XNamedTreeNode
 import com.intellij.xdebugger.XSourcePosition
 import com.intellij.xdebugger.evaluation.EvaluationMode
 import com.intellij.xdebugger.evaluation.EvaluationMode.CODE_FRAGMENT
+import com.intellij.xdebugger.evaluation.InlineDebuggerHelper
 import com.intellij.xdebugger.evaluation.XDebuggerEditorsProvider
 import com.intellij.xdebugger.impl.breakpoints.XExpressionImpl
 import com.intellij.xdebugger.impl.ui.XDebuggerExpressionEditor
+import org.jetbrains.java.debugger.JavaDebuggerEditorsProvider
 import org.jetbrains.kotlin.idea.KotlinFileType
 import org.jetbrains.kotlin.idea.KotlinLanguage
 
@@ -28,7 +31,7 @@ class CircumstanceEditor(
     project: Project,
 ) : XDebuggerExpressionEditor(
     project,
-    DebugProvider(),
+    JavaDebuggerEditorsProvider(),
     null,
     null,
     XExpressionImpl("", kotlinLang, "", CODE_FRAGMENT),
@@ -72,5 +75,13 @@ class CircumstanceEditor(
             project: Project,
             sourcePosition: XSourcePosition?
         ): MutableCollection<Language> = mutableListOf(kotlinLang!!)
+
+        override fun getInlineDebuggerHelper(): InlineDebuggerHelper {
+            return object : InlineDebuggerHelper() {
+                override fun shouldEvaluateChildrenByDefault(node: XNamedTreeNode?): Boolean {
+                    return true
+                }
+            }
+        }
     }
 }

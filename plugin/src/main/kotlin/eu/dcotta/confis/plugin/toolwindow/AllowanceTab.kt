@@ -2,15 +2,15 @@ package eu.dcotta.confis.plugin.toolwindow
 
 import com.intellij.ui.CollectionListModel
 import com.intellij.ui.dsl.builder.RightGap.SMALL
+import com.intellij.ui.dsl.builder.enableIf
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.gridLayout.HorizontalAlign.CENTER
 import com.intellij.ui.dsl.gridLayout.HorizontalAlign.FILL
-import eu.dcotta.confis.model.Sentence
 import javax.swing.JList
 
 class AllowanceTab(
-    val circumstanceEditor: CircumstanceEditor,
-    val questionWindowModel: QuestionWindowModel,
+    private val circumstanceEditor: CircumstanceEditor,
+    private val questionWindowModel: QuestionWindowModel,
 ) : QuestionTab {
 
     val model = SentenceComboBoxesModel()
@@ -21,15 +21,15 @@ class AllowanceTab(
         onSubjectsUpdated = model::setSubjects,
         onActionsUpdated = model::setActions,
         onObjectsUpdated = model::setObjects,
+        onNewCircumstanceContext = circumstanceEditor::setContext
     )
 
     val results = CollectionListModel<String>()
 
     private fun askQuestion() {
-        if (model.questionReady) {
-            val s = Sentence(model.selectedSubject!!, model.selectedAction!!, model.selectedObject!!)
-            questionWindowModel.askAllowance(s, circumstanceEditor.expression) {
-                results.add(0, it.render())
+        model.sentence.get()?.let { sentence ->
+            questionWindowModel.askAllowance(sentence, circumstanceEditor.expression) {
+                if (it != null) results.add(0, it.render())
             }
         }
     }
@@ -54,6 +54,7 @@ class AllowanceTab(
             row {
                 button("Ask Allowance Question") { askQuestion() }
                     .bold()
+                    .enableIf(model.questionReady)
                     .horizontalAlign(FILL)
             }
         }

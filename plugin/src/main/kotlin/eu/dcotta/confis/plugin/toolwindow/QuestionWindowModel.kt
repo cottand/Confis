@@ -108,7 +108,7 @@ class QuestionWindowModel(project: Project) : Disposable {
 
     val builderScope = """
         val builder: CircumstanceBuilder.() -> Unit = {
-        
+            this
         }
     """.trimIndent()
 
@@ -120,12 +120,13 @@ class QuestionWindowModel(project: Project) : Disposable {
             return null
         }
         val syntheticContents = (doc?.text ?: "") + "\n\n" + builderScope
-        val lvf = LightVirtualFile("${agreementFile.name}.synthetic", kotlinFileType, syntheticContents)
+        val lvf = LightVirtualFile("synthetic_${agreementFile.name}", kotlinFileType, syntheticContents)
         // TODO maybe I can just craft a new file with a handwritten psiElement rather than making one out of text
         return ReadAction.compute<PsiElement, Exception> {
             val synthPsi = psiManager.findFile(lvf) ?: error("")
 
-            val block = synthPsi
+            // val block = synthPsi
+            val block = synthPsi.lastChild?.lastChild?.lastChild?.lastChild?.firstChild?.children?.get(0)?.firstChild // this
             // val block = synthPsi.lastChild.lastChild
             // val block = synthPsi.lastChild?.lastChild?.lastChild?.lastChild?.firstChild?.children?.get(0)
             block
@@ -135,34 +136,33 @@ class QuestionWindowModel(project: Project) : Disposable {
     fun askAllowance(
         sentence: Sentence,
         circumstancesText: XExpression,
-        onResult: (QueryResponse) -> Unit,
+        onResult: (QueryResponse?) -> Unit,
     ) {
         scope.launch {
             val cs = compileCircumstances(circumstancesText, latestConfisFile)
             if (cs == null || cs !is Success) {
-                // TODO POPUP
-                return@launch
+                onResult(null)
+            } else {
+                latestAgreement?.ask(AllowanceQuestion(sentence, cs.value)).run(onResult)
             }
-            val res = latestAgreement?.ask(AllowanceQuestion(sentence, cs.value))
-            if (res != null) onResult(res)
         }
     }
 
     fun askCircumstance(
         sentence: Sentence,
-        onResult: (QueryResponse) -> Unit,
+        onResult: (QueryResponse?) -> Unit,
     ) {
         scope.launch {
-            latestAgreement?.ask(CircumstanceQuestion(sentence))?.run(onResult)
+            latestAgreement?.ask(CircumstanceQuestion(sentence)).run(onResult)
         }
     }
 
-    fun askCompliance(worldState: Map<Sentence, XExpression>, onResult: (QueryResponse) -> Unit) {
+    fun askCompliance(worldState: Map<Sentence, XExpression>, onResult: (QueryResponse?) -> Unit) {
         scope.launch {
             val compiled =
                 worldState.mapValuesNotNull { compileCircumstances(it.value, latestConfisFile)?.valueOrNull() }
 
-            latestAgreement?.ask(ComplianceQuestion(compiled.toPersistentMap()))?.run(onResult)
+            latestAgreement?.ask(ComplianceQuestion(compiled.toPersistentMap())).run(onResult)
         }
     }
 

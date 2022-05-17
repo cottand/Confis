@@ -1,10 +1,10 @@
 package eu.dcotta.confis.plugin.toolwindow
 
 import com.intellij.ui.dsl.builder.RightGap.SMALL
+import com.intellij.ui.dsl.builder.enableIf
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.gridLayout.HorizontalAlign.CENTER
 import com.intellij.ui.dsl.gridLayout.HorizontalAlign.FILL
-import eu.dcotta.confis.model.Sentence
 import eu.dcotta.confis.plugin.mdLabel
 
 class InferenceTab(private val questionWindowModel: QuestionWindowModel) : QuestionTab {
@@ -20,18 +20,14 @@ class InferenceTab(private val questionWindowModel: QuestionWindowModel) : Quest
     val sp = ScrollPane()
 
     private fun askQuestion() {
-        if (model.questionReady) {
-            val s = Sentence(model.selectedSubject!!, model.selectedAction!!, model.selectedObject!!)
-            questionWindowModel.askCircumstance(s) {
-                sp.addScroll(
+        model.sentence.get()?.let { sentence ->
+            questionWindowModel.askCircumstance(sentence) {
+                if (it != null) sp.addScroll(
                     panel {
-                        row {
-                            mdLabel(it.render())
-                        }
+                        row { mdLabel(it.render()) }
                         separator()
                     }
                 )
-                // results.add(0, it.render())
             }
         }
     }
@@ -48,7 +44,7 @@ class InferenceTab(private val questionWindowModel: QuestionWindowModel) : Quest
             row {
                 button("Ask Circumstance Question") {
                     askQuestion()
-                }.bold().horizontalAlign(FILL)
+                }.bold().horizontalAlign(FILL).enableIf(model.questionReady)
             }
         }
         group("Results") {

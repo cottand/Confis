@@ -2,6 +2,7 @@ package eu.dcotta.confis.plugin.toolwindow
 
 import com.intellij.codeInspection.javaDoc.JavadocUIUtil.bindItem
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.wm.WindowManager
 import com.intellij.ui.dsl.builder.RightGap.SMALL
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.gridLayout.HorizontalAlign.CENTER
@@ -26,16 +27,19 @@ class ComplianceTab(
 
     val resultsPanel = ScrollPane()
 
+    val statusBar = WindowManager.getInstance().getStatusBar(project)
+
     private fun askQuestion() {
         val state = worldState.filter { it.sentence.sentence() != null }
             .associate { it.sentence.sentence()!! to it.circumstanceEditor.expression }
         questionWindowModel.askCompliance(state) {
-            resultsPanel.addScroll(
+            if (it != null) resultsPanel.addScroll(
                 panel {
                     row { mdLabel(it.render()) }
                     separator()
                 }
             )
+            statusBar.stopRefreshIndication()
         }
     }
 
@@ -74,6 +78,7 @@ class ComplianceTab(
         indent {
             row {
                 button("Ask Compliance Question") {
+                    statusBar.startRefreshIndication("Asking Confis question...")
                     askQuestion()
                 }.bold().horizontalAlign(FILL)
             }

@@ -1,32 +1,46 @@
 package eu.dcotta.confis.plugin.toolwindow
 
+import com.intellij.openapi.observable.properties.AtomicBooleanProperty
+import com.intellij.openapi.observable.properties.AtomicProperty
 import eu.dcotta.confis.model.Action
 import eu.dcotta.confis.model.Obj
 import eu.dcotta.confis.model.Sentence
 import eu.dcotta.confis.model.Subject
 import javax.swing.DefaultComboBoxModel
+import kotlin.properties.Delegates
 
 class SentenceComboBoxesModel {
     val subjectsModel = DefaultComboBoxModel<Subject>()
     val actionsModel = DefaultComboBoxModel<Action>()
     val objectsModel = DefaultComboBoxModel<Obj>()
 
-    fun <T> DefaultComboBoxModel<T>.setAll(all: Collection<T>) {
+    private inline fun <reified T> DefaultComboBoxModel<T>.setAll(all: Collection<T>) {
+        val selected = this.selectedItem as? T
         removeAllElements()
         addAll(all)
+        if (selected != null && selected in all) selectedItem = selected
+    }
+
+    private fun <T> refreshingObservable(default: T? = null) = Delegates.observable(default) { _, old, new ->
+        if (old != new) refresh()
     }
 
     fun setSubjects(subjects: List<Subject>) = subjectsModel.setAll(subjects)
-    var selectedSubject: Subject? = null
+    var selectedSubject: Subject? by refreshingObservable()
 
     fun setActions(actions: List<Action>) = actionsModel.setAll(actions)
-    var selectedAction: Action? = null
+    var selectedAction: Action? by refreshingObservable()
 
     fun setObjects(objs: List<Obj>) = objectsModel.setAll(objs)
-    var selectedObject: Obj? = null
+    var selectedObject: Obj? by refreshingObservable()
 
-    val questionReady: Boolean
-        get() = selectedObject != null && selectedAction != null && selectedSubject != null
+    val questionReady = AtomicBooleanProperty(false)
+    val sentence = AtomicProperty<Sentence?>(null)
+
+    private fun refresh() {
+        sentence.set(sentence())
+        questionReady.set(selectedSubject != null && selectedAction != null && selectedObject != null)
+    }
 
     fun copy() = SentenceComboBoxesModel().also {
         it.subjectsModel.addAll(subjectsModel.getAll())
@@ -44,8 +58,6 @@ class SentenceComboBoxesModel {
             }
         }
     }
-
-    fun questionButtonChangeListener(listener: (enabled: Boolean) -> Unit) {}
 
     private fun <T> DefaultComboBoxModel<T>.getAll(): List<T> = (0 until size).map(::getElementAt)
 }
