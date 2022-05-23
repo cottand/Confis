@@ -1,4 +1,33 @@
 \chapter{A Domain Specific Language for Legal Agreements}\label{ch:lang}
 
-One of the key focuses of this project is not just to be able to represent legal agreements with specific properties and capabilities as described in~\autoref{ch:queries};
-but also to make it as easy as possible for people with non-scientific backgrounds to use such representations.
+One of the key focuses of this project is not just to be able to represent legal contracts with specific properties and capabilities as described in~\autoref{ch:queries};
+but also to make it as easy as possible for people with non-technical backgrounds to use such representations.
+Simply put, a lawyer should not need to learn JSON.\\
+
+This is the main motivation for developing tooling which aims to make it easier for people of non-technical backgrounds to produce, modify, and understand Confis legal agreement representations.
+The core of this tooling is the Confis language~(\autoref{sec:developing-a-dsl}) and an IDE-assisted editor~(\autoref{sec:additional-dsl-tooling}).
+
+\section{Developing a DSL}\label{sec:developing-a-dsl}
+
+\subsection{Requirements}\label{subsec:dsl:requirements}
+
+\subsubsection{Easy to write while still machine-readable}
+
+Writing a Confis agreement should be close to writing plain English, while still being machine-readable.
+For more details on the meaning of \emph{machine-readable} in the context of this project, see~\autoref{sec:machine-readable-contracts}.\\
+
+
+A compromise must be struck between ease of writing and machine-readability.
+
+On one extreme, a data serialization text file (like JSON, YAML, or XML) would allow writing text that can be easily parsed by a program.
+But writing such files requires some data structures knowledge;
+and because of their key-value nature they do not allow writing sentences, leaving them too far from the readability of human-written legal prose.
+
+On the other extreme, legal prose processed through a
+
+This format that must be written by a human and read by a program can then be converted into other machine-readable formats for processing, such as the querying covered in~\autoref{ch:queries}.
+
+
+\section{Additional Editing Tooling}\label{sec:additional-dsl-tooling}
+
+aa.

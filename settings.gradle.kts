@@ -3,7 +3,8 @@ include(
     "lib",
     "script",
     "plugin",
-    "docs"
+    "docs",
+    "report",
 )
 pluginManagement {
     repositories {

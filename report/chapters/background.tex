@@ -449,7 +449,10 @@ For a licensee, this means they cannot easily prove they did enter an agreement 
 to deny issuing a licence~\citeTODO.
 
 
-\section{Previous Work on Machine Readable Contracts}\label{sec:machine-readable-contracts}
+\section{Previous Work on Machine-Readable Contracts}\label{sec:machine-readable-contracts}
+
+In the context of this project, \emph{machine-readable}~\cite{cambridgeMachineReadable, openDataMachineReadable} refers to an encoding for a formalisation of a legal agreement which can be processed by a suitable program.
+The processing must relate specifically to uses of legal documents (therefore formats like Microsoft Word, plain UTF encoded text, or PDF do not qualify).
 
 \subsection{Juro}\label{subsec:juro}
 Juro~\cite{juroWhitepaper} is a start-up business seeking to make structured machine-readable data out of contracts.
@@ -545,7 +548,7 @@ This allows irrevocable proof of agreement verifiable by third parties.
 
 \subsection{Ricardian Contracts}\label{subsec:ricardian-contracts}
 
-First introduced by~\cite{grigg2004ricardian, ricardianWeb}, Ricardian Contracts aim to encode a legal agreement as a huan-readable document (handwritten legal prose) accompanied by machine-readable metadata.
+First introduced by~\cite{grigg2004ricardian, ricardianWeb}, Ricardian Contracts aim to encode a legal agreement as a human-readable document (handwritten legal prose) accompanied by machine-readable metadata.
 Additionally, it is cryptographically signed (see~\ref{fig:pubkey-signing}) by parties and uniquely identifiable;
 giving it some extra cryptographic guarantees (for example, signatures cannot be plausibly denied and terms cannot be tampered with after signing).
 
@@ -588,21 +591,77 @@ This project is a generalisation of Ricardian contracts in that they meet all th
 Another crucial difference from what is described in~\cite{grigg2004ricardian} is that Confis does not intend to let a user write legal prose.
 Rather, it hopes to produce machine-generated but human-readable prose legal prose from its internal encoding of the agreement.
 
-\subsection{Contract-Driven Agents}\label{subsec:contract-driven-agents}
+\subsection{Reasoning with Legal Agreements}\label{subsec:reasoning-with-legal-agreements}
+
+TODO talk about~\cite{sartorLegalReasoning}.
+
+\subsubsection{Contract-Driven Agents}\label{subsubsec:contract-driven-agents}
 
 An attempt at formalising a representation of the behaviours involved in a legal agreement and the interactions between the parties to such agreements contract-driven agents as presented in~\cite{knottenbeltContractDriven}.
 
-The formalisation involves establishing a calculus based in multi-agents systems specifically oriented towards legal agreements, through the event calculus as first introduced by~\cite{kowalski1989logicEventBased} (a logic-based system).\\
+The formalisation involves establishing a calculus based in multi-agents systems specifically oriented towards legal agreements, through the event calculus as first introduced by~\cite{kowalski1989logicEventBased}~(a logic-based system).\\
 
 Unlike Ricardian contracts~(see~\autoref{subsec:ricardian-contracts}), contract-driven agents attempt to describe the behaviours of all parties as well as how they react to other parties' behaviours.
 Therefore, unlike Ricardian contracts, they also capture the semantics of the agreement between the contract.
 
 
-\section{Domain-Specific Languages}\label{sec:dsls}
+\section{Representing human language in a machine-readable format}\label{sec:language-as-machine-readable}
 
-The use-case of representing complex abstractions in a machine-readable formats is a common one, and general-purpose programming languages (Java, Python, etc) are designed with exactly this goal in mind.
+\subsection{Natural Language Processing}\label{subsec:nlp}
 
-According to~\cite{fowlerDsl}: "A DSL is a computer language that is targeted to a particular kind of problem, rather than a general purpose language that is aimed at any kind of software problem".
+Human-written text, which is how legal agreements are typically persisted\footnote{Note other formats like verbal agreements may also constitute legal agreements~\cite{larsonContractLawIntro}} can be converted into machine-readable form by attempting to translate the natural language in which they are written through Natural Language Processing~(NLP), which uses techniques such as symbolic reasoning and deep learning~\cite{GoldbergNLPReview}.\\
+
+Existing technologies trying to process legal text -- such as~\cite{angeli2015NLP1}, \cite{lapata2016NLP2}, or~\cite{lapata2018NLP3} -- try to produce normative rules.
+At the time of writing, they fall short of fully capturing all relevant information in an existing legal document.
+They face the main following challenges~\cite{ferraroLegalNLPSSurvey}:
+
+\subsubsection{Cross-referencing}
+
+Legal text is structured into sections and subsections which contain sentences which represent clauses applicable in a specific context.
+Documents therefore often reference information across sections or across documents.
+Some of these references may not even be explicit: often, contracts have a `Definitions' section solely for the role of disambiguating terms which the reader is expected to use in their understanding of the document.
+
+NLP solutions must therefore be able to deal with referencing in order to extract context and resolve lexical ambiguities.
+
+\subsubsection{Ambiguity}
+While legal documents aim to remove ambiguity and ideally produce a single interpretation, unintended ambiguities arise from the use of natural language.\\
+
+The most likely ambiguity is \emph{referential ambiguity} where a word or phrase has multiple meanings inferred from current context, from a parent statement (which is unique to legal text), or from other document sections via cross-referencing.
+
+Natural language can also represent different logical interpretations, which is referred to as \emph{local ambiguity}.
+An example of this is using the term ``and'' to represent a disjunction instead of a conjunction.
+
+\subsubsection{Sentence Complexity}
+
+Sentences used in legal prose tend to be much longer than sentences from other domains.
+The average number of lexical units in a sentence written in English in Wikipedia is about 19~\cite{wiki19words}, while sentences from a legal document can have more than 50~\cite{ferraroLegalNLPSSurvey} as well as have complex syntactic structures (see for example~\autoref{fig:geophys-long-clause}).
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.8\textwidth}
+        On termination of this Licence the Licensee shall cease to have any rights or Licence in
+        respect of the Data or any adaptation thereof and shall cease to use the same and shall
+        erase the Data or any adaptation thereof from any storage apparatus and shall return to
+        the Library without demand the Data and all existing copies thereof made by the
+        Licensee and shall warrant in writing to the Library that all data, plots, displays, results,
+        analyses, variations and modifications derived from the Data are destroyed.
+    \end{minipage}
+    \caption{Clause \textsection3.2 of~\citetitle{seismicDataLicence}~\cite{seismicDataLicence}}
+    \label{fig:geophys-long-clause}
+\end{figure}
+
+Current NLP technologies struggle with such sentences: syntactic analysers and predicate-argument extraction tools sometimes do no correctly capture the scope of coordinate conjunctions, nor the antecedents of subordinate phrases.
+
+\subsubsection{Normative Effects and Modalities}
+
+Legal documents typically encode norms, and words specific to legal concepts such as \emph{right, power, immunity, liability, privilege}, etc significantly alter the way a sentence is interpreted.
+Properly capturing modalities or behaviours such as a \emph{requirement} or a \emph{permission} is a major difficulty the state of the art of Artifcial Intelligence in Law struggles to deal with~\cite{ferraroLegalNLPSSurvey}.
+
+\subsection{Domain-Specific Languages}\label{subsec:dsls}
+
+The use-case of representing complex, formalised abstractions in a machine-readable formats is a common one, and general-purpose programming languages (Java, Python, etc) are designed with exactly this goal in mind.
+
+According to~\cite{fowlerDsl}: ``A DSL is a computer language that is targeted to a particular kind of problem, rather than a general purpose language that is aimed at any kind of software problem''.
 In order to write legal agreements and lower the barrier of entry as much as possible (ideally, no software engineering training should be required) a well-documented and easy-to-use DSL is a good solution: expressive enough to be able to represent a large range of agreements, but restrictive enough that language features should not require extensive training.
 
 Several modalities of DSLs exist that can be used.
