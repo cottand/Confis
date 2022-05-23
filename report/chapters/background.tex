@@ -589,11 +589,20 @@ This project is a generalisation of Ricardian contracts in that they meet all th
 Another crucial difference from what is described in~\cite{grigg2004ricardian} is that Confis does not intend to let a user write legal prose.
 Rather, it hopes to produce machine-generated but human-readable prose legal prose from its internal encoding of the agreement.
 
+\subsection{Contract-Driven Agents}\label{subsec:contract-driven-agents}
+
+An attempt at formalising a representation of the behaviours involved in a legal agreement and the interactions between the parties to such agreements contract-driven agents as presented in~\cite{knottenbeltContractDriven}.
+
+The formalisation involves establishing a calculus based in multi-agents systems specifically oriented towards legal agreements, through the event calculus as first introduced by~\cite{kowalski1989logicEventBased} (a logic-based system).\\
+
+Unlike Ricardian contracts~(see~\ref{subsec:ricardian-contracts}), contract-driven agents attempt to describe the behaviours of all parties as well as how they react to other parties' behaviours.
+Therefore, unlike Ricardian contracts, they also capture the semantics of the agreement between the contract.
+
 \section{Domain-Specific Languages}\label{sec:dsls}
 
 The use-case of representing complex abstractions in a machine-readable formats is a common one, and general-purpose programming languages (Java, Python, etc) are designed with exactly this goal in mind.
 
-According to~\cite{fowlerDsl}: "From  A DSL is a computer language that's targeted to a particular kind of problem, rather than a general purpose language that's aimed at any kind of software problem".
+According to~\cite{fowlerDsl}: "A DSL is a computer language that's targeted to a particular kind of problem, rather than a general purpose language that's aimed at any kind of software problem".
 In order to write legal agreements and lower the barrier of entry as much as possible (ideally, no software engineering training should be required) a well-documented and easy-to-use DSL is a good solution: expressive enough to be able to represent a large range of agreements, but restrictive enough that language features should not require extensive training.
 
 Several modalities of DSLs exist that can be used.
@@ -601,3 +610,4 @@ The compromises they make are in cost (for developing a framework for them), eas
 
 % TODO external, internal, GUI, etc
 
+% TODO section on the main differences between machine-readable representations of contracts?
