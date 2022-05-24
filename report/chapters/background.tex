@@ -454,7 +454,7 @@ to deny issuing a licence~\citeTODO.
 In the context of this project, \emph{machine-readable}~\cite{cambridgeMachineReadable, openDataMachineReadable} refers to an encoding for a formalisation of a legal agreement which can be processed by a suitable program.
 The processing must relate specifically to uses of legal documents (therefore formats like Microsoft Word, plain UTF encoded text, or PDF do not qualify).\\
 
-See also~\autoref{subsec:nlp} for normative rule generation from legal text, and~\autoref{subsec:reasoning-with-legal-agreements} for reasoning with existing formalisms.
+See also~\autoref{sec:nlp} for normative rule generation from legal text, and~\autoref{subsec:reasoning-with-legal-agreements} for reasoning with existing formalisms.
 
 \subsection{Juro}\label{subsec:juro}
 Juro~\cite{juroWhitepaper} is a start-up business seeking to make structured machine-readable data out of contracts.
@@ -606,10 +606,7 @@ The formalisation involves establishing a calculus based in multi-agents systems
 Unlike Ricardian contracts~(see~\autoref{subsec:ricardian-contracts}), contract-driven agents attempt to describe the behaviours of all parties as well as how they react to other parties' behaviours.
 Therefore, unlike Ricardian contracts, they also capture the semantics of the agreement between the contract.
 
-
-\section{Representing human language in a machine-readable format}\label{sec:language-as-machine-readable}
-
-\subsection{Natural Language Processing}\label{subsec:nlp}
+\section{Natural Language Processing}\label{sec:nlp}
 
 Human-written text, which is how legal agreements are typically persisted\footnote{Note other formats like verbal agreements may also constitute legal agreements~\cite{larsonContractLawIntro}} can be converted into machine-readable form by attempting to translate the natural language in which they are written through Natural Language Processing~(NLP), which uses techniques such as symbolic reasoning and deep learning~\cite{GoldbergNLPReview}.\\
 
@@ -617,7 +614,7 @@ Existing technologies trying to process legal text -- such as~\cite{angeli2015NL
 At the time of writing, they fall short of fully capturing all relevant information in an existing legal document.
 They face the main following challenges~\cite{ferraroLegalNLPSSurvey}:
 
-\subsubsection{Cross-referencing}
+\paragraph{Cross-referencing}
 
 Legal text is structured into sections and subsections which contain sentences which represent clauses applicable in a specific context.
 Documents therefore often reference information across sections or across documents.
@@ -625,18 +622,20 @@ Some of these references may not even be explicit: often, contracts have a `Defi
 
 NLP solutions must therefore be able to deal with referencing in order to extract context and resolve lexical ambiguities.
 
-\subsubsection{Ambiguity}
-While legal documents aim to remove ambiguity and ideally produce a single interpretation, unintended ambiguities arise from the use of natural language.\\
+\paragraph{Ambiguity}
+While legal documents aim to remove ambiguity and ideally produce a single interpretation, unintended ambiguities arise from the use of natural language.
 
 The most likely ambiguity is \emph{referential ambiguity} where a word or phrase has multiple meanings inferred from current context, from a parent statement (which is unique to legal text), or from other document sections via cross-referencing.
 
 Natural language can also represent different logical interpretations, which is referred to as \emph{local ambiguity}.
 An example of this is using the term ``and'' to represent a disjunction instead of a conjunction.
 
-\subsubsection{Sentence Complexity}
+\paragraph{Sentence Complexity}
 
 Sentences used in legal prose tend to be much longer than sentences from other domains.
 The average number of lexical units in a sentence written in English in Wikipedia is about 19~\cite{wiki19words}, while sentences from a legal document can have more than 50~\cite{ferraroLegalNLPSSurvey} as well as have complex syntactic structures (see for example~\autoref{fig:geophys-long-clause}).
+
+Current NLP technologies struggle with such sentences: syntactic analysers and predicate-argument extraction tools sometimes do no correctly capture the scope of coordinate conjunctions, nor the antecedents of subordinate phrases.
 
 \begin{figure}[h]
     \centering
@@ -654,23 +653,100 @@ The average number of lexical units in a sentence written in English in Wikipedi
     \label{fig:geophys-long-clause}
 \end{figure}
 
-Current NLP technologies struggle with such sentences: syntactic analysers and predicate-argument extraction tools sometimes do no correctly capture the scope of coordinate conjunctions, nor the antecedents of subordinate phrases.
 
-\subsubsection{Normative Effects and Modalities}
+\paragraph{Normative Effects and Modalities}
 
 Legal documents typically encode norms, and words specific to legal concepts such as \emph{right, power, immunity, liability, privilege}, etc significantly alter the way a sentence is interpreted.
 Properly capturing modalities or behaviours such as a \emph{requirement} or a \emph{permission} is a major difficulty the state of the art of Artificial Intelligence in Law struggles to deal with~\cite{ferraroLegalNLPSSurvey}.
 
-\subsection{Domain-Specific Languages}\label{subsec:dsls}
+\section{Domain-Specific Languages}\label{sec:dsls}
 
 The use-case of representing complex, formalised abstractions in a machine-readable formats is a common one, and general-purpose programming languages (Java, Python, etc) are designed with exactly this goal in mind.
 
+A class of languages made to target a specific problem, rather than being general purpose, also exists: these are \emph{Domain-Specific Languages} (or \emph{DSLs})
+
 According to~\cite{fowlerDsl}: ``A DSL is a computer language that is targeted to a particular kind of problem, rather than a general purpose language that is aimed at any kind of software problem''.
-In order to write legal agreements and lower the barrier of entry as much as possible (ideally, no software engineering training should be required) a well-documented and easy-to-use DSL is a good solution: expressive enough to be able to represent a large range of agreements, but restrictive enough that language features should not require extensive training.
+In order to write legal agreements and lower the barrier of entry as much as possible (ideally, no software engineering training should be required) a well-documented and easy-to-use DSL is a good solution: expressive enough to be able to represent a large range of agreements, but restrictive enough that language features should not require extensive training.\\
 
 Several modalities of DSLs exist that can be used.
-The compromises they make are in cost (for developing a framework for them), ease of writing, readability, and expressiveness.
+The compromises they make are in cost (for developing a framework for them), ease of writing, readability, and expressiveness~\cite{fowlerDslGuide, fowlerLangWorkbench}.
 
-% TODO external, internal, GUI, etc
+
+\paragraph{Textual Internal DSLs}
+
+Textual Internal DSLs make use of a host language, and use that language constructs in particular ways to give the internal DSL a particular feel.
+They share their syntax with and are a subset of their host language.
+This solution is the easiest to develop but forces the DSL author to conform to a host language and to extend their DSL within the bounds of what the host language can do.
+
+
+\paragraph{Textual External DSLs}
+
+Textual External DSLs have their own custom syntax and therefore they need a full new parsed to be processed.
+This solution provides the most flexibility in what the language can express but is more expensive in terms of development efforts for the DSL author.
+
+\paragraph{Graphical DSLs}
+
+While Textual DSLs require writing and parsing text, graphical DSLs can be achieved with a tool providing a graphical user interface that then builds some internal representation that can be processed.
+This solution is the most accessible for users of the DSL with non-technical backgrounds but is also expensive in terms of development cost, as both an internal representation and a GUI builder must be developed.\\
+
+
+
+\subsection{Candidates for Internal DSL Host Languages}\label{subsec:dsl-host-candidates}
+
+This project is concerned with making a DSL with low development costs, and as such it will consider several platforms as host language candidates for an internal DSL\@.
+\begin{definition}[DSL Host Traits]
+    \label{def:host-lang-requirements}
+    Languages well-suited to be host for DSLs usually have some of the following language features:
+    \begin{itemize}
+        \item \textbf{Operator overloading} for easily including symbols familiar to most users in the language, such as \texttt{`+'}, \texttt{`-'}, \texttt{`\&'}, etc.
+        \item \textbf{Infix functions} for constructing sentence-like expressions or statements, such as \texttt{`if car is parked'}.
+        \item \textbf{Scripting facilities} that allow compiling a small text snipped without having to define a full program that includes an entrypoint.
+    \end{itemize}
+
+\end{definition}
+
+\subsubsection{Haskell}
+
+Haskell~\cite{haskellDocs} is a functional programming language which can be compiled or used to interpret single files.
+It has advanced features including all of the ones mentioned in~\nameref{def:host-lang-requirements}.
+These are demonstrated in~\cite{haskellBasicDSL}.
+
+\begin{minted}[mathescape,
+               linenos,
+               numbersep=5pt,
+               gobble=2,
+               frame=lines,
+               framesep=2mm]{csharp}
+{-# LANGUAGE ExtendedDefaultRules, OverloadedStrings #-}
+import BASIC
+
+main = runBASIC $ do
+    10 GOSUB 1000
+    20 PRINT "* Welcome to HiLo *"
+    30 GOSUB 1000
+
+    100 LET I := INT(100 * RND(0))
+    200 PRINT "Guess my number:"
+    210 INPUT X
+    220 LET S := SGN(I-X)
+    230 IF S <> 0 THEN 300
+
+    240 FOR X := 1 TO 5
+    250   PRINT X*X;" You won!"
+    260 NEXT X
+    270 STOP
+
+    300 IF S <> 1 THEN 400
+    310 PRINT "Your guess ";X;" is too low."
+    320 GOTO 200
+
+    400 PRINT "Your guess ";X;" is too high."
+    410 GOTO 200
+
+    1000 PRINT "*******************"
+    1010 RETURN
+
+    9999 END
+\end{minted}
 
 % TODO section on the main differences between machine-readable representations of contracts?

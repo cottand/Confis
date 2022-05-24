@@ -20,13 +20,17 @@ For more details on the meaning of \emph{machine-readable} in the context of thi
 
 A compromise must be struck between ease of writing and machine-readability.
 
+\paragraph{Data Serialization Language}
+
 On one extreme, a data serialization text file (like JSON, YAML, or XML) would allow writing text that can be easily parsed by a program.
 But writing such files requires some data structures knowledge;
 and because of their key-value nature they do not allow writing sentences, leaving them too far from the readability of human-written legal prose.
 
+\paragraph{Natural Language Processing}
+
 On the other extreme, legal prose processed through a language processing program allows the drafter to completely ignore the machine-readable aspect of the document.
 Readers would be able to integrate such documents in their existing workflows -- as they would need to make no transition from their existing, non-machine-readable documents.
-This is the approach discussed in~\autoref{subsec:nlp}.\\
+This is the approach discussed in~\autoref{sec:nlp}.\\
 
 A compromise between these two solutions would be a language formal enough that it can be parsed by a program, but natural enough that natural language sentences can be recognised in it.
 Python or AppleScript~\cite{Sanderson2010appleScript}~(see~\autoref{fig:appleScript}) are good examples of programming languages (and therefore parseable) that are engineered with the goal of resembling English as much as possible.
@@ -44,7 +48,7 @@ Python or AppleScript~\cite{Sanderson2010appleScript}~(see~\autoref{fig:appleScr
     \label{fig:appleScript}
 \end{figure}
 
-This project therefore proposes developing a DSL~(see~\nameref{subsec:dsls}) as a suitable compromise that allows working with a human-readable encoding which can then be compiled to a suitable machine-readable representation.\\
+This project therefore proposes developing a DSL~(see~\nameref{sec:dsls}) as a suitable compromise that allows working with a human-readable encoding which can then be compiled to a suitable machine-readable representation.\\
 
 We will call this language \emph{Confis DSL}, or \emph{Confis language}, and the machine-readable representation it compiles to \emph{Confis Internal Representation} (or \emph{Confis IR}).
 The Confis IR will be used for processing as discussed in~\autoref{ch:queries}.
