@@ -452,7 +452,9 @@ to deny issuing a licence~\citeTODO.
 \section{Previous Work on Machine-Readable Contracts}\label{sec:machine-readable-contracts}
 
 In the context of this project, \emph{machine-readable}~\cite{cambridgeMachineReadable, openDataMachineReadable} refers to an encoding for a formalisation of a legal agreement which can be processed by a suitable program.
-The processing must relate specifically to uses of legal documents (therefore formats like Microsoft Word, plain UTF encoded text, or PDF do not qualify).
+The processing must relate specifically to uses of legal documents (therefore formats like Microsoft Word, plain UTF encoded text, or PDF do not qualify).\\
+
+See also~\autoref{subsec:nlp} for normative rule generation from legal text, and~\autoref{subsec:reasoning-with-legal-agreements} for reasoning with existing formalisms.
 
 \subsection{Juro}\label{subsec:juro}
 Juro~\cite{juroWhitepaper} is a start-up business seeking to make structured machine-readable data out of contracts.
@@ -611,7 +613,7 @@ Therefore, unlike Ricardian contracts, they also capture the semantics of the ag
 
 Human-written text, which is how legal agreements are typically persisted\footnote{Note other formats like verbal agreements may also constitute legal agreements~\cite{larsonContractLawIntro}} can be converted into machine-readable form by attempting to translate the natural language in which they are written through Natural Language Processing~(NLP), which uses techniques such as symbolic reasoning and deep learning~\cite{GoldbergNLPReview}.\\
 
-Existing technologies trying to process legal text -- such as~\cite{angeli2015NLP1}, \cite{lapata2016NLP2}, or~\cite{lapata2018NLP3} -- try to produce normative rules.
+Existing technologies trying to process legal text -- such as~\cite{angeli2015NLP1},~\cite{lapata2016NLP2},~\cite{lapata2018NLP3}, or~\cite{sleimi2018NLP4} -- try to produce normative rules.
 At the time of writing, they fall short of fully capturing all relevant information in an existing legal document.
 They face the main following challenges~\cite{ferraroLegalNLPSSurvey}:
 
@@ -638,14 +640,16 @@ The average number of lexical units in a sentence written in English in Wikipedi
 
 \begin{figure}[h]
     \centering
-    \begin{minipage}{0.8\textwidth}
-        On termination of this Licence the Licensee shall cease to have any rights or Licence in
-        respect of the Data or any adaptation thereof and shall cease to use the same and shall
-        erase the Data or any adaptation thereof from any storage apparatus and shall return to
-        the Library without demand the Data and all existing copies thereof made by the
-        Licensee and shall warrant in writing to the Library that all data, plots, displays, results,
-        analyses, variations and modifications derived from the Data are destroyed.
-    \end{minipage}
+    \fbox{
+        \begin{minipage}{0.8\textwidth}
+            On termination of this Licence the Licensee shall cease to have any rights or Licence in
+            respect of the Data or any adaptation thereof and shall cease to use the same and shall
+            erase the Data or any adaptation thereof from any storage apparatus and shall return to
+            the Library without demand the Data and all existing copies thereof made by the
+            Licensee and shall warrant in writing to the Library that all data, plots, displays, results,
+            analyses, variations and modifications derived from the Data are destroyed.
+        \end{minipage}
+    }
     \caption{Clause \textsection3.2 of~\citetitle{seismicDataLicence}~\cite{seismicDataLicence}}
     \label{fig:geophys-long-clause}
 \end{figure}
@@ -655,7 +659,7 @@ Current NLP technologies struggle with such sentences: syntactic analysers and p
 \subsubsection{Normative Effects and Modalities}
 
 Legal documents typically encode norms, and words specific to legal concepts such as \emph{right, power, immunity, liability, privilege}, etc significantly alter the way a sentence is interpreted.
-Properly capturing modalities or behaviours such as a \emph{requirement} or a \emph{permission} is a major difficulty the state of the art of Artifcial Intelligence in Law struggles to deal with~\cite{ferraroLegalNLPSSurvey}.
+Properly capturing modalities or behaviours such as a \emph{requirement} or a \emph{permission} is a major difficulty the state of the art of Artificial Intelligence in Law struggles to deal with~\cite{ferraroLegalNLPSSurvey}.
 
 \subsection{Domain-Specific Languages}\label{subsec:dsls}
 
