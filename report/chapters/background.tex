@@ -607,12 +607,13 @@ Unlike Ricardian contracts~(see~\autoref{subsec:ricardian-contracts}), contract-
 Therefore, unlike Ricardian contracts, they also capture the semantics of the agreement between the contract.
 
 
-\section{Natural Language Processing}\label{sec:nlp}
+\section{Natural Language Processing and its Limitations}\label{sec:nlp}
 
 Human-written text, which is how legal agreements are typically persisted\footnote{Note other formats like verbal agreements may also constitute legal agreements~\cite{larsonContractLawIntro}} can be converted into machine-readable form by attempting to translate the natural language in which they are written through Natural Language Processing~(NLP), which uses techniques such as symbolic reasoning and deep learning~\cite{GoldbergNLPReview}.\\
 
 Existing technologies trying to process legal text -- such as~\cite{angeli2015NLP1},~\cite{lapata2016NLP2},~\cite{lapata2018NLP3}, or~\cite{sleimi2018NLP4} -- try to produce normative rules.
-At the time of writing, they fall short of fully capturing all relevant information in an existing legal document.
+
+At the time of writing, they fall short of fully capturing all relevant information in an existing legal document -- therefore they lack the~\nameref{def:completeness} property discussed in~\autoref{sec:eval:goals}.
 They face the main following challenges~\cite{ferraroLegalNLPSSurvey}:
 
 \paragraph{Cross-referencing}
@@ -851,9 +852,7 @@ An example DSL that uses Kotlin as the host language is given in~\autoref{fig:ko
     \label{fig:kotlinHtmlDsl}
 \end{figure}
 
-\paragraph{Tooling} While the language is not as flexible as Haskell or Groovy, it is supported by well-maintained and feature-rich external tooling (in terms of the \textit{IntelliJ IDEA} editor) and has scripting support.
-
-\subsubsection{Scala}
+\paragraph{Tooling} While the language is not as flexible as Haskell or Groovy, it is supported by well-maintained and feature-rich external tooling (in terms of the \textit{IntelliJ IDEA} editor) and has stand-alone scripting support~\cite{kotlinScriptKeep}.
 
 
 % TODO section on the main differences between machine-readable representations of contracts?

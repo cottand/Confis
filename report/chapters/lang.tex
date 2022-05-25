@@ -8,9 +8,12 @@ This is the main motivation for developing tooling which aims to make it easier 
 The core of this tooling is the Confis language~(\autoref{sec:developing-a-dsl}) and an IDE-assisted editor~(\autoref{sec:additional-dsl-tooling}).
 
 
-\section{Developing a DSL}\label{sec:developing-a-dsl}
+\section{Developing the Confis Language}\label{sec:developing-a-dsl}
 
 \subsection{Requirements and Design Decisions}\label{subsec:dsl:requirements}
+
+The language should fulfil the core requirements set out in~\autoref{ch:evaluation}.
+This involves prioritising~\nameref{def:accessibility} while making sure~\nameref{def:completeness} and~\nameref{def:soundness} are possible.
 
 \subsubsection{Easy to write while still machine-readable}
 
@@ -24,13 +27,13 @@ A compromise must be struck between ease of writing and machine-readability.
 
 On one extreme, a data serialization text file (like JSON, YAML, or XML) would allow writing text that can be easily parsed by a program.
 But writing such files requires some data structures knowledge;
-and because of their key-value nature they do not allow writing sentences, leaving them too far from the readability of human-written legal prose.
+and because of their key-value nature they do not allow writing sentences, leaving them too far from the readability of human-written legal prose -- thus they lack the~\nameref{def:accessibility} property.
 
 \paragraph{Natural Language Processing}
 
 On the other extreme, legal prose processed through a language processing program allows the drafter to completely ignore the machine-readable aspect of the document.
 Readers would be able to integrate such documents in their existing workflows -- as they would need to make no transition from their existing, non-machine-readable documents.
-This is the approach discussed in~\autoref{sec:nlp}.\\
+This is approach is discussed in~\autoref{sec:nlp} -- we conclude it does not meet the~\nameref{def:completeness} property.  \\
 
 A compromise between these two solutions would be a language formal enough that it can be parsed by a program, but natural enough that natural language sentences can be recognised in it.
 Python or AppleScript~\cite{Sanderson2010appleScript}~(see~\autoref{fig:appleScript}) are good examples of programming languages (and therefore parseable) that are engineered with the goal of resembling English as much as possible.
@@ -48,17 +51,63 @@ Python or AppleScript~\cite{Sanderson2010appleScript}~(see~\autoref{fig:appleScr
     \label{fig:appleScript}
 \end{figure}
 
-This project therefore proposes developing a DSL~(see~\nameref{sec:dsls}) as a suitable compromise that allows working with a human-readable encoding which can then be compiled to a suitable machine-readable representation.\\
-
-We will call this language \emph{Confis DSL}, or \emph{Confis language}, and the machine-readable representation it compiles to \emph{Confis Internal Representation} (or \emph{Confis IR}).
-The Confis IR will be used for processing as discussed in~\autoref{ch:queries}.
-
 \subsubsection{Easy to develop and extend}
 
-While compiler development and the challenges it brings are a very interesting field of \subjectname, this project does not aim to make contributions in this area.
-It hopes to be more concerned with introducing a suitable abstraction that allows both drafting and processing legal documents.
+With pragmatic implementation efforts in mind, this project should not aim to develop its own parser and interpreter or compiler: the project hopes to be more concerned with introducing a suitable abstraction that allows both drafting and processing legal documents.
+
+\subsubsection{Additional tooling for ease of use and correctness}
+
+A key aspect of development for a new user of a language is to understand the concepts of syntax, compile errors, and invalid programs.
+A great aid to developing this understanding are visual cues in editors in intelligent development environments (or IDEs).
+
+For the Confis DSL to be successful, it must be easy for the drafter of legal agreements to reason about the correctness of the document within the formalisms set out by this project.
+Good tooling is therefore a key requirement in order to achieve~\nameref{def:accessibility}.
+
+\subsection{Design Decisions Conclusion}\label{subsec:dsl-design-conclusion}
+
+The requirements of~\autoref{subsec:dsl:requirements} lead to the following design choices:
+
+\paragraph{A Textual Domain-Specific Language} For a good compromise between readability, flexibility and rigidity of the agreements that can be written, this project therefore proposes developing a DSL~(see~\nameref{sec:dsls}) as a suitable compromise that allows working with a human-readable encoding which can then be compiled to a suitable machine-readable representation.
+
+We will call this language \textbf{\emph{Confis DSL}} (or \emph{Confis language}) and the machine-readable representation it compiles to \textbf{\emph{Confis Internal Representation}} (or \emph{Confis IR}).
+The Confis IR will be used for processing as discussed in~\autoref{ch:queries}.
+
+\paragraph{An Internal DSL}
+For the sake of development costs, we use a suitable host language to implement the Confis DSL (as opposed to developing an external DSL).
+
+\paragraph{A separate Internal Representation}
+Another key design decision is to develop the internal representation (the Confis IR) separately from the DSL.
+By `develop separately' we mean that the internal representation should be enough to represent an agreement and it should be possible to construct it independently of the Confis DSL.
+% TODO discuss in future work
+This should allow developing a stand-alone language as an external DSL (or alternatively, a graphical DSL or a new internal DSL in some other host language) in the future that utilises the same Confis IR -- thus preserving the formalisms this project contributes in this new language.
+
+\paragraph{Kotlin as a host language} Several host languages can serve to build a DSL.
+A few options are discussed in~\autoref{subsec:dsl-host-candidates}, like Groovy and Haskell.
+The choice to use Kotlin stems from how feature-rich the surrounding tooling is -- such as its stand-alone custom scripting~\cite{kotlinScriptKeep}.\\
 
 
 \section{Additional Editing Tooling}\label{sec:additional-dsl-tooling}
 
-aa.
+
+\section{Language Semantics}\label{sec:language-semantics}
+
+% TODO come back after doing reasoning background
+Confis introduces the following formalisms with the intention of restricting
+
+\begin{definition}[Party]
+    \label{def:party}
+\end{definition}
+
+\begin{definition}[Action]
+    \label{def:action}
+\end{definition}
+
+\begin{definition}[Capability]
+    \label{def:capability}
+\end{definition}
+
+
+\begin{definition}[Requirement]
+    \label{def:requirement}
+\end{definition}
+
