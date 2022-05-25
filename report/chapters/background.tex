@@ -606,6 +606,7 @@ The formalisation involves establishing a calculus based in multi-agents systems
 Unlike Ricardian contracts~(see~\autoref{subsec:ricardian-contracts}), contract-driven agents attempt to describe the behaviours of all parties as well as how they react to other parties' behaviours.
 Therefore, unlike Ricardian contracts, they also capture the semantics of the agreement between the contract.
 
+
 \section{Natural Language Processing}\label{sec:nlp}
 
 Human-written text, which is how legal agreements are typically persisted\footnote{Note other formats like verbal agreements may also constitute legal agreements~\cite{larsonContractLawIntro}} can be converted into machine-readable form by attempting to translate the natural language in which they are written through Natural Language Processing~(NLP), which uses techniques such as symbolic reasoning and deep learning~\cite{GoldbergNLPReview}.\\
@@ -653,11 +654,11 @@ Current NLP technologies struggle with such sentences: syntactic analysers and p
     \label{fig:geophys-long-clause}
 \end{figure}
 
-
 \paragraph{Normative Effects and Modalities}
 
 Legal documents typically encode norms, and words specific to legal concepts such as \emph{right, power, immunity, liability, privilege}, etc significantly alter the way a sentence is interpreted.
 Properly capturing modalities or behaviours such as a \emph{requirement} or a \emph{permission} is a major difficulty the state of the art of Artificial Intelligence in Law struggles to deal with~\cite{ferraroLegalNLPSSurvey}.
+
 
 \section{Domain-Specific Languages}\label{sec:dsls}
 
@@ -671,13 +672,11 @@ In order to write legal agreements and lower the barrier of entry as much as pos
 Several modalities of DSLs exist that can be used.
 The compromises they make are in cost (for developing a framework for them), ease of writing, readability, and expressiveness~\cite{fowlerDslGuide, fowlerLangWorkbench}.
 
-
 \paragraph{Textual Internal DSLs}
 
 Textual Internal DSLs make use of a host language, and use that language constructs in particular ways to give the internal DSL a particular feel.
 They share their syntax with and are a subset of their host language.
 This solution is the easiest to develop but forces the DSL author to conform to a host language and to extend their DSL within the bounds of what the host language can do.
-
 
 \paragraph{Textual External DSLs}
 
@@ -689,64 +688,135 @@ This solution provides the most flexibility in what the language can express but
 While Textual DSLs require writing and parsing text, graphical DSLs can be achieved with a tool providing a graphical user interface that then builds some internal representation that can be processed.
 This solution is the most accessible for users of the DSL with non-technical backgrounds but is also expensive in terms of development cost, as both an internal representation and a GUI builder must be developed.\\
 
-
-
 \subsection{Candidates for Internal DSL Host Languages}\label{subsec:dsl-host-candidates}
 
 This project is concerned with making a DSL with low development costs, and as such it will consider several platforms as host language candidates for an internal DSL\@.
 \begin{definition}[DSL Host Traits]
     \label{def:host-lang-requirements}
-    Languages well-suited to be host for DSLs usually have some of the following language features:
+    Languages desirable to be host for DSLs usually have some of the following features:
     \begin{itemize}
         \item \textbf{Operator overloading} for easily including symbols familiar to most users in the language, such as \texttt{`+'}, \texttt{`-'}, \texttt{`\&'}, etc.
         \item \textbf{Infix functions} for constructing sentence-like expressions or statements, such as \texttt{`if car is parked'}.
         \item \textbf{Scripting facilities} that allow compiling a small text snipped without having to define a full program that includes an entrypoint.
+        \item \textbf{A Tooling Platform} which allows developing tools which enahnce the wiritng experience.
+        Examples of this include GUI builders and IDE features (like syntax highlighting and inline compiler warnings).
+        \item \textbf{Scripting} which allows parsing stand-alone text files in the host language that are interpreted by a DSL-aware host.
     \end{itemize}
 
 \end{definition}
 
 \subsubsection{Haskell}
 
-Haskell~\cite{haskellDocs} is a functional programming language which can be compiled or used to interpret single files.
-It has advanced features including all of the ones mentioned in~\nameref{def:host-lang-requirements}.
-These are demonstrated in~\cite{haskellBasicDSL}.
+Haskell~\cite{haskellDocs} is a functional programming language which can be compiled or interpreted.
+It has advanced features including most of the ones mentioned in~\nameref{def:host-lang-requirements}.
 
-\begin{minted}[mathescape,
-               linenos,
-               numbersep=5pt,
-               gobble=2,
-               frame=lines,
-               framesep=2mm]{csharp}
-{-# LANGUAGE ExtendedDefaultRules, OverloadedStrings #-}
-import BASIC
+These are demonstrated in~\autoref{fig:haskellBasicDsl}, where Haskell functions are used as commands and statements of the BASIC language.
+This results in a valid Haskell expression (with some language modifications) that also defines a valid BASIC program -- therefore allowing to write and compile BASIC without actually needing a BASIC parser.
 
-main = runBASIC $ do
-    10 GOSUB 1000
-    20 PRINT "* Welcome to HiLo *"
-    30 GOSUB 1000
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.8\textwidth}
+        \begin{minted}[
+            autogobble,
+            frame=lines,
+            framesep=2mm]{haskell}
+    {-# LANGUAGE ExtendedDefaultRules, OverloadedStrings #-}
+    import BASIC
 
-    100 LET I := INT(100 * RND(0))
-    200 PRINT "Guess my number:"
-    210 INPUT X
-    220 LET S := SGN(I-X)
-    230 IF S <> 0 THEN 300
+    main = runBASIC $ do
+        10 GOSUB 1000
+        20 PRINT "* Welcome to HiLo *"
+        30 GOSUB 1000
 
-    240 FOR X := 1 TO 5
-    250   PRINT X*X;" You won!"
-    260 NEXT X
-    270 STOP
+        100 LET I := INT(100 * RND(0))
+        200 PRINT "Guess my number:"
+        210 INPUT X
+        220 LET S := SGN(I-X)
+        230 IF S <> 0 THEN 300
 
-    300 IF S <> 1 THEN 400
-    310 PRINT "Your guess ";X;" is too low."
-    320 GOTO 200
+        240 FOR X := 1 TO 5
+        250   PRINT X*X;" You won!"
+        260 NEXT X
+        270 STOP
 
-    400 PRINT "Your guess ";X;" is too high."
-    410 GOTO 200
+        300 IF S <> 1 THEN 400
+        310 PRINT "Your guess ";X;" is too low."
+        320 GOTO 200
 
-    1000 PRINT "*******************"
-    1010 RETURN
+        400 PRINT "Your guess ";X;" is too high."
+        410 GOTO 200
 
-    9999 END
-\end{minted}
+        1000 PRINT "*******************"
+        1010 RETURN
+
+        9999 END
+        \end{minted}
+    \end{minipage}
+    \caption[BASIC program written in a Haskell DSL]
+    {A BASIC program written in a Haskell DSL, from~\cite{haskellBasicDSL}}
+    \label{fig:haskellBasicDsl}
+\end{figure}
+
+Haskell additionally permits defining the precedence of operators and infix functions, allowing to define the direction in which associativity propagates~\cite{haskellFixity}.
+This can be useful to form English-like sentences in a DSL such as \texttt{`Bob did eat after Alice did eat'}, where \texttt{`after'} can be an infix function with lower precedence that \texttt{`did'}, which forms the other two sentences.
+
+\paragraph{Tooling} Haskell tooling is comparatively lacking next to more mainstream general purpose programming languages (such as Kotlin) in that the communities developing its tooling platform are smaller.
+
+\subsubsection{Groovy}
+
+Groovy~\cite{groovyLangIndex} is a general purpose  language with plenty of features specifically designed for DSLs.
+One of the most used examples of such DSLs is the Gradle Build Language~\cite{gradleDSL} which specifies configuration for the Gradle build tool.
+This sets the build tool apart from similar tools, like Maven and Makefiles, which do not use DSLs.
+An example of a script for such a DSL is given in~\autoref{fig:gradleGroovyDSL}.
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.8\textwidth}
+        \begin{minted}[
+            autogobble,
+            frame=lines,
+            framesep=2mm]{groovy}
+            plugins {
+                id 'groovy'
+                id 'application'
+            }
+
+            repositories {
+                mavenCentral()
+            }
+
+            dependencies {
+                implementation 'org.codehaus.groovy:groovy-all:3.0.9'
+                implementation 'com.google.guava:guava:30.1.1-jre'
+
+                testImplementation 'junit:junit:4.13.2'
+            }
+
+            application {
+                mainClass = 'demo.App'
+            }
+
+            tasks.named('test') {
+                useJUnitPlatform()
+            }
+        \end{minted}
+    \end{minipage}
+    \caption[Gradle Groovy Build script]
+    {A Gradle Groovy build script, from~\cite{gradleDSL}}
+    \label{fig:gradleGroovyDSL}
+\end{figure}
+
+Unlike to the other candidates in this section, Groovy allows for dynamic typing.
+This means that the language offers more runtime flexibility when designing a DSL, as new variables and classes can be created as the script is interpreted.
+
+\paragraph{Tooling} Groovy has exceptional tooling that allows parsing standalone scripts with a DSL context, but its external tooling (like intelligent editors) is limited due to the nature of its runtime dynamic typing.
+In the example of~\autoref{fig:gradleGroovyDSL}, an editor would not be able to suggest autocompletion for \texttt{`useJUnitPlatform()'} inside the configuration of the \texttt{test} task.
+
+\subsubsection{Kotlin}
+
+Kotlin~\cite{kotlinLang} is another general-purpose language
+
+\subsubsection{Scala}
+
 
 % TODO section on the main differences between machine-readable representations of contracts?

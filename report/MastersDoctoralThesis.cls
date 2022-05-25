@@ -189,7 +189,7 @@
 \RequirePackage{babel} % Required for automatically changing names of document elements to languages besides english
 
 \RequirePackage{scrbase} % Required for handling language-dependent names of sections/document elements
-
+\RequirePackage{minted}
 \RequirePackage{scrhack} % Loads fixes for various packages
 
 \RequirePackage{setspace} % Required for changing line spacing
