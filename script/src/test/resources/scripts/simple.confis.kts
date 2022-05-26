@@ -3,7 +3,7 @@ val alice by party(
         description = "Alice Liddell of Imperial College"
 )
 
-val bob by party(named = "Bob", description = "Bob the Builder")
+val bob by party("Bob", description = "Bob the Builder")
 
 val pay by action
 

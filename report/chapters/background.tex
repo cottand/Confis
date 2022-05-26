@@ -479,7 +479,7 @@ Juro's whitepaper lists `self-executing' clauses as future work~\cite[p.~6]{juro
 Therefore Juro does not attempt to make any contributions with respect to verification of compliance or enforcement of
 contract clauses.
 
-\subsection{Accord Project}\label{subsec:accord}
+\subsection{The Accord Project}\label{subsec:accord}
 
 The Accord Project~\cite{accordHomepage} is an open source Linux Foundation project with the aim of enabling
 machine-readable and machine-executable legal agreements.
@@ -595,13 +595,24 @@ Rather, it hopes to produce machine-generated but human-readable prose legal pro
 
 \subsection{Reasoning with Legal Agreements}\label{subsec:reasoning-with-legal-agreements}
 
-TODO talk about~\cite{sartorLegalReasoning}.
+The process of representing or acquiring knowledge from a legal agreement is typically considered as a process of writing conditional rules with the following basic conditional structure~\cite{sartorLegalReasoning, ferraroLegalNLPSSurvey}:
+
+\begin{equation}
+    \label{eq:basic-rule}
+    r: \text{IF} \  a_{1}, \dots ,a_n \ \text{THEN} \ c
+\end{equation}
+
+Where $r$ is the unique identifier of the rule, $a_1, \dots, a_n $ are the \emph{antecedent} representing the conditions (which includes the context under which the rule is created) of applicability of the norm, and $c$ is the \emph{conclusion} representing the effect of the norm.\\
+
+Note how~\nameref{subsec:juro} does not try to capture norms at all, and~\nameref{subsec:accord} chooses to use the abstraction of a program rather than that of a set of rules.
+NLP, on the other hand (discussed in~\autoref{sec:nlp}) struggles to extract such rules from existing documents.
 
 \subsubsection{Contract-Driven Agents}\label{subsubsec:contract-driven-agents}
 
-An attempt at formalising a representation of the behaviours involved in a legal agreement and the interactions between the parties to such agreements contract-driven agents as presented in~\cite{knottenbeltContractDriven}.
+An attempt at formalising a representation of the behaviours involved in a legal agreement and the interactions between the parties to such agreements contract-driven agents as presented in~\cite{knottenbeltContractDriven}.\\
 
-The formalisation involves establishing a calculus based in multi-agents systems specifically oriented towards legal agreements, through the event calculus as first introduced by~\cite{kowalski1989logicEventBased}~(a logic-based system).\\
+The formalisation involves establishing a calculus based in multi-agents systems specifically oriented towards legal agreements, through the event calculus as first introduced by~\cite{kowalski1989logicEventBased}~(a logic-based system).
+Note how the event calculus can be generalised by~\autoref{eq:basic-rule}.\\
 
 Unlike Ricardian contracts~(see~\autoref{subsec:ricardian-contracts}), contract-driven agents attempt to describe the behaviours of all parties as well as how they react to other parties' behaviours.
 Therefore, unlike Ricardian contracts, they also capture the semantics of the agreement between the contract.
@@ -813,7 +824,7 @@ This means that the language offers more runtime flexibility when designing a DS
 \paragraph{Tooling} Groovy has feature-rich tooling that allows parsing standalone scripts with a DSL context, but its external tooling (like intelligent editors) is limited due to the nature of its runtime dynamic typing.
 In the example of~\autoref{fig:gradleGroovyDSL}, an editor would not be able to suggest autocompletion for \texttt{`useJUnitPlatform()'} inside the configuration of the \texttt{test} task.
 
-\subsubsection{Kotlin}
+\subsubsection{Kotlin}\label{subsubsec:kotlinLang}
 
 Kotlin~\cite{kotlinLang} is another general-purpose language.
 The language supports infix functions and operator overloading.
@@ -823,7 +834,7 @@ An example DSL that uses Kotlin as the host language is given in~\autoref{fig:ko
     \centering
     \begin{minipage}{0.9\textwidth}
         \begin{minted}[
-        autogobble,
+            autogobble,
             frame=lines,
             framesep=2mm]{kotlin}
             val args: List<String>
@@ -855,7 +866,7 @@ An example DSL that uses Kotlin as the host language is given in~\autoref{fig:ko
 \paragraph{Tooling} While the language is not as flexible as Haskell or Groovy, it is supported by well-maintained and feature-rich external tooling (in terms of the \textit{IntelliJ IDEA} editor) and has stand-alone scripting support~\cite{kotlinScriptKeep}.
 
 % TODO add link on why we used this
-Additionally, the editor IntelliJ IDEA supports live evaluation of Koltin inside text boxes, allowing to provide hints at the same time it compiles a specific snippet of code~\cite{intelliJRepo}.
+Additionally, the editor IntelliJ IDEA supports live evaluation of Kotlin inside text boxes, allowing to provide hints at the same time it compiles a specific snippet of code~\cite{intelliJRepo}.
 
 
 % TODO section on the main differences between machine-readable representations of contracts?

@@ -4,6 +4,7 @@ import eu.dcotta.confis.model.Action
 import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.model.Allowance.Allow
 import eu.dcotta.confis.model.Allowance.Forbid
+import eu.dcotta.confis.model.Clause
 import eu.dcotta.confis.model.Clause.Permission
 import eu.dcotta.confis.model.Clause.PermissionWithCircumstances
 import eu.dcotta.confis.model.Clause.Requirement
@@ -25,19 +26,15 @@ open class AgreementBuilder {
     var introduction: String? = null
 
     // internal
+    @Suppress("unused", "PropertyName")
     var `$$questionCircumstances$$`: CircumstanceBuilder.() -> Unit = {}
 
-    private val freeTextClauses = mutableListOf<Text>()
     private val parties = mutableListOf<Party>()
 
-    private val sentencesWithoutCircumstances = mutableListOf<Permission>()
-    private val clausesWithCircumstances = mutableListOf<PermissionWithCircumstances>()
-
-    private val requirements = mutableListOf<Requirement>()
-    private val requirementsWithCircumstances = mutableListOf<RequirementWithCircumstances>()
+    private val clauses = mutableListOf<Clause>()
 
     operator fun String.unaryMinus() {
-        freeTextClauses += Text(this.trimIndent())
+        clauses += Text(this.trimIndent())
     }
 
     // permission
@@ -47,7 +44,7 @@ open class AgreementBuilder {
     @CircumstanceDsl
     infix fun Subject.may(sentence: SentenceBuilderWithSubject.() -> Sentence): Permission {
         val permission = Permission(Allow, sentence(SentenceBuilderWithSubject(this)))
-        sentencesWithoutCircumstances += permission
+        clauses += permission
         return permission
     }
 
@@ -57,7 +54,7 @@ open class AgreementBuilder {
     @CircumstanceDsl
     infix fun Subject.mayNot(sentence: SentenceBuilderWithSubject.() -> Sentence): Permission {
         val permission = Permission(Forbid, sentence(SentenceBuilderWithSubject(this)))
-        sentencesWithoutCircumstances += permission
+        clauses += permission
         return permission
     }
 
@@ -78,16 +75,16 @@ open class AgreementBuilder {
     infix fun Permission.asLongAs(init: CircumstanceBuilder.() -> Unit) {
         val cs = CircumstanceBuilder(sentence).also(init).`$$build$$`()
         val s = PermissionWithCircumstances(this, Allow, cs)
-        sentencesWithoutCircumstances.removeLastOccurrence(this)
-        clausesWithCircumstances += s
+        clauses.removeLastOccurrence(this)
+        clauses += s
     }
 
     @CircumstanceDsl
     infix fun Permission.unless(init: CircumstanceBuilder.() -> Unit) {
         val cs = CircumstanceBuilder(sentence).also(init).`$$build$$`()
         val s = PermissionWithCircumstances(this, Forbid, cs)
-        sentencesWithoutCircumstances.removeLastOccurrence(this)
-        clausesWithCircumstances += s
+        clauses.removeLastOccurrence(this)
+        clauses += s
     }
     // return when (rule) {
     //    is Requirement -> RequirementWithCircumstances(rule.sentence, circumstances)
@@ -99,7 +96,7 @@ open class AgreementBuilder {
     @CircumstanceDsl
     infix fun Subject.must(sentence: SentenceBuilderWithSubject.() -> Sentence): Requirement {
         val req = Requirement(sentence(SentenceBuilderWithSubject(this)))
-        requirements += req
+        clauses += req
         return req
     }
 
@@ -108,16 +105,12 @@ open class AgreementBuilder {
 
     infix fun Requirement.underCircumstances(init: CircumstanceBuilder.() -> Unit) {
         val cs = CircumstanceBuilder(sentence).also(init).`$$build$$`()
-        requirements.removeLastOccurrence(this)
-        requirementsWithCircumstances += RequirementWithCircumstances(sentence, cs)
+        clauses.removeLastOccurrence(this)
+        clauses += RequirementWithCircumstances(sentence, cs)
     }
 
     private fun build(): Agreement = Agreement(
-        clauses = requirements +
-            requirementsWithCircumstances +
-            clausesWithCircumstances +
-            sentencesWithoutCircumstances +
-            freeTextClauses,
+        clauses = clauses,
         parties = parties,
         title = title,
         introduction = introduction,

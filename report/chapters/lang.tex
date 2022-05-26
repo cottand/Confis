@@ -8,7 +8,7 @@ This is the main motivation for developing tooling which aims to make it easier 
 The core of this tooling is the Confis language~(\autoref{sec:developing-a-dsl}) and an IDE-assisted editor~(\autoref{sec:additional-dsl-tooling}).
 
 
-\section{Developing the Confis Language}\label{sec:developing-a-dsl}
+\section{Motivations For a DSL}\label{sec:developing-a-dsl}
 
 \subsection{Implementation Requirements}\label{subsec:dsl:requirements}
 
@@ -82,8 +82,8 @@ The Confis IR will be used for processing as discussed in~\autoref{ch:queries}.
 For the sake of development costs, we use a suitable host language to implement the Confis DSL (as opposed to developing an external DSL).
 
 \paragraph{A separate Internal Representation}
-Another key design decision is to develop the internal representation (the Confis IR) separately from the DSL.
-By `develop separately' we mean that the internal representation should be enough to represent an agreement and it should be possible to construct it independently of the Confis DSL.
+Another key design decision is to develop the internal representation (the Confis IR) separately from the DSL\@.
+By `develop separately' we mean that the internal representation should be enough to represent an agreement, and it should be possible to construct it independently of the Confis DSL\@.
 % TODO discuss in future work
 This should allow developing a stand-alone language as an external DSL (or alternatively, a graphical DSL or a new internal DSL in some other host language) in the future that utilises the same Confis IR -- thus preserving the formalisms this project contributes in this new language.
 
@@ -91,20 +91,13 @@ This should allow developing a stand-alone language as an external DSL (or alter
 A few options are discussed in~\autoref{subsec:dsl-host-candidates}, like Groovy and Haskell.
 The choice to use Kotlin stems from how feature-rich the surrounding tooling is -- such as its stand-alone custom scripting~\cite{kotlinScriptKeep} and IDE support~\cite{intelliJRepo}.\\
 
-\subsection{DSL Implementation}\label{subsec:dsl-implementation}
-
-This subsection is concerned with the implementation details of the Confis DSL.
-For design decisions regarding the language (like what is a Sentence or the difference between a Requirement and a Capability) please see~\nameref{sec:language-semantics}.
-
-
-\section{Additional Editing Tooling}\label{sec:additional-dsl-tooling}
-
-
 \section{Language Semantics and Design}\label{sec:language-semantics}
 
 This section is concerned with the structure, semantics, and design decisions regarding the Confis DSL.
 For the implementations details of the DSL, see~\nameref{subsec:dsl-implementation}.
-For motivations and priorities of the project, see~\nameref{sec:eval:goals}.
+For motivations and priorities of the project, see~\nameref{sec:eval:goals}.\\
+
+Given decoupling the Confis language and the Confis IR is a requirement as discussed in~\autoref{subsec:dsl:requirements}, the la
 
 % TODO come back after doing reasoning background
 Confis introduces the following formalisms with the intention of restricting
@@ -125,4 +118,32 @@ Confis introduces the following formalisms with the intention of restricting
 \begin{definition}[Requirement]
     \label{def:requirement}
 \end{definition}
+
+\subsection{Language Implementation}\label{subsec:dsl-implementation}
+
+This subsection is concerned with the implementation details of the Confis DSL.
+For design decisions regarding the language (like what is a Sentence or the difference between a Requirement and a Capability) please see~\nameref{sec:language-semantics}.\\
+
+Because of the nature of internal DSLs~(see~\autoref{sec:dsls}), the syntax of the Confis DSL must be a subset of the Kotlin language's.
+% TODO add future work link for own lang
+Given the Confis DSL and the Confis IR are decoupled this section will not go into too much detail on how the DSL is implemented as most of that is specific to the Kotlin language, and the DSL could have been implemented as an internal DSL with a different host language anyway (like Haskell or Groovy).
+For more information on how DSLs can be built in Kotlin in general, see~\autoref{subsubsec:kotlinLang}, and in particular refer to~\cite{kotlinTypeSafeHTL}.
+
+% TODO is this worth writing about at all
+
+\section[The Confis Editor]{Additional Editing Tooling: the Confis Editor}\label{sec:additional-dsl-tooling}
+
+One of the key requirements for Confis is~\nameref{def:accessibility}.
+In order to achieve this the Confis framework includes an extension to the IntelliJ Development Environment~\cite{intelliJRepo} - the \textbf{\emph{Confis Plugin}}.
+Bundled with this plugin is the \textbf{\emph{Confis Editor}}.\\
+
+The Confis Editor has two main goals:
+
+\paragraph{Providing context-aware aid for authoring agreements} Much like an IDE provides relevant aid to a software engineer (such as reporting compile errors before attempting to compile the program) the Confis Editor should allow an agreement drafter to write in the Confis DSL without needing to deal with command-line utilities or knowing the tooling around Kotlin language.
+
+\paragraph{Providing a human-readable preview of the Confis Agreement} While a Confis Agreement is a strict formalism written in code, it is engineered to resemble English sentences.
+The Confis Editor should display a document in legal prose, made up from text generated from the Confis agreement.
+This preview should resemble a traditional legal document, and appear side-to-side the code the agreement drafter is writing in order to provide a useful live preview of the contract being authored.
+
+
 
