@@ -19,9 +19,28 @@ val adapt by action(
     description = "as in deriving data and statistics from, copying, or distributing"
 )
 val thirdParty by party("a 3rd party", description = "not employed by $licensee")
-val access by action
-val agreeTo by action("agree to")
 
+val access by action(description = "as in gain obtain a copy of")
+
+val agreeTo by action(
+    "agree to",
+    description = "to be bound by the terms of, to the same extend as $licensee"
+)
+
+val jointVentureGroup by party(
+    named = "a Joint Venture Group",
+    description = "A bona fide oil or gas bidding group, exploration group, or exploitation group",
+)
+
+val jointVentureGroupMember by party (
+    named = "a member of $jointVentureGroup",
+    description = "Another member, other than $licensee, of $jointVentureGroup"
+)
+
+val becomeMemberOf by action(
+    named = "become a member of",
+    description = "as in to be ot at any point hereafter become a member or operator of"
+)
 
 
 introduction = """Seismic data acquired pursuant to operations conducted subject to the Petroleum Act 1998 and
@@ -34,11 +53,14 @@ licensee mayNot transfer(licence) unless {
     with consentFrom library
 }
 
+licensee may transfer(licence) asLongAs {
+    with consentFrom library
+}
+
 licensee mayNot sell(data)
 licensee mayNot provideServicesWith(data)
 
 thirdParty may access(data) asLongAs {
-
     with consentFrom licensee
     after { thirdParty did agreeTo(licence) }
     after  { thirdParty did agreeTo(nda) }
@@ -49,6 +71,17 @@ licensee mayNot adapt(data) unless  {
     with consentFrom library
 }
 
-val builder: CircumstanceBuilder.() -> Unit = {
+licensee may adapt(data) asLongAs {
+    with purpose Internal
+    with consentFrom library
+}
 
+licensee may becomeMemberOf(jointVentureGroup)
+jointVentureGroupMember may becomeMemberOf(jointVentureGroup)
+
+jointVentureGroupMember may access(data) asLongAs {
+    after { licensee did becomeMemberOf(jointVentureGroup) }
+    after { jointVentureGroupMember did becomeMemberOf(jointVentureGroup) }
+    with consentFrom library
+    after { jointVentureGroupMember did agreeTo(licence) }
 }
