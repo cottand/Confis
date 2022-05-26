@@ -1,5 +1,5 @@
 val latexClean by tasks.registering(Exec::class) {
-        commandLine("latexmk", "-c")
+    commandLine("latexmk", "-c")
 }
 
 tasks.clean {
