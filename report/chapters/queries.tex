@@ -1,1 +1,26 @@
 \chapter{Queryable Documents}\label{ch:queries}
+
+\section{Developing a suitable representation}\label{sec:queries-representation}
+
+\subsection{Requirements}\label{subsec:queries-requirements}
+
+% TODO find a source on why we would want this specifically out of Confis
+Assuming an existing document, being able to perform the following operations on said document is desirable: we will call these operations \emph{queries} (or questions) made to the contract.
+In order to be accessible, these must be intuitive and should not require deep
+
+% TODO justify this being common
+\paragraph{Querying for Legal Capabilities} A common use-case is for a party to want to figure out their legal capabilities with respect to a contract, as well as the capabilities of other parties.
+Take the example of a tenancy agreement: a tenant may want to know whether they are allowed to have pets, or whether the landlord is allowed to enter their property.
+
+Therefore, a successful query system should be able to provide answers to questions such as `May $A$ do $X$?'
+
+A party may also have some requirements to be able to perform some action - such as performing a payment.
+Continuing the example of the tenancy agreement, a landlord may be allowed to enter the premises in case of emergency, but not otherwise.
+Thus, a more general question could be `Under what condition may $A$ do $X$?'
+
+\paragraph{Compliance verification} If figuring out a party's legal capabilities is a key part of dealing with a contract, so is figuring out their legal obligations.
+Unlike a legal capability question.
+
+
+\subsubsection{Confis Internal Representation}
+As~\cite{knottenbeltContractDriven} notes, there is a clear compromise to be made between how complex a contract representation is, and how simple the computations needed to process it are.

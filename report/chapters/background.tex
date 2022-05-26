@@ -449,7 +449,12 @@ For a licensee, this means they cannot easily prove they did enter an agreement 
 to deny issuing a licence~\citeTODO.
 
 
-\section{Previous Work on Machine Readable Contracts}\label{sec:machine-readable-contracts}
+\section{Previous Work on Machine-Readable Contracts}\label{sec:machine-readable-contracts}
+
+In the context of this project, \emph{machine-readable}~\cite{cambridgeMachineReadable, openDataMachineReadable} refers to an encoding for a formalisation of a legal agreement which can be processed by a suitable program.
+The processing must relate specifically to uses of legal documents (therefore formats like Microsoft Word, plain UTF encoded text, or PDF do not qualify).\\
+
+See also~\autoref{sec:nlp} for normative rule generation from legal text, and~\autoref{subsec:reasoning-with-legal-agreements} for reasoning with existing formalisms.
 
 \subsection{Juro}\label{subsec:juro}
 Juro~\cite{juroWhitepaper} is a start-up business seeking to make structured machine-readable data out of contracts.
@@ -539,14 +544,13 @@ cannot be easily written by a non-software developer (unlike Juro's~\ref{subsec:
 
 Among other contributions that ease the process (not unlike Juro~\ref{subsec:juro}) of negotiating
 and drafting a contract,~\cite[Express Agreement]{expressAgreement} implemented Proof of Existence,
-where parties put a hash of a signed copy of a contract in the Bitcoin~(see~\ref{sec:bitcoin})
-blockchain.
+where parties put a hash of a signed copy of a contract in the Bitcoin blockchain~(see~\ref{sec:bitcoin}).
 
 This allows irrevocable proof of agreement verifiable by third parties.
 
 \subsection{Ricardian Contracts}\label{subsec:ricardian-contracts}
 
-First introduced by~\cite{grigg2004ricardian, ricardianWeb}, Ricardian Contracts aim to encode a legal agreement as a huan-readable document (handwritten legal prose) accompanied by machine-readable metadata.
+First introduced by~\cite{grigg2004ricardian, ricardianWeb}, Ricardian Contracts aim to encode a legal agreement as a human-readable document (handwritten legal prose) accompanied by machine-readable metadata.
 Additionally, it is cryptographically signed (see~\ref{fig:pubkey-signing}) by parties and uniquely identifiable;
 giving it some extra cryptographic guarantees (for example, signatures cannot be plausibly denied and terms cannot be tampered with after signing).
 
@@ -584,20 +588,274 @@ For example, a party could be able to query about their compliance with the cont
 
 % TODO this probably deserves its own section on how Confis tries to generalise Ricardian contracts
 
-This project is a generalisation of Ricardian contracts in that they meet all the requirements given by Definition~\ref{def:ricardian}, but it also tries to convey and capture the meaning of the contract, so that both a machine and a human can take every single possible state into account.
+This project is a generalisation of Ricardian contracts in that they meet all the requirements given by definition~\autoref{def:ricardian}, but it also tries to convey and capture the meaning of the contract, so that both a machine and a human can take every single possible state into account.
 
 Another crucial difference from what is described in~\cite{grigg2004ricardian} is that Confis does not intend to let a user write legal prose.
 Rather, it hopes to produce machine-generated but human-readable prose legal prose from its internal encoding of the agreement.
 
+\subsection{Reasoning with Legal Agreements}\label{subsec:reasoning-with-legal-agreements}
+
+TODO talk about~\cite{sartorLegalReasoning}.
+
+\subsubsection{Contract-Driven Agents}\label{subsubsec:contract-driven-agents}
+
+An attempt at formalising a representation of the behaviours involved in a legal agreement and the interactions between the parties to such agreements contract-driven agents as presented in~\cite{knottenbeltContractDriven}.
+
+The formalisation involves establishing a calculus based in multi-agents systems specifically oriented towards legal agreements, through the event calculus as first introduced by~\cite{kowalski1989logicEventBased}~(a logic-based system).\\
+
+Unlike Ricardian contracts~(see~\autoref{subsec:ricardian-contracts}), contract-driven agents attempt to describe the behaviours of all parties as well as how they react to other parties' behaviours.
+Therefore, unlike Ricardian contracts, they also capture the semantics of the agreement between the contract.
+
+
+\section{Natural Language Processing and its Limitations}\label{sec:nlp}
+
+Human-written text, which is how legal agreements are typically persisted\footnote{Note other formats like verbal agreements may also constitute legal agreements~\cite{larsonContractLawIntro}} can be converted into machine-readable form by attempting to translate the natural language in which they are written through Natural Language Processing~(NLP), which uses techniques such as symbolic reasoning and deep learning~\cite{GoldbergNLPReview}.\\
+
+Existing technologies trying to process legal text -- such as~\cite{angeli2015NLP1},~\cite{lapata2016NLP2},~\cite{lapata2018NLP3}, or~\cite{sleimi2018NLP4} -- try to produce normative rules.
+
+At the time of writing, they fall short of fully capturing all relevant information in an existing legal document -- therefore they lack the~\nameref{def:completeness} property discussed in~\autoref{sec:eval:goals}.
+They face the main following challenges~\cite{ferraroLegalNLPSSurvey}:
+
+\paragraph{Cross-referencing}
+
+Legal text is structured into sections and subsections which contain sentences which represent clauses applicable in a specific context.
+Documents therefore often reference information across sections or across documents.
+Some of these references may not even be explicit: often, contracts have a `Definitions' section solely for the role of disambiguating terms which the reader is expected to use in their understanding of the document.
+
+NLP solutions must therefore be able to deal with referencing in order to extract context and resolve lexical ambiguities.
+
+\paragraph{Ambiguity}
+While legal documents aim to remove ambiguity and ideally produce a single interpretation, unintended ambiguities arise from the use of natural language.
+
+The most likely ambiguity is \emph{referential ambiguity} where a word or phrase has multiple meanings inferred from current context, from a parent statement (which is unique to legal text), or from other document sections via cross-referencing.
+
+Natural language can also represent different logical interpretations, which is referred to as \emph{local ambiguity}.
+An example of this is using the term ``and'' to represent a disjunction instead of a conjunction.
+
+\paragraph{Sentence Complexity}
+
+Sentences used in legal prose tend to be much longer than sentences from other domains.
+The average number of lexical units in a sentence written in English in Wikipedia is about 19~\cite{wiki19words}, while sentences from a legal document can have more than 50~\cite{ferraroLegalNLPSSurvey} as well as have complex syntactic structures (see for example~\autoref{fig:geophys-long-clause}).
+
+Current NLP technologies struggle with such sentences: syntactic analysers and predicate-argument extraction tools sometimes do no correctly capture the scope of coordinate conjunctions, nor the antecedents of subordinate phrases.
+
+\begin{figure}[h]
+    \centering
+    \fbox{
+        \begin{minipage}{0.8\textwidth}
+            On termination of this Licence the Licensee shall cease to have any rights or Licence in
+            respect of the Data or any adaptation thereof and shall cease to use the same and shall
+            erase the Data or any adaptation thereof from any storage apparatus and shall return to
+            the Library without demand the Data and all existing copies thereof made by the
+            Licensee and shall warrant in writing to the Library that all data, plots, displays, results,
+            analyses, variations and modifications derived from the Data are destroyed.
+        \end{minipage}
+    }
+    \caption{Clause \textsection3.2 of~\citetitle{seismicDataLicence}~\cite{seismicDataLicence}}
+    \label{fig:geophys-long-clause}
+\end{figure}
+
+\paragraph{Normative Effects and Modalities}
+
+Legal documents typically encode norms, and words specific to legal concepts such as \emph{right, power, immunity, liability, privilege}, etc significantly alter the way a sentence is interpreted.
+Properly capturing modalities or behaviours such as a \emph{requirement} or a \emph{permission} is a major difficulty the state of the art of Artificial Intelligence in Law struggles to deal with~\cite{ferraroLegalNLPSSurvey}.
+
+
 \section{Domain-Specific Languages}\label{sec:dsls}
 
-The use-case of representing complex abstractions in a machine-readable formats is a common one, and general-purpose programming languages (Java, Python, etc) are designed with exactly this goal in mind.
+The use-case of representing complex, formalised abstractions in a machine-readable formats is a common one, and general-purpose programming languages (Java, Python, etc) are designed with exactly this goal in mind.
 
-According to~\cite{fowlerDsl}: "From  A DSL is a computer language that's targeted to a particular kind of problem, rather than a general purpose language that's aimed at any kind of software problem".
-In order to write legal agreements and lower the barrier of entry as much as possible (ideally, no software engineering training should be required) a well-documented and easy-to-use DSL is a good solution: expressive enough to be able to represent a large range of agreements, but restrictive enough that language features should not require extensive training.
+A class of languages made to target a specific problem, rather than being general purpose, also exists: these are \emph{Domain-Specific Languages} (or \emph{DSLs})
+
+According to~\cite{fowlerDsl}: ``A DSL is a computer language that is targeted to a particular kind of problem, rather than a general purpose language that is aimed at any kind of software problem''.
+In order to write legal agreements and lower the barrier of entry as much as possible (ideally, no software engineering training should be required) a well-documented and easy-to-use DSL is a good solution: expressive enough to be able to represent a large range of agreements, but restrictive enough that language features should not require extensive training.\\
 
 Several modalities of DSLs exist that can be used.
-The compromises they make are in cost (for developing a framework for them), ease of writing, readability, and expressiveness.
+The compromises they make are in cost (for developing a framework for them), ease of writing, readability, and expressiveness~\cite{fowlerDslGuide, fowlerLangWorkbench}.
 
-% TODO external, internal, GUI, etc
+\paragraph{Textual Internal DSLs}
 
+Textual Internal DSLs make use of a host language, and use that language constructs in particular ways to give the internal DSL a particular feel.
+They share their syntax with and are a subset of their host language.
+This solution is the easiest to develop but forces the DSL author to conform to a host language and to extend their DSL within the bounds of what the host language can do.
+
+\paragraph{Textual External DSLs}
+
+Textual External DSLs have their own custom syntax and therefore they need a full new parsed to be processed.
+This solution provides the most flexibility in what the language can express but is more expensive in terms of development efforts for the DSL author.
+
+\paragraph{Graphical DSLs}
+
+While Textual DSLs require writing and parsing text, graphical DSLs can be achieved with a tool providing a graphical user interface that then builds some internal representation that can be processed.
+This solution is the most accessible for users of the DSL with non-technical backgrounds but is also expensive in terms of development cost, as both an internal representation and a GUI builder must be developed.\\
+
+\subsection{Candidates for Internal DSL Host Languages}\label{subsec:dsl-host-candidates}
+
+This project is concerned with making a DSL with low development costs, and as such it will consider several platforms as host language candidates for an internal DSL\@.
+\begin{definition}[DSL Host Traits]
+    \label{def:host-lang-requirements}
+    Languages desirable to be host for DSLs usually have some of the following features:
+    \begin{itemize}
+        \item \textbf{Operator overloading} for easily including symbols familiar to most users in the language, such as \texttt{`+'}, \texttt{`-'}, \texttt{`\&'}, etc.
+        \item \textbf{Infix functions} for constructing sentence-like expressions or statements, such as \texttt{`if car is parked'}.
+        \item \textbf{Scripting facilities} that allow compiling a small text snipped without having to define a full program that includes an entrypoint.
+        \item \textbf{A Tooling Platform} which allows developing tools which enahnce the wiritng experience.
+        Examples of this include GUI builders and IDE features (like syntax highlighting and inline compiler warnings).
+        \item \textbf{Scripting} which allows parsing stand-alone text files in the host language that are interpreted by a DSL-aware host.
+    \end{itemize}
+
+\end{definition}
+
+\subsubsection{Haskell}
+
+Haskell~\cite{haskellDocs} is a functional programming language which can be compiled or interpreted.
+It has advanced features including most of the ones mentioned in~\nameref{def:host-lang-requirements}.
+
+These are demonstrated in~\autoref{fig:haskellBasicDsl}, where Haskell functions are used as commands and statements of the BASIC language.
+This results in a valid Haskell expression (with some language modifications) that also defines a valid BASIC program -- therefore allowing to write and compile BASIC without actually needing a BASIC parser.
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.8\textwidth}
+        \begin{minted}[
+            autogobble,
+            frame=lines,
+            framesep=2mm]{haskell}
+    {-# LANGUAGE ExtendedDefaultRules, OverloadedStrings #-}
+    import BASIC
+
+    main = runBASIC $ do
+        10 GOSUB 1000
+        20 PRINT "* Welcome to HiLo *"
+        30 GOSUB 1000
+
+        100 LET I := INT(100 * RND(0))
+        200 PRINT "Guess my number:"
+        210 INPUT X
+        220 LET S := SGN(I-X)
+        230 IF S <> 0 THEN 300
+
+        240 FOR X := 1 TO 5
+        250   PRINT X*X;" You won!"
+        260 NEXT X
+        270 STOP
+
+        300 IF S <> 1 THEN 400
+        310 PRINT "Your guess ";X;" is too low."
+        320 GOTO 200
+
+        400 PRINT "Your guess ";X;" is too high."
+        410 GOTO 200
+
+        1000 PRINT "*******************"
+        1010 RETURN
+
+        9999 END
+        \end{minted}
+    \end{minipage}
+    \caption[BASIC program written in a Haskell DSL]
+    {A BASIC program written in a Haskell DSL, from~\cite{haskellBasicDSL}}
+    \label{fig:haskellBasicDsl}
+\end{figure}
+
+Haskell additionally permits defining the precedence of operators and infix functions, allowing to define the direction in which associativity propagates~\cite{haskellFixity}.
+This can be useful to form English-like sentences in a DSL such as \texttt{`Bob did eat after Alice did eat'}, where \texttt{`after'} can be an infix function with lower precedence that \texttt{`did'}, which forms the other two sentences.
+
+\paragraph{Tooling} Haskell tooling is comparatively lacking next to more mainstream general purpose programming languages (such as Kotlin) in that the communities developing its tooling platform are smaller.
+
+\subsubsection{Groovy}
+
+Groovy~\cite{groovyLangIndex} is a general purpose language with plenty of features specifically designed for DSLs.
+One of the most used examples of such DSLs is the Gradle Build Language~\cite{gradleDSL} which specifies configuration for the Gradle build tool.
+This sets the build tool apart from similar tools, like Maven and Makefiles, which do not use DSLs.
+An example of a script for such a DSL is given in~\autoref{fig:gradleGroovyDSL}.
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.8\textwidth}
+        \begin{minted}[
+            autogobble,
+            frame=lines,
+            framesep=2mm]{groovy}
+            plugins {
+                id 'groovy'
+                id 'application'
+            }
+
+            repositories {
+                mavenCentral()
+            }
+
+            dependencies {
+                implementation 'org.codehaus.groovy:groovy-all:3.0.9'
+                implementation 'com.google.guava:guava:30.1.1-jre'
+
+                testImplementation 'junit:junit:4.13.2'
+            }
+
+            application {
+                mainClass = 'demo.App'
+            }
+
+            tasks.named('test') {
+                useJUnitPlatform()
+            }
+        \end{minted}
+    \end{minipage}
+    \caption[Gradle Groovy Build script]
+    {A Gradle Groovy build script, from~\cite{gradleDSL}}
+    \label{fig:gradleGroovyDSL}
+\end{figure}
+
+Unlike to the other candidates in this section, Groovy allows for dynamic typing.
+This means that the language offers more runtime flexibility when designing a DSL, as new variables and classes can be created as the script is interpreted.
+
+\paragraph{Tooling} Groovy has feature-rich tooling that allows parsing standalone scripts with a DSL context, but its external tooling (like intelligent editors) is limited due to the nature of its runtime dynamic typing.
+In the example of~\autoref{fig:gradleGroovyDSL}, an editor would not be able to suggest autocompletion for \texttt{`useJUnitPlatform()'} inside the configuration of the \texttt{test} task.
+
+\subsubsection{Kotlin}
+
+Kotlin~\cite{kotlinLang} is another general-purpose language.
+The language supports infix functions and operator overloading.
+An example DSL that uses Kotlin as the host language is given in~\autoref{fig:kotlinHtmlDsl}.
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.9\textwidth}
+        \begin{minted}[
+        autogobble,
+            frame=lines,
+            framesep=2mm]{kotlin}
+            val args: List<String>
+
+            html {
+                head {
+                    title {+"XML encoding with Kotlin"}
+                }
+                body {
+                    h1 {+"XML encoding with Kotlin"}
+                    p  {+"this format can be used as an alternative markup to XML"}
+
+                    // an element with attributes and text content
+                    a(href = "https://kotlinlang.org") {+"Kotlin"}
+
+                    // content generated by
+                    p {
+                        for (arg in args)
+                            +arg
+                    }
+                }
+            }
+        \end{minted}
+    \end{minipage}
+    \caption{Kotlin DSL for building HTML, from~\cite{kotlinTypeSafeHTL}}
+    \label{fig:kotlinHtmlDsl}
+\end{figure}
+
+\paragraph{Tooling} While the language is not as flexible as Haskell or Groovy, it is supported by well-maintained and feature-rich external tooling (in terms of the \textit{IntelliJ IDEA} editor) and has stand-alone scripting support~\cite{kotlinScriptKeep}.
+
+% TODO add link on why we used this
+Additionally, the editor IntelliJ IDEA supports live evaluation of Koltin inside text boxes, allowing to provide hints at the same time it compiles a specific snippet of code~\cite{intelliJRepo}.
+
+
+% TODO section on the main differences between machine-readable representations of contracts?

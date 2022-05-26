@@ -18,7 +18,9 @@
 \usepackage[T1]{fontenc}
 \usepackage[nodayofweek]{datetime}
 \usepackage{mathpazo}
-%\usepackage{minted}
+%\usepackage{fontspec}
+%\setmonofont{Consolas}
+
 %\usepackage{pgfgantt}
 \usepackage[backend=bibtex,style=vancouver,natbib=true]{biblatex} % Use the bibtex backend with the authoryear citation style (which resembles APA)
 
@@ -30,6 +32,7 @@
 \usepackage{amsthm}
 \usepackage{listings}
 \usepackage{textcomp}
+\usepackage{color}
 \usetikzlibrary{arrows,positioning}
 \tikzset{
 %Define standard arrow tip
@@ -68,12 +71,13 @@
 \newcommand{\monthdate}[2]{ \daymonth\formatdate{#1}{#2}{2022}}
 %
 %\newcommand{\thickerhline}{
-%    \setlength{\arrayrulewidth}{.15em}
+%    \setlength{\arrayrulewidth}{.11.6.105em}
 %    \hline
 %    \setlength{\arrayrulewidth}{.05em}
 %}
 
-\thesistitle{Exploring Trustless Licensing} % print with \ttitle
+%\thesistitle{Exploring Trustless Licensing} % print with \ttitle
+\thesistitle {Confis, a Framework for Authoring and Querying Machine-Readable Legal Agreements}
 \supervisor{Prof. William J. \textsc{Knottenbelt}} % print with \supname
 \marker{Dr. Paul A. \textsc{Bilokon}}
 \degree{MEng Computing} % print with \degreename
@@ -94,6 +98,7 @@
 }
 
 \begin{document}
+    \usemintedstyle{tango}
 
     \frontmatter
     \pagestyle{plain}
@@ -171,6 +176,7 @@
 
     \include{chapters/introduction}
     \include{chapters/background}
+    \include{chapters/goals}
     \include{chapters/lang}
     \include{chapters/queries}
     \include{chapters/ethical}

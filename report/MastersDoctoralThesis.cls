@@ -189,7 +189,7 @@
 \RequirePackage{babel} % Required for automatically changing names of document elements to languages besides english
 
 \RequirePackage{scrbase} % Required for handling language-dependent names of sections/document elements
-
+\RequirePackage{minted}
 \RequirePackage{scrhack} % Loads fixes for various packages
 
 \RequirePackage{setspace} % Required for changing line spacing
@@ -250,6 +250,7 @@
 \usepackage{xcolor} % Required for specifying custom colours
 
 \colorlet{mdtRed}{red!50!black}
+\colorlet{mdtBlue}{blue!50!black}
 
 %----------------------------------------------------------------------------------------
 %	MARGINS
@@ -411,8 +412,8 @@ KOMA-script documentation for details.}]{fancyhdr}
 %	ACKNOWLEDGEMENTS PAGE DESIGN
 %----------------------------------------------------------------------------------------
 
-\usepackage{xcolor}
 \colorlet{mdtRed}{red!50!black}
+\colorlet{mdtBlue}{blue!50!black}
 \newcommand{\acknowledgementname}{Acknowledgements}
 \providecaptionname{american,australian,british,canadian,english,newzealand,UKenglish,USenglish} {\acknowledgementname}{Acknowledgements} % Acknowledgement text for English countries
 \providecaptionname{german,ngerman,austrian,naustrian}{\acknowledgementname}{Danksagung} % Acknowledgement text for Germanic countries
@@ -526,8 +527,8 @@ KOMA-script documentation for details.}]{fancyhdr}
         bookmarksopenlevel=0,
         hypertexnames=false,
         colorlinks=true,% Set to false to disable coloring links
-        citecolor=magenta,% The color of citations
-        linkcolor=red,% The color of references to document elements (sections, figures, etc)
+        citecolor=blue,% The color of citations
+        linkcolor=mdtRed,% The color of references to document elements (sections, figures, etc)
         urlcolor=mdtRed,% The color of hyperlinks (URLs)
         pdfstartview={FitV},
         unicode,
