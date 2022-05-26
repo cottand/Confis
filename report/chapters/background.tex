@@ -698,7 +698,9 @@ This solution provides the most flexibility in what the language can express but
 \paragraph{Graphical DSLs}
 
 While Textual DSLs require writing and parsing text, graphical DSLs can be achieved with a tool providing a graphical user interface that then builds some internal representation that can be processed.
-This solution is the most accessible for users of the DSL with non-technical backgrounds but is also expensive in terms of development cost, as both an internal representation and a GUI builder must be developed.\\
+This solution is the most accessible for users of the DSL with non-technical backgrounds but is also expensive in terms of development cost, as both an internal representation and a GUI builder must be developed.
+
+% TODO revisit figure placement in this section :c
 
 \subsection{Candidates for Internal DSL Host Languages}\label{subsec:dsl-host-candidates}
 
@@ -712,7 +714,7 @@ This project is concerned with making a DSL with low development costs, and as s
         \item \textbf{Scripting facilities} that allow compiling a small text snipped without having to define a full program that includes an entrypoint.
         \item \textbf{A Tooling Platform} which allows developing tools which enahnce the wiritng experience.
         Examples of this include GUI builders and IDE features (like syntax highlighting and inline compiler warnings).
-        \item \textbf{Scripting} which allows parsing stand-alone text files in the host language that are interpreted by a DSL-aware host.
+        \item \textbf{Scripting}~(see~\autoref{subsec:scripting-support}) which allows parsing stand-alone text files in the host language that are interpreted by a DSL-aware host.
     \end{itemize}
 
 \end{definition}
@@ -837,15 +839,14 @@ An example DSL that uses Kotlin as the host language is given in~\autoref{fig:ko
             autogobble,
             frame=lines,
             framesep=2mm]{kotlin}
-            val args: List<String>
-
-            html {
+        fun main(args: Array<String>) {
+            val generated = html {
                 head {
                     title {+"XML encoding with Kotlin"}
                 }
                 body {
                     h1 {+"XML encoding with Kotlin"}
-                    p  {+"this format can be used as an alternative markup to XML"}
+                    p  {+"this can be used as an alternative to XML"}
 
                     // an element with attributes and text content
                     a(href = "https://kotlinlang.org") {+"Kotlin"}
@@ -857,16 +858,35 @@ An example DSL that uses Kotlin as the host language is given in~\autoref{fig:ko
                     }
                 }
             }
+            println(generated.toString())
+        }
         \end{minted}
     \end{minipage}
     \caption{Kotlin DSL for building HTML, from~\cite{kotlinTypeSafeHTL}}
     \label{fig:kotlinHtmlDsl}
 \end{figure}
 
-\paragraph{Tooling} While the language is not as flexible as Haskell or Groovy, it is supported by well-maintained and feature-rich external tooling (in terms of the \textit{IntelliJ IDEA} editor) and has stand-alone scripting support~\cite{kotlinScriptKeep}.
+\paragraph{Tooling} While the language is not as flexible as Haskell or Groovy, it is supported by well-maintained and feature-rich external tooling (in terms of the \textit{IntelliJ IDEA} editor) and has stand-alone scripting support~\autoref{subsec:scripting-support}.
 
 % TODO add link on why we used this
 Additionally, the editor IntelliJ IDEA supports live evaluation of Kotlin inside text boxes, allowing to provide hints at the same time it compiles a specific snippet of code~\cite{intelliJRepo}.
 
+\subsection{Scripting Support}\label{subsec:scripting-support}
 
+Depending on the DSL being developed, it may be necessary for the host language to provide scripting support.
+By \emph{scripting support}, we mean allowing a program to evaluate a file or a string of text, at runtime, and share properties with the file.
+We will call this file a \emph{script}.
+
+In general, interpreted languages offer this functionality through \texttt{`eval(...)'} methods or similar.
+They may not be necessarily well-suited for a DSL as they also tend to have weak or dynamic typing (this is the case of Python, for example).
+Other compiled languages may offer this functionality:
+\begin{itemize}
+    \item Java offers it through JSR 223~\cite{javaScripting} and allows languages other than Java in the scripts.
+    \item Kotlin~\cite{kotlinScriptKeep}.
+    \item Groovy~\cite{groovyScripting}, which is widely used inside the Gradle build system (see~\autoref{fig:gradleGroovyDSL} for an example) where Gradle DSL scripts make up the configuration build files (in a way comparable to Makefiles).
+\end{itemize}
+
+For DSLs in particular, there is the requirement that the scripting host is aware of the DSL when evaluating the script~\cite{kotlinScriptKeep}.
+This is what allows using a library-defined function in a stand-alone file without compiling errors.
+Notice how this is not the case of the Haskell and Kotlin DSL examples in~\autoref{fig:haskellBasicDsl} and~\autoref{fig:kotlinHtmlDsl} (where imports and program entry-points are necessary).
 % TODO section on the main differences between machine-readable representations of contracts?

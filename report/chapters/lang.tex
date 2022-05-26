@@ -91,6 +91,7 @@ This should allow developing a stand-alone language as an external DSL (or alter
 A few options are discussed in~\autoref{subsec:dsl-host-candidates}, like Groovy and Haskell.
 The choice to use Kotlin stems from how feature-rich the surrounding tooling is -- such as its stand-alone custom scripting~\cite{kotlinScriptKeep} and IDE support~\cite{intelliJRepo}.\\
 
+
 \section{Language Semantics and Design}\label{sec:language-semantics}
 
 This section is concerned with the structure, semantics, and design decisions regarding the Confis DSL.
@@ -146,4 +147,18 @@ The Confis Editor should display a document in legal prose, made up from text ge
 This preview should resemble a traditional legal document, and appear side-to-side the code the agreement drafter is writing in order to provide a useful live preview of the contract being authored.
 
 
+The idea of rendering a more traditional human-readable version of the contract generated from the Confis code has two main advantages: the generated text can be used in place of a traditional contract (so a recipient or reviewer of the document does not need to use Confis);
+and the drafter will have a better idea of what they are writing (much like it is handy to have a PDF preview when drafting TeX documents).
 
+\subsection{Implementation}\label{subsec:editor-implementation}
+
+Two things are required in order to be able to draft single Confis code files inside an IDE:
+\begin{enumerate}
+    \item It must be possible to write a self-contained, boilerplate-free contract in a single file.
+    \item The IDE must perform reporting specific to the Confis DSL when editing this file (as opposed to reporting on the host language, Kotlin).
+\end{enumerate}
+
+(1) is where Kotlin's custom scripting support~\cite{kotlinScriptKeep} is crucial.
+Take the example of~\autoref{fig:haskellBasicDsl} or~\autoref{fig:kotlinHtmlDsl}.
+These files are not limited to their DSLs -- they also contain the entrypoints of their programs in their host languages (\texttt{`main ='} in Haskell and \texttt{`fun main()'} in Kotlin).
+On the other hand~\autoref{fig:gradleGroovyDSL} has no traces of the Groovy language: we only see the Gradle DSL.
