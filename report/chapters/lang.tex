@@ -10,7 +10,7 @@ The core of this tooling is the Confis language~(\autoref{sec:developing-a-dsl})
 
 \section{Developing the Confis Language}\label{sec:developing-a-dsl}
 
-\subsection{Requirements and Design Decisions}\label{subsec:dsl:requirements}
+\subsection{Implementation Requirements}\label{subsec:dsl:requirements}
 
 The language should fulfil the core requirements set out in~\autoref{ch:evaluation}.
 This involves prioritising~\nameref{def:accessibility} while making sure~\nameref{def:completeness} and~\nameref{def:soundness} are possible.
@@ -40,13 +40,19 @@ Python or AppleScript~\cite{Sanderson2010appleScript}~(see~\autoref{fig:appleScr
 
 \begin{figure}[h]
     \centering
-    \begin{verbatim}
+    \begin{minipage}{0.8\textwidth}
+        \begin{minted}[
+            autogobble,
+            frame=lines,
+            framesep=2mm
+        ]{applescript}
                 set the firstnumber to 1
                 set the secondnumber to 2
                 if the firstnumber is equal to the secondnumber then
                     set the sum to 5
                 end if
-    \end{verbatim}
+        \end{minted}
+    \end{minipage}
     \caption{Sample code snippet of the AppleScript Language~\cite{Sanderson2010appleScript}}
     \label{fig:appleScript}
 \end{figure}
@@ -63,7 +69,7 @@ A great aid to developing this understanding are visual cues in editors in intel
 For the Confis DSL to be successful, it must be easy for the drafter of legal agreements to reason about the correctness of the document within the formalisms set out by this project.
 Good tooling is therefore a key requirement in order to achieve~\nameref{def:accessibility}.
 
-\subsection{Design Decisions Conclusion}\label{subsec:dsl-design-conclusion}
+\subsection{Implementation Requirements Conclusion}\label{subsec:dsl-design-conclusion}
 
 The requirements of~\autoref{subsec:dsl:requirements} lead to the following design choices:
 
@@ -83,13 +89,22 @@ This should allow developing a stand-alone language as an external DSL (or alter
 
 \paragraph{Kotlin as a host language} Several host languages can serve to build a DSL.
 A few options are discussed in~\autoref{subsec:dsl-host-candidates}, like Groovy and Haskell.
-The choice to use Kotlin stems from how feature-rich the surrounding tooling is -- such as its stand-alone custom scripting~\cite{kotlinScriptKeep}.\\
+The choice to use Kotlin stems from how feature-rich the surrounding tooling is -- such as its stand-alone custom scripting~\cite{kotlinScriptKeep} and IDE support~\cite{intelliJRepo}.\\
+
+\subsection{DSL Implementation}\label{subsec:dsl-implementation}
+
+This subsection is concerned with the implementation details of the Confis DSL.
+For design decisions regarding the language (like what is a Sentence or the difference between a Requirement and a Capability) please see~\nameref{sec:language-semantics}.
 
 
 \section{Additional Editing Tooling}\label{sec:additional-dsl-tooling}
 
 
-\section{Language Semantics}\label{sec:language-semantics}
+\section{Language Semantics and Design}\label{sec:language-semantics}
+
+This section is concerned with the structure, semantics, and design decisions regarding the Confis DSL.
+For the implementations details of the DSL, see~\nameref{subsec:dsl-implementation}.
+For motivations and priorities of the project, see~\nameref{sec:eval:goals}.
 
 % TODO come back after doing reasoning background
 Confis introduces the following formalisms with the intention of restricting
