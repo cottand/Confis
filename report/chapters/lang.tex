@@ -115,9 +115,30 @@ Confis introduces the following formalisms with the intention of restricting
     \label{def:capability}
 \end{definition}
 
+\begin{definition}[Sentence]
+    \label{def:sentence}
+\end{definition}
 
 \begin{definition}[Requirement]
-    \label{def:requirement}
+    \label{def:requirement} A \emph{Requirement}
+\end{definition}
+
+\begin{definition}[Allowance]
+    \label{def:allowance}
+\end{definition}
+
+\begin{definition}[Circumstance Set]
+    \label{def:circumstanceSet}
+\end{definition}
+
+\begin{definition}[Permission]
+    \label{def:permission} A \emph{Permission} represents a~\nameref{def:capability} (or lack thereof) in the language.
+    It is a tuple of a~\nameref{def:sentence}, an~\nameref{def:allowance}, and a~\nameref{def:circumstanceSet} (which may be empty).
+    \begin{verbatim}
+        Permission = <Sentence, Allowance, CircumstanceSet>
+    \end{verbatim}
+
+
 \end{definition}
 
 \subsection{Language Implementation}\label{subsec:dsl-implementation}
@@ -128,7 +149,127 @@ For design decisions regarding the language (like what is a Sentence or the diff
 Because of the nature of internal DSLs~(see~\autoref{sec:dsls}), the syntax of the Confis DSL must be a subset of the Kotlin language's.
 % TODO add future work link for own lang
 Given the Confis DSL and the Confis IR are decoupled this section will not go into too much detail on how the DSL is implemented as most of that is specific to the Kotlin language, and the DSL could have been implemented as an internal DSL with a different host language anyway (like Haskell or Groovy).
-For more information on how DSLs can be built in Kotlin in general, see~\autoref{subsubsec:kotlinLang}, and in particular refer to~\cite{kotlinTypeSafeHTL}.
+Instead, it will show a couple examples of how language constructs are implemented (like a Permission) which will be useful to understand~\autoref{subsec:editor-implementation}.
+
+For more information on how DSLs can be built in Kotlin in general, see~\autoref{subsubsec:kotlinLang}, and in particular refer to~\cite{kotlinTypeSafeBuilders}.
+
+\subsubsection{Permission Builder Implementation}
+
+A~\nameref{def:permission} requires at the very least a Sentence and an Allowance.
+% TODO CircumstanceMap
+We will leave the construction of a Circumstance Set for later.
+First, we define the tuple for~\nameref{def:sentence} in Kotlin as in~\autoref{fig:kotlinSentence}.
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.4\textwidth}
+        \begin{minted}[
+            autogobble,
+            frame=lines,
+            framesep=2mm]{kotlin}
+        data class Sentence(
+            val subject: Subject,
+            val action: Action,
+            val obj: Object,
+        )
+        \end{minted}
+    \end{minipage}
+    \caption{\texttt{Sentence} tuple declaration}\label{fig:kotlinSentence}
+\end{figure}
+
+We now need a DSL to construct this \texttt{Sentence}.
+We use an infix extension function in order to add the \texttt{`may'} adverb between the subject and the action of the sentence (\autoref{fig:permissionKotlin}).
+
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{\textwidth}
+        \begin{minted}[
+            autogobble,
+            frame=lines,
+            framesep=2mm]{kotlin}
+        // <Action, Object> tuple declaration
+        data class ActionObject(val action: Action, val obj: Object)
+
+        infix fun Subject.may(s: ActionObject) {
+            val permission = Permission(Allow, Sentence(this, s.action, s.obj))
+            clauses += permission
+        }
+        \end{minted}
+    \end{minipage}
+    \caption{Extension function to build a Permission}\label{fig:permissionKotlin}
+\end{figure}
+
+
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.5\textwidth}
+        \begin{minted}[
+            autogobble,
+            frame=lines,
+            framesep=2mm]{kotlin}
+
+            val alice: Subject
+            val eat: Action
+            val cake: Object
+
+            alice may ActionObj(eat, cake)
+        \end{minted}
+    \end{minipage}
+    \caption{Invocation of Permission builder from~\autoref{fig:permissionKotlin}}
+    \label{fig:permissionUse}
+\end{figure}
+
+Now~\autoref{fig:permissionUse} almost reads like English, except the constructor of the tuple class \texttt{ActionObj}.
+We can use a Kotlin operator function in order to overload the \texttt{Action}, so the user is able to write \texttt{action(object)} as opposed to \texttt{ActionObj(action, obj)}.
+The full example is demonstrated in~\autoref{fig:permissionKotlinFull}, and a usage example is given in~\autoref{fig:finalPermissionInvocationDSL} -- which now reads much more like an English sentence!
+
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{\textwidth}
+        \begin{minted}[
+            autogobble,
+            frame=lines,
+            framesep=2mm]{kotlin}
+            // <Action, Object> tuple declaration
+            data class ActionObject(val action: Action, val obj: Object)
+
+            // this easily builds an ActionObject
+            // action.invoke(obj) == action(obj)
+            operator fun Action.invoke(obj: Object) = ActionObj(this, obj)
+
+            infix fun Subject.may(s: ActionObject) {
+                val permission = Permission(Allow, Sentence(this, s.action, s.obj))
+                clauses += permission
+            }
+        \end{minted}
+    \end{minipage}
+    \caption{Finished Permission builder}
+    \label{fig:permissionKotlinFull}
+\end{figure}
+
+
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.5\textwidth}
+        \begin{minted}[
+            autogobble,
+            frame=lines,
+            framesep=2mm]{kotlin}
+            val alice: Subject
+            val eat: Action
+            val cake: Object
+
+            alice may eat(cake)
+        \end{minted}
+    \end{minipage}
+    \caption{Example of the DSL invocation of the final Permission builder of~\autoref{fig:permissionKotlinFull}}
+    \label{fig:finalPermissionInvocationDSL}
+\end{figure}
+
 
 % TODO is this worth writing about at all
 
@@ -150,7 +291,7 @@ This preview should resemble a traditional legal document, and appear side-to-si
 The idea of rendering a more traditional human-readable version of the contract generated from the Confis code has two main advantages: the generated text can be used in place of a traditional contract (so a recipient or reviewer of the document does not need to use Confis);
 and the drafter will have a better idea of what they are writing (much like it is handy to have a PDF preview when drafting TeX documents).
 
-\subsection{Implementation}\label{subsec:editor-implementation}
+\subsection{Editor Implementation}\label{subsec:editor-implementation}
 
 Two things are required in order to be able to draft single Confis code files inside an IDE:
 \begin{enumerate}
@@ -158,7 +299,7 @@ Two things are required in order to be able to draft single Confis code files in
     \item The IDE must perform reporting specific to the Confis DSL when editing this file (as opposed to reporting on the host language, Kotlin).
 \end{enumerate}
 
-(1) is where Kotlin's custom scripting support~\cite{kotlinScriptKeep} is crucial.
-Take the example of~\autoref{fig:haskellBasicDsl} or~\autoref{fig:kotlinHtmlDsl}.
-These files are not limited to their DSLs -- they also contain the entrypoints of their programs in their host languages (\texttt{`main ='} in Haskell and \texttt{`fun main()'} in Kotlin).
-On the other hand~\autoref{fig:gradleGroovyDSL} has no traces of the Groovy language: we only see the Gradle DSL.
+% PICKUP!!!
+(1.) is where Kotlin's custom scripting support~\cite{kotlinScriptKeep} is crucial.
+See~\nameref{subsec:scripting-support} for a discussion on what is meant by scripting and how it is required for making a stand-alone DSL
+
