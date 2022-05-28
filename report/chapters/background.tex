@@ -890,3 +890,16 @@ For DSLs in particular, there is the requirement that the scripting host is awar
 This is what allows using a library-defined function in a stand-alone file without compiling errors.
 Notice how this is not the case of the Haskell and Kotlin DSL examples in~\autoref{fig:haskellBasicDsl} and~\autoref{fig:kotlinHtmlDsl} (where imports and program entry-points are necessary).
 % TODO section on the main differences between machine-readable representations of contracts?
+
+
+\section{Language Tooling}\label{sec:language-tooling}
+
+Most Integrated Development Environments (or IDEs) have support for \emph{extensions} or \emph{plugins} that allow extending their functionality~\cite{ideaExtensionPoints, vscodeExtensions}.
+A common use-case for this is enhancing developer productivity by providing visual cues and aids to textual development by, for example, reporting compilation errors and warnings inside an editor.
+
+Extensions also typically allow arbitrary graphical user interfaces inside the program window, with access to the contents of the files opened.
+
+\subsection{Custom Scripting Support in IntelliJ IDEA}\label{subsec:scripting-in-intellij}
+
+The IntelliJ IDEA editor~\cite{intelliJRepo} allows a specific extension point for providing script definitions~\cite{kotlinScriptKeep, ideaExtensionPoints} and enabling development features such as syntax highlighting, error reporting, and autocompletion inside custom-defined scripts.
+

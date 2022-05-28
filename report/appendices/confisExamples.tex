@@ -1,6 +1,75 @@
-\chapter{Confis Agreements Samples}\label{ch:confis-examples}
+\chapter{Confis Code Samples}\label{ch:confis-examples}
 
 \newenvironment{code}{\captionsetup{type=figure}}{}
+
+\section{Confis Software Archive Code Extracts}\label{sec:confis-software-code-extracts}
+
+The following is a stripped-down version of the \texttt{AgreementBuilder} class (the full version can be found in the software archive).
+It is meant ot demonstrate how normal Kotlin functions can come together inside a single class that can be bound to a script in order to write agreements like that of~\autoref{fig:confis:minimal}.
+\begin{code}
+    \begin{minted}[
+    autogobble,
+    frame=lines,
+    framesep=2mm,
+    fontsize=\small
+    ]{kotlin}
+
+open class AgreementBuilder {
+
+    // metadata
+    var title: String? = null
+    var introduction: String? = null
+
+    private val clauses = mutableListOf<Clause>()
+
+    operator fun Action.invoke(obj: Obj): ActionObject = ActionObject(this, obj)
+
+    /**
+     * Specifies that [Subject] may perform [sentence]
+     */
+    infix fun Subject.may(s: ActionObject): Permission {
+        val permission = Permission(Allow, Sentence(this, s.action, s.object)
+        clauses += permission
+        return permission
+    }
+
+    /**
+     * Specifies that [Subject] may NOT perform [sentence]
+     */
+    infix fun Subject.may(s: ActionObject): Permission {
+        val permission = Permission(Forbid, Sentence(this, s.action, s.object)
+        clauses += permission
+        return permission
+    }
+    // allows declaring parties, actions, and things to use in Sentences
+    val party = oneTimeProperty<Any?, Subject> { prop -> Party(prop.name) }
+    val action = oneTimeProperty<Any?, Action> { prop -> Action(prop.name) }
+    val thing = oneTimeProperty<Any?, Obj> { prop -> Obj.Named(prop.name) }
+
+}
+    \end{minted}
+    \caption{A minimal example of the \texttt{AgreementBuilder} DSL}
+    \label{fig:agreementBuilderSmall}
+\end{code}
+
+
+
+\section{Confis Agreements Samples}\label{sec:confis-agreements-samples}
+
+
+\begin{code}
+    \inputminted[
+        autogobble,
+        frame=lines,
+        framesep=2mm,
+        fontsize=\small
+    ]
+    {kotlin}{../script/src/test/resources/scripts/minimal.confis.kts}
+    \caption[A minimal example of a contract]{A minimal example of a contract, writable with the \texttt{AgreementBuilder} from~\autoref{fig:agreementBuilderSmall}}
+    \label{fig:confis:minimal}
+\end{code}
+
+
 
 \begin{code}
     \inputminted[
@@ -11,6 +80,6 @@
     ]
         {kotlin}{../script/src/test/resources/scripts/geophys.confis.kts}
     \caption{A prototype Confis representation of a seismic data license (given in~\cite{seismicDataLicence})}
-    \label{fig:geophysConfisAgreement}
+    \label{fig:confis:geophys}
 \end{code}
 

@@ -64,7 +64,7 @@ With pragmatic implementation efforts in mind, this project should not aim to de
 \subsubsection{Additional tooling for ease of use and correctness}
 
 A key aspect of development for a new user of a language is to understand the concepts of syntax, compile errors, and invalid programs.
-A great aid to developing this understanding are visual cues in editors in intelligent development environments (or IDEs).
+A great aid to developing this understanding are visual cues in editors in integrated development environments (or IDEs).
 
 For the Confis DSL to be successful, it must be easy for the drafter of legal agreements to reason about the correctness of the document within the formalisms set out by this project.
 Good tooling is therefore a key requirement in order to achieve~\nameref{def:accessibility}.
@@ -135,13 +135,13 @@ Confis introduces the following formalisms with the intention of restricting
     \label{def:permission} A \emph{Permission} represents a~\nameref{def:capability} (or lack thereof) in the language.
     It is a tuple of a~\nameref{def:sentence}, an~\nameref{def:allowance}, and a~\nameref{def:circumstanceSet} (which may be empty).
     \begin{verbatim}
-        Permission = <Sentence, Allowance, CircumstanceSet>
+        Permission = (Sentence, Allowance, CircumstanceSet)
     \end{verbatim}
 
 
 \end{definition}
 
-\subsection{Language Implementation}\label{subsec:dsl-implementation}
+\subsection{Internal DSL Implementation}\label{subsec:dsl-implementation}
 
 This subsection is concerned with the implementation details of the Confis DSL.
 For design decisions regarding the language (like what is a Sentence or the difference between a Requirement and a Capability) please see~\nameref{sec:language-semantics}.\\
@@ -155,10 +155,11 @@ For more information on how DSLs can be built in Kotlin in general, see~\autoref
 
 \subsubsection{Permission Builder Implementation}
 
-A~\nameref{def:permission} requires at the very least a Sentence and an Allowance.
+Recall a~\nameref{def:permission} is a tuple of~\texttt{(Allowance, Sentence, CircumstanceSet)}, where the \texttt{CircumstanceSet} may be empty.
+For the sake of brevity, we will leave the construction of the Circumstance Set for later and discuss how we can construct a tuple of \texttt{(Allowance, Sentence)} in the DSL.
 % TODO CircumstanceMap
-We will leave the construction of a Circumstance Set for later.
-First, we define the tuple for~\nameref{def:sentence} in Kotlin as in~\autoref{fig:kotlinSentence}.
+First, we must define the tuple for~\nameref{def:sentence} in Kotlin as in~\autoref{fig:kotlinSentence}.
+Recall a \texttt{Sentence} is simply a tuple of \texttt{(Subject, Action, Object)}.
 
 \begin{figure}[h]
     \centering
@@ -178,7 +179,9 @@ First, we define the tuple for~\nameref{def:sentence} in Kotlin as in~\autoref{f
 \end{figure}
 
 We now need a DSL to construct this \texttt{Sentence}.
-We use an infix extension function in order to add the \texttt{`may'} adverb between the subject and the action of the sentence (\autoref{fig:permissionKotlin}).
+We use an infix extension function in order to add the \texttt{`may'} adverb (which corresponds to \texttt{Allowance = Allow}) between the subject and the action of the sentence (\autoref{fig:permissionKotlin}).
+
+% PICKUP add operator overloading reference in code comment
 
 
 \begin{figure}[h]
@@ -232,6 +235,7 @@ The full example is demonstrated in~\autoref{fig:permissionKotlinFull}, and a us
         \begin{minted}[
             autogobble,
             frame=lines,
+            mathescape,
             framesep=2mm]{kotlin}
             // <Action, Object> tuple declaration
             data class ActionObject(val action: Action, val obj: Object)
@@ -246,7 +250,7 @@ The full example is demonstrated in~\autoref{fig:permissionKotlinFull}, and a us
             }
         \end{minted}
     \end{minipage}
-    \caption{Finished Permission builder}
+    \caption[Finished Permission builder]{Finished Permission builder with operator overloading (see~\cite{kotlinInvokeOperator})}
     \label{fig:permissionKotlinFull}
 \end{figure}
 
@@ -269,6 +273,11 @@ The full example is demonstrated in~\autoref{fig:permissionKotlinFull}, and a us
     \caption{Example of the DSL invocation of the final Permission builder of~\autoref{fig:permissionKotlinFull}}
     \label{fig:finalPermissionInvocationDSL}
 \end{figure}
+
+We now can call the function \texttt{may()} in order to create a \texttt{Permission} and add it to \texttt{clauses}.
+Most of the Confis DSL is implemented similarly.
+An advantage of using a statically typed language for a DSL with well-defined types like in the examples given above means that only semantically correct sentences can be written.
+For example, \texttt{`cake may eat(alice)'} produces a compilation error, because \texttt{`cake'} is not a \texttt{Subject}.\\
 
 
 % TODO is this worth writing about at all
@@ -299,7 +308,28 @@ Two things are required in order to be able to draft single Confis code files in
     \item The IDE must perform reporting specific to the Confis DSL when editing this file (as opposed to reporting on the host language, Kotlin).
 \end{enumerate}
 
-% PICKUP!!!
 (1.) is where Kotlin's custom scripting support~\cite{kotlinScriptKeep} is crucial.
-See~\nameref{subsec:scripting-support} for a discussion on what is meant by scripting and how it is required for making a stand-alone DSL
+See~\nameref{subsec:scripting-support} for a discussion on what is meant by scripting and how it is required for making a stand-alone DSL.
+
+In order to implement writing Confis agreements as stand-alone files, we create a \emph{Kotlin Custom Script definition}~\cite{kotlinScriptKeep}, which essentially contains information that assigns an instance of a class to a script.
+By placing DSL builder functions like those introduced in~\autoref{fig:permissionKotlinFull} inside a class (called \texttt{AgreementBuilder}, for example) and assigning an instance of this class to a script, we can let the script author (ie, the Confis agreement author) \textbf{mutate} our class when we evaluate their script.
+
+See~\autoref{fig:agreementBuilderSmall} for an example of such a class, and~\autoref{fig:confis:minimal} for an example of a single script bound to that class.\\
+
+We can then pass the script definition mentioned above to an extension point present in the IntelliJ API engineered specifically for this purpose~\cite{ideaExtensionPoints, intelliJRepo}.
+If we include some additional information (such as a file extension for Confis agreements) IntelliJ will now provide visual hints for Confis Scripts.\\
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/minimal.editor.highlighting.confis}
+    \caption{Syntax highlighting in a small Confis agreement}
+    \label{fig:intelliScriptAid}
+\end{figure}
+
+See~\autoref{fig:intelliScriptAid} for an example where the Confis editor reports a compile error (where the user attempted to form a Sentence with a Party that does not exist) as well as autocompletion for building a Permission clause.
+% TODO actually do this on the website
+A live video example can be found in the~\href{https://confis.dcotta.eu/0.1.1/IDE%20Support/IDEAPlugin/}{Confis Documentation Page}.
+
+
+
 
