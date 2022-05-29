@@ -282,6 +282,17 @@ For example, \texttt{`cake may eat(alice)'} produces a compilation error, becaus
 
 % TODO is this worth writing about at all
 
+\section{Additional Tooling: Legal Prose Rendering}\label{sec:additional-tooling:doc-rendering}
+
+In order to comply with the~\nameref{def:accessibility} requirement, it should be possible to generate a traditional document (perhaps in plaintext or PDF format) written in legal prose.
+This generated document should then be usable in place of traditional agreement documents -- for example, a reviewer of an agreement will not need Confis software or to know about the Confis DSL in order to read a copy of the contract.
+
+We will call this feature \textbf{\emph{legal prose rendering}}.\\
+
+If NLP~(see~\autoref{sec:nlp}) aims to translate traditional human-written legal-prose into a machine-readable format, you can think of legal prose rendering as the inverse process: we go from a machine-readable representation to a more human-readable one.
+
+% TODO
+
 \section[The Confis Editor]{Additional Editing Tooling: the Confis Editor}\label{sec:additional-dsl-tooling}
 
 One of the key requirements for Confis is~\nameref{def:accessibility}.
@@ -292,13 +303,10 @@ The Confis Editor has two main goals:
 
 \paragraph{Providing context-aware aid for authoring agreements} Much like an IDE provides relevant aid to a software engineer (such as reporting compile errors before attempting to compile the program) the Confis Editor should allow an agreement drafter to write in the Confis DSL without needing to deal with command-line utilities or knowing the tooling around Kotlin language.
 
-\paragraph{Providing a human-readable preview of the Confis Agreement} While a Confis Agreement is a strict formalism written in code, it is engineered to resemble English sentences.
-The Confis Editor should display a document in legal prose, made up from text generated from the Confis agreement.
-This preview should resemble a traditional legal document, and appear side-to-side the code the agreement drafter is writing in order to provide a useful live preview of the contract being authored.
+\paragraph{Providing a human-readable preview of the Confis Agreement}
 
-
-The idea of rendering a more traditional human-readable version of the contract generated from the Confis code has two main advantages: the generated text can be used in place of a traditional contract (so a recipient or reviewer of the document does not need to use Confis);
-and the drafter will have a better idea of what they are writing (much like it is handy to have a PDF preview when drafting TeX documents).
+The Confis Editor should display a document in legal prose, made up from text generated from the Confis agreement (thanks to legal prose rendering~\ref{sec:additional-tooling:doc-rendering}).
+This preview should resemble a traditional legal document, and appear side-to-side the code the agreement drafter is writing in order to provide a useful live preview of the contract being authored (much like it is handy to have a PDF preview when drafting TeX documents).
 
 \subsection{Editor Implementation}\label{subsec:editor-implementation}
 
@@ -317,7 +325,7 @@ By placing DSL builder functions like those introduced in~\autoref{fig:permissio
 See~\autoref{fig:agreementBuilderSmall} for an example of such a class, and~\autoref{fig:confis:minimal} for an example of a single script bound to that class.\\
 
 We can then pass the script definition mentioned above to an extension point present in the IntelliJ API engineered specifically for this purpose~\cite{ideaExtensionPoints, intelliJRepo}.
-If we include some additional information (such as a file extension for Confis agreements) IntelliJ will now provide visual hints for Confis Scripts.\\
+If we include some additional information (such as a file extension for Confis agreements) IntelliJ will now provide visual hints for Confis Scripts.
 
 \begin{figure}[h]
     \centering
@@ -328,8 +336,24 @@ If we include some additional information (such as a file extension for Confis a
 
 See~\autoref{fig:intelliScriptAid} for an example where the Confis editor reports a compile error (where the user attempted to form a Sentence with a Party that does not exist) as well as autocompletion for building a Permission clause.
 % TODO actually do this on the website
-A live video example can be found in the~\href{https://confis.dcotta.eu/0.1.1/IDE%20Support/IDEAPlugin/}{Confis Documentation Page}.
+A live video example can be found in the~\href{https://confis.dcotta.eu/0.1.1/IDE%20Support/IDEAPlugin/}{Confis Documentation Page}.\\
+
+In order to achieve (2.), we can implement a new editor in IntelliJ based on its existing markdown editor~\cite{ideaMarkdownPreview} which achieves a very similar purpose: providing a live preview of machine-readable code.
+
+The live preview is implemented as a preview of an in-memory Markdown document which is in turn generated upon code changes in the editor:
+\begin{equation*}
+    \text{Confis Code}\; \to\; \text{Confis IR}\; \to\; \text{Markdown document}\; \to \text{HTML page}\ \to\; \text{Live preview}
+\end{equation*}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/confis.minimal}
+    \caption{Screenshot of the Confis Editor, including the legal prose preview}
+    \label{fig:confis.minimnal.editor}
+\end{figure}
 
 
 
+
+For the sake of brevity, this report will omit the implementation details of the live preview -- but a starting point can be found in the software archive under the \texttt{ConfisEditor} class.
 

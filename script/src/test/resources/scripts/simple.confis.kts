@@ -1,9 +1,15 @@
+
+
+title = "Simple Contract Example"
 val alice by party(
         named = "Alice",
         description = "Alice Liddell of Imperial College"
 )
 
-val bob by party("Bob", description = "Bob the Builder")
+val bob by party(
+    named = "Bob",
+    description = "Bob from Sheffield"
+)
 
 val pay by action
 
