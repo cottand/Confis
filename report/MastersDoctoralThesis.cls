@@ -251,6 +251,8 @@
 
 \colorlet{mdtRed}{red!50!black}
 \colorlet{mdtBlue}{blue!50!black}
+\colorlet{mdtGreen}{green!50!black}
+\colorlet{mdtPurple}{purple!50!black}
 
 %----------------------------------------------------------------------------------------
 %	MARGINS

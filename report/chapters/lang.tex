@@ -186,24 +186,30 @@ This is shown in~\autoref{fig:allowance-venn} and~\autoref{eq:allowance-cake-exa
     \vspace{0.2cm}
 
     \begin{tikzpicture}
-        \node [draw,
+        \node [
+%        draw,
         circle,
+        fill=gray,
         minimum size =5cm,
         label={135:$\text{alice eat cake}$}] (Eat) at (1.25,0){};
 
-        \node [draw,
+        \node [
+%        draw,
         circle,
+        fill=mdtGreen,
         minimum size =2.5cm,
         label={180:$\text{\small with purpose Research}$}] (A) at (0,0){};
 
-        \node [draw,
+        \node [
+%        draw,
         circle,
+        fill=mdtRed,
         minimum size =2.5cm,
         label={0:$\text{\small with purpose Commercial}$}] (B) at (2.5,0){};
 
-        \node at (0, 0) {\texttt{Allow}};
-        \node at (2.5, 0) {\texttt{Forbid}};
-        \node at (1.25, 1.5) {\texttt{Depends}};
+        \node[white] at (0, 0) {\texttt{Allow}};
+        \node[white] at (2.5, 0) {\texttt{Forbid}};
+        \node[white] at (1.25, 1.5) {\texttt{Depends}};
         \node at (5, 1.5) {\texttt{Unspecified}};
 
     \end{tikzpicture}
