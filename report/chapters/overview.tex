@@ -1,0 +1,61 @@
+\chapter{Confis Overview}\label{ch:overview}
+
+This project includes several software prototypes and a couple formalisms.
+This chapter is meant to provide a high-level overview of how these interact with each other as well as pointing out the relevant sections.
+\begin{figure}[h]
+    \usetikzlibrary{shapes.misc, arrows.meta}
+
+    \begin{tikzpicture}
+        [
+        node distance=1.5cm and 3cm,
+        >={Stealth[inset=0pt,length=7pt,angle'=30,round]},
+        ]
+        \node (user) [
+            circle,
+            text=white,
+            fill=mdtBlue,
+        ] { Contract Drafter };
+
+        \node (lang) [
+            draw,
+            text width=4cm,
+            rectangle,
+            below=of user,
+        ] {
+            \textbf{Confis Language}\\
+            \emph{Uses:} Kotlin as host language for DSL\\
+            \emph{See:}~\autoref{sec:language-semantics}
+        };
+
+        \node (editor) [
+            draw,
+            text width=4cm,
+            rectangle,
+            right=of lang,
+        ] {
+            \textbf{Confis Editor}\\
+            \emph{Uses:} IntelliJ IDEA\\
+            \emph{See:}~\autoref{sec:confis-editor}
+        };
+
+        \draw[->]
+        (user.south)
+        -- node [right, text width=4cm]{Formalises agreement\\into Confis semantics}
+        (lang);
+
+        \draw[->] (lang.east)
+        -- node [below] {Writes text}
+        (editor);
+
+
+%        \draw[->] (editor.north)
+%        -- node [out=90,right] {Visual feedback}
+%        (user.east);
+        \draw[->] (editor.north)
+        to [out=90,in=0]
+        node[yshift=0.3cm, right] { Visual feedback }
+        (user.east);
+    \end{tikzpicture}
+    \caption{Overview of the different components of Confis}
+    \label{fig:confis-overview}
+\end{figure}
