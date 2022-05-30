@@ -35,24 +35,24 @@
 \usepackage{color}
 \usepackage{markdown}
 \usetikzlibrary{arrows,positioning}
-\tikzset{
-%Define standard arrow tip
-    >=stealth',
-%Define style for boxes
-    punkt/.style={
-        rectangle,
-        rounded corners,
-        draw=black, thick,
-        text width=6.5em,
-        minimum height=2em,
-        text centered},
-% Define arrow style
-    pil/.style={
-        ->,
-        thick,
-        shorten <=2pt,
-        shorten >=2pt,}
-}
+%\tikzset{
+%%Define standard arrow tip
+%    >=stealth',
+%%Define style for boxes
+%    punkt/.style={
+%        rectangle,
+%        rounded corners,
+%        draw=black, thick,
+%        text width=6.5em,
+%        minimum height=2em,
+%        text centered},
+%% Define arrow style
+%    pil/.style={
+%        ->,
+%        thick,
+%        shorten <=2pt,
+%        shorten >=2pt,}
+%}
 \geometry{
     paper=a4paper,
     inner=2.5cm,
@@ -70,6 +70,9 @@
     \ordinal{DAY}\ of \monthname[\THEMONTH]
 }
 \newcommand{\monthdate}[2]{ \daymonth\formatdate{#1}{#2}{2022}}
+% TODO find a nice definition format
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
 %
 %\newcommand{\thickerhline}{
 %    \setlength{\arrayrulewidth}{.11.6.105em}

@@ -98,26 +98,48 @@ This section is concerned with the structure, semantics, and design decisions re
 For the implementations details of the DSL, see~\nameref{subsec:dsl-implementation}.
 For motivations and priorities of the project, see~\nameref{sec:eval:goals}.\\
 
-Given decoupling the Confis language and the Confis IR is a requirement as discussed in~\autoref{subsec:dsl:requirements}, the la
+%Given decoupling the Confis language and the Confis IR is a requirement as discussed in~\autoref{subsec:dsl:requirements}, the language
 
 % TODO come back after doing reasoning background
-Confis introduces the following formalisms with the intention of restricting
+Confis introduces the following formalisms in order to limit the complexity of the language.
 
 \begin{definition}[Party]
     \label{def:party}
+
+    A \emph{Party} to the agreement is a legal person (a real person, an institution, a company, or even a group of people).
+    Parties are unique in an agreement and are identifiable by a name (encoded as a UTF-8 string).
 \end{definition}
 
 \begin{definition}[Action]
     \label{def:action}
+    An
+\end{definition}
+
+\begin{definition}[Thing]
+    \label{def:thing}
+    A \emph{Thing} is unique in an agreement and is identifiable by a name (encoded as a UTF-8 string).
+    An Thing resembles a~\nameref{def:party} but it does not aim to represent a legal person and it cannot be a subject on a~\nameref{def:sentence}.
+\end{definition}
+
+A Sentence is the building block of a Confis agreement.
+It is combined with other elements in order to form clauses and, combined with a Circumstance Set, it forms an event that includes a context.
+
+\begin{definition}[Sentence]
+    \label{def:sentence}
+    A \emph{Sentence} is a tuple like~\texttt{Sentence = (Subject, Action, Object)}, where a \texttt{Subject} is a~\nameref{def:party} and \texttt{Object = Party | Thing}.
+\end{definition}
+
+Allowance is used to answer questions of the type \emph{`May A do X?'} -- where \emph{yes} or \emph{no} are not enough to model all the possibilities given in the legal domain.
+
+
+\begin{definition}[Allowance]
+    \emph{Allowance} is a value like \texttt{Allowance = Allow | Forbid | Unspecified | Depends}.
 \end{definition}
 
 \begin{definition}[Capability]
     \label{def:capability}
 \end{definition}
 
-\begin{definition}[Sentence]
-    \label{def:sentence}
-\end{definition}
 
 \begin{definition}[Requirement]
     \label{def:requirement} A \emph{Requirement}
@@ -130,6 +152,74 @@ Confis introduces the following formalisms with the intention of restricting
 \begin{definition}[Circumstance Set]
     \label{def:circumstanceSet}
 \end{definition}
+
+\begin{definition}[Compliance]
+    \label{def:confis-compliance}
+\end{definition}
+
+
+Users are allowed to use Allowance in order to define a~\nameref{def:permission}, but only the values \texttt{Allow} and \texttt{Forbid}.
+The other values are reserved for answering queries and while they cannot be used, responses that return \texttt{Depends} and \texttt{Unspecified} can be crafted by defining the answer space accordingly.
+This is shown in~\autoref{fig:allowance-venn} and~\autoref{eq:allowance-cake-example}, where only \texttt{may} and \texttt{mayNot} keywords are used (corresponding to \texttt{Allow} and \texttt{Forbid} respectively) but all possible values of Allowance are present in the agreement.
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.5\textwidth}
+        \begin{minted}[
+            autogobble
+%            frame=lines,
+%            framesep=2mm
+        ]{kotlin}
+            val alice by party
+            val eat by action
+            val cake by thing
+
+            alice may eat(cake) {
+                with purpose Research
+            }
+            alice mayNot eat(cake) {
+                with purpose Commercial
+            }
+        \end{minted}
+    \end{minipage}
+
+    \vspace{0.2cm}
+
+    \begin{tikzpicture}
+        \node [draw,
+        circle,
+        minimum size =5cm,
+        label={135:$\text{alice eat cake}$}] (Eat) at (1.25,0){};
+
+        \node [draw,
+        circle,
+        minimum size =2.5cm,
+        label={180:$\text{\small with purpose Research}$}] (A) at (0,0){};
+
+        \node [draw,
+        circle,
+        minimum size =2.5cm,
+        label={0:$\text{\small with purpose Commercial}$}] (B) at (2.5,0){};
+
+        \node at (0, 0) {\texttt{Allow}};
+        \node at (2.5, 0) {\texttt{Forbid}};
+        \node at (1.25, 1.5) {\texttt{Depends}};
+        \node at (5, 1.5) {\texttt{Unspecified}};
+
+    \end{tikzpicture}
+
+    \caption{Agreement and Venn Diagram of a `\texttt{alice eat cake}?' query}
+    \label{fig:allowance-venn}
+\end{figure}
+
+\begin{align}
+    \label{eq:allowance-cake-example}
+    \text{alice eat cake?} &\to \texttt{Depends}\\
+    \text{alice eat cake with purpose Research?} &\to \texttt{Allow}\\
+    \text{alice eat cake with purpose Commercial?} &\to \texttt{Forbid}\\
+    \text{alice eat cake with purpose Internal?} &\to \texttt{Unspecified}
+\end{align}
+
 
 \begin{definition}[Permission]
     \label{def:permission} A \emph{Permission} represents a~\nameref{def:capability} (or lack thereof) in the language.

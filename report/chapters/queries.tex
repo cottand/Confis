@@ -12,15 +12,32 @@ In order to be accessible, these must be intuitive and should not require deep
 \paragraph{Querying for Legal Capabilities} A common use-case is for a party to want to figure out their legal capabilities with respect to a contract, as well as the capabilities of other parties.
 Take the example of a tenancy agreement: a tenant may want to know whether they are allowed to have pets, or whether the landlord is allowed to enter their property.
 
-Therefore, a successful query system should be able to provide answers to questions such as `May $A$ do $X$?'
+Therefore, a successful query system should be able to provide answers to questions such as \textit{`May $A$ do $X$?'}
 
 A party may also have some requirements to be able to perform some action - such as performing a payment.
 Continuing the example of the tenancy agreement, a landlord may be allowed to enter the premises in case of emergency, but not otherwise.
 Thus, a more general question could be `Under what condition may $A$ do $X$?'
 
 \paragraph{Compliance verification} If figuring out a party's legal capabilities is a key part of dealing with a contract, so is figuring out their legal obligations.
-Unlike a legal capability question.
+Unlike a legal capability question, a compliance question cannot be formulated as \textit{`May $A$ do $X$?'} -- they should instead be along the lines of \textit{`What does X need to do in order to be compliant?'}.
+We should also take into account that a party may have already done something to be compliant at the time of performing the query -- therefore we need to include some `state-of-the-world' in our question.
+    Additionally, parties usually interact and actions between more than a single party may be needed to achieve compliance.
+
+Therefore, we can generalise a compliance verification question to \textit{`Given a series of past events S, what actions need to take place in order for the contract to be complied with?'}.
 
 
 \subsubsection{Confis Internal Representation}
 As~\cite{knottenbeltContractDriven} notes, there is a clear compromise to be made between how complex a contract representation is, and how simple the computations needed to process it are.
+
+Contrary to solutions discussed in~\autoref{sec:nlp} such as~\cite{sleimi2018NLP4}, Confis does not try to generalise a contract into a set of normative rules (as defined in~\autoref{eq:basic-rule}) straight away.
+Instead, it tries to preserve all the information that goes into assembling a contract into an Intermediate Representation (that we will call \textbf{\emph{Confis IR}}).
+The Confis IR is then converted into different sets of rules depending on the query being performed.
+
+Therefore, a critical part of Confis is generating rules from the IR.
+
+% TODO examples of DSL -> IR and IR -> rules
+
+
+\subsection{Tooling for Accessible Queryable Contracts}\label{subsec:tooling-for-accessible-queryable-contracts}
+
+\subsection{Confis as a Generalisation of Ricardian Contracts}\label{subsec:generalisation-of-ricardian-contracts}
