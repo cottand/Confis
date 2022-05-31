@@ -1,60 +1,130 @@
 \chapter{Confis Overview}\label{ch:overview}
 
 This project includes several software prototypes and a couple formalisms.
-This chapter is meant to provide a high-level overview of how these interact with each other as well as pointing out the relevant sections.
+This chapter is meant to provide a high-level overview of how these interact with each other as well as pointing out the relevant sections.\\
+
 \begin{figure}[h]
     \usetikzlibrary{shapes.misc, arrows.meta}
+    \colorlet{pastelBlue}{blue!40!white}
 
     \begin{tikzpicture}
         [
-        node distance=1.5cm and 3cm,
+        scale=1,
+        every node/.style={scale=0.8},
+        node distance=1.6cm and 2.2cm,
         >={Stealth[inset=0pt,length=7pt,angle'=30,round]},
         ]
         \node (user) [
-            circle,
+            rectangle,
+            rounded corners,
             text=white,
             fill=mdtBlue,
         ] { Contract Drafter };
 
-        \node (lang) [
-            draw,
-            text width=4cm,
-            rectangle,
-            below=of user,
-        ] {
-            \textbf{Confis Language}\\
-            \emph{Uses:} Kotlin as host language for DSL\\
-            \emph{See:}~\autoref{sec:language-semantics}
-        };
 
         \node (editor) [
             draw,
-            text width=4cm,
+            text width=3cm,
             rectangle,
-            right=of lang,
+            below=of user,
+            rectangle,
         ] {
             \textbf{Confis Editor}\\
-            \emph{Uses:} IntelliJ IDEA\\
-            \emph{See:}~\autoref{sec:confis-editor}
+            \emph{Uses:}\\IntelliJ IDEA\\
+            \emph{See:}\\\autoref{sec:confis-editor}
+        };
+
+        \node (lang) [
+            draw,
+            text width=4cm,
+            left=of editor,
+        ] {
+            \textbf{Confis Language}\\
+            \emph{Uses:}\\Kotlin as host language for DSL\\
+            \emph{See:}\\\autoref{sec:language-semantics}
+        };
+
+        \node (queryUi) [
+            draw,
+            text width=3cm,
+            rectangle,
+            right=of editor,
+        ] {
+            \textbf{Query GUI}\\
+            \emph{Uses:}\\IntelliJ IDEA\\
+            \emph{See:}\\\autoref{TODO}
+        };
+
+        \node (compiler) [
+            draw,
+            text width=3cm,
+            rectangle,
+            below=of editor,
+        ] {
+            \textbf{Compiler}\\
+            \emph{Uses:}\\Kotlin Compiler\\
+            \emph{See:}\\\autoref{subsec:dsl-implementation}
+        };
+
+        \node (queryEngine) [
+            draw,
+            text width=3cm,
+            rectangle,
+            right=of compiler,
+        ] {
+            \textbf{Query Engine}\\
+            \emph{Uses:}\\EasyRules\\
+            \emph{See:}\\\autoref{TODO}
         };
 
         \draw[->]
-        (user.south)
-        -- node [right, text width=4cm]{Formalises agreement\\into Confis semantics}
+        (user.west)
+        to [out=180,in=90]
+        node [yshift=0.7cm, text width=6cm]{Formalises agreement into Confis\\semantics as text}
         (lang);
 
         \draw[->] (lang.east)
-        -- node [below] {Writes text}
+        -- node [above] {Written into}
         (editor);
 
+        \draw[->] (editor.270-15)
+        -- node[left] { Compiles text }
+        (compiler.90+15);
 
-%        \draw[->] (editor.north)
-%        -- node [out=90,right] {Visual feedback}
-%        (user.east);
+        \draw[->]
+        (compiler.90-15)
+        -- node[right, text width=3cm] { Compiler feedback and IR}
+        (editor.270+15);
+
         \draw[->] (editor.north)
-        to [out=90,in=0]
-        node[yshift=0.3cm, right] { Visual feedback }
-        (user.east);
+        -- node[left] { Visual feedback }
+        (user);
+
+        \draw[->] (editor.east)
+        -- node[above, align=center] { Broadcasts\\IR }
+        (queryUi);
+
+        \draw[->] (queryUi.270-15)
+        -- node[left, text width=2cm, align=right] { IR and compiled question }
+        (queryEngine.90+15);
+
+        \draw[->]
+        (queryEngine.90-15)
+        -- node[right, text width=3cm] { Query result }
+        (queryUi.270+15);
+
+        \draw[->]
+        (queryUi.90-15)
+        to [out=90,in=10]
+        node [right, yshift=0.5cm]{Query selection}
+        (user);
+
+        \draw[->]
+        (user)
+        to [out=-10,in=90]
+        node [below, yshift=0.6cm, xshift=-0.8cm, fill=white, align=center]{Query result\\rendered as\\English text}
+        (queryUi.90+15);
+
     \end{tikzpicture}
     \caption{Overview of the different components of Confis}
     \label{fig:confis-overview}
