@@ -133,25 +133,10 @@ Allowance is used to answer questions of the type \emph{`May A do X?'} -- where 
 
 
 \begin{definition}[Allowance]
+    \label{def:allowance}
     \emph{Allowance} is a value like \texttt{Allowance = Allow | Forbid | Unspecified | Depends}.
 \end{definition}
 
-\begin{definition}[Capability]
-    \label{def:capability}
-\end{definition}
-
-
-\begin{definition}[Requirement]
-    \label{def:requirement} A \emph{Requirement}
-\end{definition}
-
-\begin{definition}[Allowance]
-    \label{def:allowance}
-\end{definition}
-
-\begin{definition}[Circumstance Set]
-    \label{def:circumstanceSet}
-\end{definition}
 
 \begin{definition}[Compliance]
     \label{def:confis-compliance}
@@ -228,14 +213,92 @@ This is shown in~\autoref{fig:allowance-venn} and~\autoref{eq:allowance-cake-exa
 
 
 \begin{definition}[Permission]
-    \label{def:permission} A \emph{Permission} represents a~\nameref{def:capability} (or lack thereof) in the language.
+    \label{def:permission} A \emph{Permission} represents a legal capability (or lack thereof) in the language.
     It is a tuple of a~\nameref{def:sentence}, an~\nameref{def:allowance}, and a~\nameref{def:circumstanceSet} (which may be empty).
     \begin{verbatim}
         Permission = (Sentence, Allowance, CircumstanceSet)
     \end{verbatim}
-
-
 \end{definition}
+
+A requirement is an important abstraction necessary in order to define~\nameref{def:confis-compliance}.
+Confis also assumes a that providing a legal obligation entails providing the legal capability to fulfill that obligation, which means that when we have a Requirement we have an \texttt{Allow} Permission too.
+
+\begin{definition}[Requirement]
+    \label{def:requirement} A \emph{Requirement} represents a legal obligation and is a tuple of a~\nameref{def:sentence} and a~\nameref{def:circumstanceSet} (which may be empty).
+    \begin{verbatim}
+        Requirement = (Sentence, CircumstanceSet)
+    \end{verbatim}
+
+    A requirement $r$ entails a permission $p$ where if $r = (s, C)$ then $p = (\texttt{Allow}, s, C)$
+\end{definition}
+
+\subsection{Circumstance and Circumstance Set}\label{subsec:circumstance}
+
+% TODO refs to rulegen section
+Circumstances are a core abstraction in Confis, both in the language and in rule generation and evaluation (hence why they deserve their own section).
+
+A Circumstance Set represents the context in which a Sentence may occur.
+In the context of a legal agreement, it would contain everything in a clause that is not the core sentence, including the parent clause, conditions, etc.
+
+A Circumstance Set is made up of Circumstances.
+
+
+\begin{definition}[Circumstance]
+    \label{def:circumstance}
+    $C$ is a \emph{Circumstance} if it is equipped with the following operations for any other circumstance $C'$:
+    \begin{align}
+        \label{def:c:generalise}
+        \texttt{generalise}&: \ c \to\ c' \to\ \texttt{Boolean}\\
+        \label{def:c:provideKey}
+        \texttt{provideKey}&: \ c \to\ k\\
+        \label{def:c:render}
+        \texttt{render}&: \ c \to\ \texttt{String}\\
+        \label{def:c:overlap}
+        \texttt{overlapsWith}&:\ c \to\ c' \to\ \texttt{Boolean}
+    \end{align}
+\end{definition}
+
+A circumstance key $k$ is simply an element with a notion of equality.
+When two circumstances $c_1$ and $c_2$ produce they same key $k$, they are said to be~\emph{of the same type}.
+\texttt{render} is a function made to satisfy the requirement of being able to convert a Confis agreement into readable English for the sake of~\nameref{def:accessibility}.\\
+
+A Circumstance Set is an indexed set of~\nameref{def:circumstance}s, unique in that only one circumstance of each type can be stored.
+For example, we can only store a single circumstance representing time and a single circumstance representing purpose, because these are implemented to produce the same key $k$ each.
+
+\begin{definition}[Circumstance Set]
+    \label{def:circumstanceSet}
+    A \emph{Circumstance Set} is a key-value mapping of Circumstance Keys to \nameref{def:circumstance} like $\texttt{CircumstanceSet} = \{ k \to \texttt{Circumstance} \}$.
+\end{definition}
+
+% TODO ref rule generation
+Defining \texttt{generalise} for circumstances will be of use when trying to define rules (see~\autoref{TODO}) because it will allow checking whether a circumstance from a clause `matches' that of a question.
+
+\begin{definition}[Circumstance Set Generalisation]
+    Fot two Circumstance Sets $C_1$ and $C_2$ we say $C_1$ \emph{generalises} $C_2$ if and only if:
+    \begin{equation}
+        \label{eq:circumstanceSet:generalisation}
+        \forall k \, \forall c_1, \, (k, c_1) \in C_1 \to
+        \exists c_2.((k, c_2) \in C_2  \land\ c_1\ \texttt{generalises}\ c_2)
+    \end{equation}
+
+    That is, if for all circumstances in $C_1$, there is a circumstance of the same type in $C_2$ and each circumstance in $C_1$ generalises the circumstance of the same type in $C_2$.
+\end{definition}
+
+\begin{definition}[Circumstance Set Overlap]
+    For any two Circumstance Sets $C_1$ and $C_2$, we say $C_1$ \emph{overlaps with} $C_1$ if and only if
+    \begin{equation}
+        \label{eq:circumstanceSet:overlap}
+        \forall k \, \forall c_1, \, (k, c_1) \in C_1 \to
+        \exists c_2.((k, c_2) \in C_2  \land\ c_1\ \texttt{overlapsWith}\ c_2)
+    \end{equation}
+    That is, if for all circumstances in $C_1$, there is a circumstance of the same type in $C_2$ and each circumstance in $C_1$ overlaps with the circumstance of the same type in $C_2$.
+\end{definition}
+
+This definition of Circumstance Set Generalisation has the following consequences:
+\begin{itemize}
+    \item The empty circumstance set generalises all circumstance sets
+    \item The empty circumstance set overlaps with all circumstance sets
+\end{itemize}
 
 \subsection{Internal DSL Implementation}\label{subsec:dsl-implementation}
 
