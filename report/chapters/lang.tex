@@ -237,7 +237,7 @@ Confis also assumes a that providing a legal obligation entails providing the le
 % TODO refs to rulegen section
 Circumstances are a core abstraction in Confis, both in the language and in rule generation and evaluation (hence why they deserve their own section).
 
-A Circumstance Set represents the context in which a Sentence may occur.
+A Circumstance Set represents the context in which a~\nameref{def:sentence} may occur.
 In the context of a legal agreement, it would contain everything in a clause that is not the core sentence, including the parent clause, conditions, etc.
 
 A Circumstance Set is made up of Circumstances.
@@ -251,10 +251,10 @@ A Circumstance Set is made up of Circumstances.
         \texttt{generalise}&: \ c \to\ c' \to\ \texttt{Boolean}\\
         \label{def:c:provideKey}
         \texttt{provideKey}&: \ c \to\ k\\
-        \label{def:c:render}
-        \texttt{render}&: \ c \to\ \texttt{String}\\
         \label{def:c:overlap}
-        \texttt{overlapsWith}&:\ c \to\ c' \to\ \texttt{Boolean}
+        \texttt{overlapsWith}&:\ c \to\ c' \to\ \texttt{Boolean}\\
+        \label{def:c:render}
+        \texttt{render}&: \ c \to\ \texttt{String}
     \end{align}
 \end{definition}
 
@@ -271,14 +271,14 @@ For example, we can only store a single circumstance representing time and a sin
 \end{definition}
 
 % TODO ref rule generation
-Defining \texttt{generalise} for circumstances will be of use when trying to define rules (see~\autoref{TODO}) because it will allow checking whether a circumstance from a clause `matches' that of a question.
+Defining \texttt{generalise} for circumstances will be of use when trying to define rules (see~\autoref{TODO}) because it will allow checking whether a circumstance from a clause `matches' that of a question~(see~\nameref{subsubsec:circumstances-intuition} for an explanation).
 
 \begin{definition}[Circumstance Set Generalisation]
     Fot two Circumstance Sets $C_1$ and $C_2$ we say $C_1$ \emph{generalises} $C_2$ if and only if:
     \begin{equation}
         \label{eq:circumstanceSet:generalisation}
-        \forall k \, \forall c_1, \, (k, c_1) \in C_1 \to
-        \exists c_2.((k, c_2) \in C_2  \land\ c_1\ \texttt{generalises}\ c_2)
+        \forall k \, \forall c_1.[ \, (k, c_1) \in C_1 \to
+        \exists c_2.((k, c_2) \in C_2  \land\ c_1\ \texttt{generalises}\ c_2)\,]
     \end{equation}
 
     That is, if for all circumstances in $C_1$, there is a circumstance of the same type in $C_2$ and each circumstance in $C_1$ generalises the circumstance of the same type in $C_2$.
@@ -288,17 +288,30 @@ Defining \texttt{generalise} for circumstances will be of use when trying to def
     For any two Circumstance Sets $C_1$ and $C_2$, we say $C_1$ \emph{overlaps with} $C_1$ if and only if
     \begin{equation}
         \label{eq:circumstanceSet:overlap}
-        \forall k \, \forall c_1, \, (k, c_1) \in C_1 \to
-        \exists c_2.((k, c_2) \in C_2  \land\ c_1\ \texttt{overlapsWith}\ c_2)
+        \forall k \, \forall c_1.[ \, (k, c_1) \in C_1 \to
+        \exists c_2.((k, c_2) \in C_2  \land\ c_1\ \texttt{overlapsWith}\ c_2)\,]
     \end{equation}
     That is, if for all circumstances in $C_1$, there is a circumstance of the same type in $C_2$ and each circumstance in $C_1$ overlaps with the circumstance of the same type in $C_2$.
 \end{definition}
 
-This definition of Circumstance Set Generalisation has the following consequences:
+This definitions of Circumstance Set Generalisation and Overlap have the following consequences:
 \begin{itemize}
     \item The empty circumstance set generalises all circumstance sets
     \item The empty circumstance set overlaps with all circumstance sets
 \end{itemize}
+
+\subsubsection{Intuition Behind Circumstances}\label{subsubsec:circumstances-intuition}
+
+Circumstance Sets can be thought of as contexts for a sentence, which together constitute an event.
+Defining overlaps and generalisations between these contexts allows us to reason about the same concepts for events: is \emph{`Pay Bob during the month of June'} more general than \emph{`Pay Bob the 10th of June'}? Defining a time range (a day in June, a month within a year) as a Circumstance allows us to answer those questions programmatically.
+
+The empty circumstance set can be thought of as the least specific context for an event (think of it as \emph{anywhere} when thinking about a place).
+Indeed, the event \emph{`Alice pays Bob'} generalises the event \emph{`Alice pays Bob during June'}.
+If a contract has a requirement for the former, and we supply it with a state of the world containing the latter, we can say that Alice is compliant with the contract!\\
+
+Likewise, the converse is true for disjoint events.
+
+For two events $e_1 = \textit{`Alice pays Bob during June'}$,  $e_2 = \textit{`Alice pays Bob during September'}$, we can say $e_1$'s and $e_2$'s Circumstance Sets are disjoint, therefore if a contract requires $e_1$ but we have a state of the world with $e_2$, we can say Alice still has some legal obligation she has not fulfilled.
 
 \subsection{Internal DSL Implementation}\label{subsec:dsl-implementation}
 
