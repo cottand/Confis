@@ -615,7 +615,6 @@ Note how the event calculus can be generalised by~\autoref{eq:basic-rule}.\\
 Unlike Ricardian contracts~(see~\autoref{subsec:ricardian-contracts}), contract-driven agents attempt to describe the behaviours of all parties as well as how they react to other parties' behaviours.
 Therefore, unlike Ricardian contracts, they also capture the semantics of the agreement between the contract.
 
-
 \subsubsection{Symboleo}
 
 TODO talk about~\cite{symboleo2020}
@@ -842,6 +841,8 @@ An example DSL that uses Kotlin as the host language is given in~\autoref{fig:ko
             autogobble,
             frame=lines,
             framesep=2mm]{kotlin}
+        import com.example.html.*
+
         fun main(args: Array<String>) {
             val generated = html {
                 head {
@@ -906,3 +907,35 @@ Extensions also typically allow arbitrary graphical user interfaces inside the p
 
 The IntelliJ IDEA editor~\cite{intelliJRepo} allows a specific extension point for providing script definitions~\cite{kotlinScriptKeep, ideaExtensionPoints} and enabling development features such as syntax highlighting, error reporting, and autocompletion inside custom-defined scripts.
 
+
+\section{Rules Engines for the JVM}\label{sec:rules-engines}
+
+This project requires both rule evaluation and making a Domain-Specific language with the same host language.
+This rules out some logic programming languages appropriate for rules evaluation (namely, Prolog~\cite{prologBirth1988}) as well as Answer Set Programming solutions~(such as the Potassco Project~\cite{potassco}) because of their lack for DSL facilities~(see~\nameref{def:host-lang-requirements} for details on what some of the requirements are).
+
+\subsection{Easy Rules}\label{subsec:j-easy-rules}
+
+Easy Rules~\cite{easyRules} is a rules engine~\cite{fowlerRulesEngine} for Java (therefore it can also be used in~\nameref{subsubsec:kotlinLang}).
+
+It allows programmatically generating rules (through \texttt{Rule} instances) as well as evaluating them.
+This API is particularly swell-suited to this project because it allows defining the predicate that triggers rule execution (the \texttt{when} clause in~\autoref{fig:easyRulesProgranmmatic}) at runtime rather than at compile-time.
+
+\begin{figure}[h]
+        \begin{minted}[
+            autogobble,
+            frame=lines,
+            framesep=2mm]{java}
+                Rule weatherRule = new RuleBuilder()
+                        .name("weather rule")
+                        .description("if it rains then take an umbrella")
+                        .when(facts -> facts.get("rain").equals(true))
+                        .then(facts -> System.out.println("It rains, take an umbrella!"))
+                        .build();
+        \end{minted}
+    \caption[Programmatic Example of a Rule from Easy Rules]{Programmatic Example of a Rule from Easy Rules, from~\cite{easyRules}}
+    \label{fig:easyRulesProgranmmatic}
+\end{figure}
+
+Rules evaluation can be customised to add a notion of priority between rules (which might allow to create precedence between clauses in contracts).
+Additionally, there is support for continous rule application, where rules are evaluated on known facts continously until no more rules are applicable.
+This allows building a knowledge based through inference (rather than just evaluating rules sequentially).

@@ -26,18 +26,43 @@ We should also take into account that a party may have already done something to
 Therefore, we can generalise a compliance verification question to \textit{`Given a series of past events S, what actions need to take place in order for the contract to be complied with?'}.
 
 
-\subsubsection{Confis Internal Representation}
+\subsection{Confis Internal Representation}\label{subsec:confis-ir}
 As~\cite{knottenbeltContractDriven} notes, there is a clear compromise to be made between how complex a contract representation is, and how simple the computations needed to process it are.
 
 Contrary to solutions discussed in~\autoref{sec:nlp} such as~\cite{sleimi2018NLP4}, Confis does not try to generalise a contract into a set of normative rules (as defined in~\autoref{eq:basic-rule}) straight away.
 Instead, it tries to preserve all the information that goes into assembling a contract into an Intermediate Representation (that we will call \textbf{\emph{Confis IR}}).
 The Confis IR is then converted into different sets of rules depending on the query being performed.
 
-Therefore, a critical part of Confis is generating rules from the IR.
+The Confis IR is a set of data structures, mostly tuples and collections, that can be mapped to a JSON or protobuf schema for serialisation.
+For the sake of brevity, this report does not contain the entire schema, but see for example~\autoref{fig:agreement-ir-tuple} for the top-level struct that makes up an agreement.
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.5\textwidth}
+        \begin{minted}[autogobble]{kotlin}
+            data class Agreement(
+                val clauses: List<Clause>,
+                val parties: List<Party>,
+                val title: String,
+                val introduction: String,
+            )
+        \end{minted}
+    \end{minipage}
+    \caption{Code for the top-level Agreement struct of the IR}
+    \label{fig:agreement-ir-tuple}
+\end{figure}
+
+
+
+\section{Rule Generation}\label{sec:rule-generation}
+
+Given Confis evaluates different rules depending on the query from the IR, rather than generating rules from the DSL, generating rules from the IR is a critical part of Confis.
+
+
 
 % TODO examples of DSL -> IR and IR -> rules
 
 
-\subsection{Tooling for Accessible Queryable Contracts}\label{subsec:tooling-for-accessible-queryable-contracts}
+\section{Tooling for Accessible Queryable Contracts}\label{sec:tooling-for-accessible-queryable-contracts}
 
-\subsection{Confis as a Generalisation of Ricardian Contracts}\label{subsec:generalisation-of-ricardian-contracts}
+\section{Confis as a Generalisation of Ricardian Contracts}\label{sec:generalisation-of-ricardian-contracts}
