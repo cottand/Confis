@@ -3,6 +3,7 @@ package eu.dcotta.confis.dsl
 import eu.dcotta.confis.Sentence
 import eu.dcotta.confis.asOrFail
 import eu.dcotta.confis.model.Action
+import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.model.Allowance
 import eu.dcotta.confis.model.Allowance.Allow
 import eu.dcotta.confis.model.Allowance.Forbid
@@ -12,6 +13,7 @@ import eu.dcotta.confis.model.Clause.PermissionWithCircumstances
 import eu.dcotta.confis.model.Obj
 import eu.dcotta.confis.model.Party
 import eu.dcotta.confis.model.circumstance.Consent
+import eu.dcotta.confis.model.circumstance.Month.June
 import eu.dcotta.confis.model.circumstance.Purpose.Commercial
 import eu.dcotta.confis.model.circumstance.Purpose.Research
 import eu.dcotta.confis.model.circumstance.PurposePolicy
@@ -21,6 +23,7 @@ import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import kotlinx.serialization.json.Json
 
 inline fun <reified M> Any.narrowedTo() = if (this is M) this else fail("$this should be of type ${M::class}")
 
@@ -212,5 +215,24 @@ class LicenseTest : StringSpec({
                     from = Party("alice")
                 )
             )
+    }
+
+    "can jsonify simple agreement".config(enabled = false) {
+        val a = AgreementBuilder {
+            val alice by party
+            val use by action
+            val data by thing
+
+            alice may use(data) asLongAs {
+                within { (1 of June year 2022)..(30 of June year 2022) }
+            }
+        }
+        val json = Json {
+            allowStructuredMapKeys = true
+            // serializersModule = SerializersModule {
+            //    polymorphic(Circumstance.Key::class, TimeRange.Key::class, TimeRange.Key.serializer())
+            // }
+        }
+        println(json.encodeToString(Agreement.serializer(), a))
     }
 })

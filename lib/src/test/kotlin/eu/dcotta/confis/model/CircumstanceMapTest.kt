@@ -3,23 +3,24 @@ package eu.dcotta.confis.model
 import eu.dcotta.confis.dsl.of
 import eu.dcotta.confis.dsl.year
 import eu.dcotta.confis.model.circumstance.Circumstance
-import eu.dcotta.confis.model.circumstance.Circumstance.Key
 import eu.dcotta.confis.model.circumstance.Month.May
+import eu.dcotta.confis.model.circumstance.TestCircumstance
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import eu.dcotta.confis.model.circumstance.TestCircumstance.Key as TestKey
 
-data class IntCircumstance(val i: Int) : Circumstance {
+data class IntCircumstance(val i: Int) : TestCircumstance {
     override val key = Companion
     override fun generalises(other: Circumstance) = other is IntCircumstance && i >= other.i
 
-    companion object : Key<IntCircumstance>
+    companion object : TestKey<IntCircumstance>
 }
 
-data class StrCircumstance(val i: String) : Circumstance {
+data class StrCircumstance(val i: String) : TestCircumstance {
     override val key = Companion
     override fun generalises(other: Circumstance) = other is StrCircumstance && i in other.i
 
-    companion object : Key<StrCircumstance>
+    companion object : TestKey<StrCircumstance>
 }
 
 class CircumstanceMapTest : StringSpec({

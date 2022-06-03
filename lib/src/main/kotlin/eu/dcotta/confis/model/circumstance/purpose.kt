@@ -1,11 +1,14 @@
 package eu.dcotta.confis.model.circumstance
 
 import eu.dcotta.confis.model.circumstance.Circumstance.Key
+import kotlinx.serialization.Serializable
 
+@Serializable
 enum class Purpose {
     Commercial, Research, Internal;
 }
 
+@Serializable
 data class PurposePolicy(val purposes: List<Purpose>) : Circumstance {
     constructor(vararg purposes: Purpose) : this(purposes.asList())
 

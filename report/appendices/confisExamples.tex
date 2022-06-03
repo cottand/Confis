@@ -2,16 +2,17 @@
 
 \newenvironment{code}{\captionsetup{type=figure}}{}
 
+
 \section{Confis Software Archive Code Extracts}\label{sec:confis-software-code-extracts}
 
 The following is a stripped-down version of the \texttt{AgreementBuilder} class (the full version can be found in the software archive).
 It is meant ot demonstrate how normal Kotlin functions can come together inside a single class that can be bound to a script in order to write agreements like that of~\autoref{fig:confis:minimal}.
 \begin{code}
     \begin{minted}[
-    autogobble,
-    frame=lines,
-    framesep=2mm,
-    fontsize=\small
+        autogobble,
+        frame=lines,
+        framesep=2mm,
+        fontsize=\small
     ]{kotlin}
 
 open class AgreementBuilder {
@@ -53,7 +54,6 @@ open class AgreementBuilder {
 \end{code}
 
 
-
 \section{Confis Agreements Samples}\label{sec:confis-agreements-samples}
 
 
@@ -73,13 +73,68 @@ open class AgreementBuilder {
 
 \begin{code}
     \inputminted[
-    autogobble,
-    frame=lines,
-    framesep=2mm,
-    fontsize=\small
+        autogobble,
+        frame=lines,
+        framesep=2mm,
+        fontsize=\small
     ]
-        {kotlin}{../script/src/test/resources/scripts/geophys.confis.kts}
+    {kotlin}{../script/src/test/resources/scripts/geophys.confis.kts}
     \caption{A prototype Confis representation of a seismic data license (given in~\cite{seismicDataLicence})}
     \label{fig:confis:geophys}
+\end{code}
+
+\subsection*{From Agreement, to IR, to Rules}
+
+The following is an example of a very simple Confis Agreement:
+
+\begin{figure}[h]
+    \begin{minted}[
+        autogobble,
+        frame=lines,
+        framesep=2mm,
+    ]{kotlin}
+    val alice by party
+    val use by action
+    val data by thing
+    alice may use(data) asLongAs {
+        within { (1 of June)..(30 of June) year 2022 }
+    }
+    \end{minted}
+    \caption{Minimal Confis agreement with a circumstance}
+    \label{fig:confis:min-circumstance}
+\end{figure}
+
+This clause is simple and generates a single rule when querying for a circumstance question~(\emph{`Under what circumstances may Alice use data?'}).
+The clause is translated into the following IR:
+
+\begin{code}
+    \begin{minted}[
+        autogobble,
+        frame=lines,
+        framesep=2mm,
+        fontsize=\small,
+    ]{haskell}
+        Agreement(
+            clauses = [
+                    PermissionWithCircumstances(
+                        allowance = Allow,
+                        sentence = Sentence(
+                            Party("alice"),
+                            Action("use"),
+                            Obj.Named("data")
+                        ),
+                        circumstanceAllowance = Allow,
+                        circumstances = CircumstanceSet(
+                            TimeRange.Key -> TimeRange(01/07/2022..30/01/2022),
+                        ),
+                    ),
+                ],
+            parties = [Party("alice")],
+            title = null,
+            description = null,
+        )
+\end{minted}
+    \caption{IR of minimal Confis agreement with a circumstance from~\autoref{fig:confis:min-circumstance}}
+    \label{fig:confis:min-circumstance-ir}
 \end{code}
 

@@ -4,7 +4,9 @@ import eu.dcotta.confis.eval.QueryResponse
 import eu.dcotta.confis.model.AllowanceResult.Depends
 import eu.dcotta.confis.model.Obj.Anything
 import eu.dcotta.confis.model.circumstance.WorldState
+import kotlinx.serialization.Serializable
 
+@Serializable
 enum class Allowance {
     Allow, Forbid;
 
@@ -22,9 +24,11 @@ enum class AllowanceResult : QueryResponse {
  */
 fun computeAmbiguous(l: AllowanceResult, r: AllowanceResult) = if (l == r) l else Depends
 
+@Serializable
 sealed interface Obj {
     fun render(): String
 
+    @Serializable
     class Named(val name: String, val description: String? = null) : Obj {
         override fun toString() = render()
         override fun equals(other: Any?) = other === this || other is Named && name == other.name
@@ -32,6 +36,7 @@ sealed interface Obj {
         override fun render() = name
     }
 
+    @Serializable
     object Anything : Obj {
         override fun render() = ""
     }
@@ -39,10 +44,12 @@ sealed interface Obj {
 
 fun Obj(named: String, description: String? = null) = Obj.Named(named, description)
 
-interface Subject {
+@Serializable
+sealed interface Subject {
     fun render(): String
 }
 
+@Serializable
 class Action(val name: String, val description: String? = null) {
     override fun toString() = render()
     override fun equals(other: Any?) = other === this || other is Action && name == other.name
@@ -50,6 +57,7 @@ class Action(val name: String, val description: String? = null) {
     fun render() = name
 }
 
+@Serializable
 class Party(val name: String, val description: String? = null) : Subject, Obj {
     override fun toString() = render()
     override fun equals(other: Any?) = other === this || other is Party && name == other.name
@@ -57,6 +65,7 @@ class Party(val name: String, val description: String? = null) : Subject, Obj {
     override fun render() = name
 }
 
+@Serializable
 data class Sentence(val subject: Subject, val action: Action, val obj: Obj) {
     /**
      * whether [this] is a more general version of [other]

@@ -1,5 +1,6 @@
 \chapter{Queryable Documents}\label{ch:queries}
 
+
 \section{Developing a suitable representation}\label{sec:queries-representation}
 
 \subsection{Requirements}\label{subsec:queries-requirements}
@@ -9,6 +10,7 @@ Assuming an existing document, being able to perform the following operations on
 In order to be accessible, these must be intuitive and should not require deep
 
 % TODO justify this being common
+
 \paragraph{Querying for Legal Capabilities} A common use-case is for a party to want to figure out their legal capabilities with respect to a contract, as well as the capabilities of other parties.
 Take the example of a tenancy agreement: a tenant may want to know whether they are allowed to have pets, or whether the landlord is allowed to enter their property.
 
@@ -16,15 +18,14 @@ Therefore, a successful query system should be able to provide answers to questi
 
 A party may also have some requirements to be able to perform some action - such as performing a payment.
 Continuing the example of the tenancy agreement, a landlord may be allowed to enter the premises in case of emergency, but not otherwise.
-Thus, a more general question could be `Under what condition may $A$ do $X$?'
+Thus, a more general question could be \emph{`Under what condition may $A$ do $X$?'}
 
 \paragraph{Compliance verification} If figuring out a party's legal capabilities is a key part of dealing with a contract, so is figuring out their legal obligations.
 Unlike a legal capability question, a compliance question cannot be formulated as \textit{`May $A$ do $X$?'} -- they should instead be along the lines of \textit{`What does X need to do in order to be compliant?'}.
 We should also take into account that a party may have already done something to be compliant at the time of performing the query -- therefore we need to include some `state-of-the-world' in our question.
-    Additionally, parties usually interact and actions between more than a single party may be needed to achieve compliance.
+Additionally, parties usually interact and actions between more than a single party may be needed to achieve compliance.
 
 Therefore, we can generalise a compliance verification question to \textit{`Given a series of past events S, what actions need to take place in order for the contract to be complied with?'}.
-
 
 \subsection{Confis Internal Representation}\label{subsec:confis-ir}
 As~\cite{knottenbeltContractDriven} notes, there is a clear compromise to be made between how complex a contract representation is, and how simple the computations needed to process it are.
@@ -34,35 +35,96 @@ Instead, it tries to preserve all the information that goes into assembling a co
 The Confis IR is then converted into different sets of rules depending on the query being performed.
 
 The Confis IR is a set of data structures, mostly tuples and collections, that can be mapped to a JSON or protobuf schema for serialisation.
-For the sake of brevity, this report does not contain the entire schema, but see for example~\autoref{fig:agreement-ir-tuple} for the top-level struct that makes up an agreement.
-
-\begin{figure}[h]
-    \centering
-    \begin{minipage}{0.5\textwidth}
-        \begin{minted}[autogobble]{kotlin}
-            data class Agreement(
-                val clauses: List<Clause>,
-                val parties: List<Party>,
-                val title: String,
-                val introduction: String,
-            )
-        \end{minted}
-    \end{minipage}
-    \caption{Code for the top-level Agreement struct of the IR}
-    \label{fig:agreement-ir-tuple}
-\end{figure}
-
+For the sake of brevity, this report does not contain the entire schema, but see an example of a compiled IR at~\autoref{fig:confis:min-circumstance-ir}.
 
 
 \section{Rule Generation}\label{sec:rule-generation}
 
 Given Confis evaluates different rules depending on the query from the IR, rather than generating rules from the DSL, generating rules from the IR is a critical part of Confis.
 
+Confis has several types of clauses (see~\autoref{sec:language-semantics}) and each clause generates between one and four rules depending on the query type and its~\nameref{def:allowance}.
+We will examine the example of converting a~\nameref{def:permission} clause with a non-empty~\nameref{def:circumstanceSet}.
+Take the clause specified by~\autoref{fig:confis:aliceMayUseDataCClause} (the full contract can be found in~\autoref{fig:confis:min-circumstance}):
+
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.7\textwidth}
+        \begin{minted}[
+            autogobble,
+            frame=lines,
+            framesep=2mm,
+        ]{kotlin}
+    alice may use(data) asLongAs {
+        within { (1 of June)..(30 of June) year 2022 }
+    }
+        \end{minted}
+    \end{minipage}
+    \caption{Clause with a Circumstance -- extract from~\autoref{fig:confis:min-circumstance}}
+    \label{fig:confis:aliceMayUseDataCClause}
+\end{figure}
+
+The IR generated by this agreement can be found in~\autoref{fig:confis:min-circumstance-ir}.
+
+We will now generate a rule for a \emph{circumstance question} for this rule (ie, a query for legal capabilities).
+As explained in the previous ~\autoref{subsec:queries-requirements}, the question can be formulated as \emph{`Under what condition may Alice use the data?'}.
+The input is a~\nameref{def:sentence}, while the output is a set of~\nameref{def:circumstanceSet}s (we require a Circumstance Set for each of the scenarios where Alice may use the data).
+The resulting rule would simply update the output set with the circumstances specified by the clause in~\autoref{fig:confis:aliceMayUseDataCClause}.
+
+That rule is given by the pseudocode in~\autoref{fig:confis:aliceMayUseDataRule}:
+
+\begin{figure}[h]
+    \centering
+    \begin{minted}[
+        autogobble,
+        frame=lines,
+        framesep=2mm,
+    ]{kotlin}
+            CircumstanceRule(
+                // predicate: (Permission, Question, Result) -> Boolean
+                case = { p, q, _ -> p.sentence == q.sentence }
+                // side-effect: (Permission, Result) -> Void
+                then = { p, r -> r.circumstanceSets.add(p.circumstanceSet) }
+            )
+    \end{minted}
+    \caption{Rule generated from the clause given in~\autoref{fig:confis:aliceMayUseDataCClause}}
+    \label{fig:confis:aliceMayUseDataRule}
+\end{figure}
+
+Rules can be combined this way in order to construct the Result sets.
+Because the rules engine Confis uses allows continuous rule evaluation~(see~\autoref{subsec:j-easy-rules}) we can add more rules that compare the rules generated by different clauses in order to detect contradictions in the clauses.
+This allows detecting malformed contracts by detecting contradictions that, while they are semantically and syntactically correct, make little sense.
+
+An example for such an agreement can be found in~\autoref{fig:confis:contradictions-example}.
+We are able to detect such a contradiction thanks to the \texttt{overlapsWith} function for Circumstance Sets, which is discussed in~\autoref{subsec:circumstance}.
+
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.7\textwidth}
+        \begin{minted}[
+            autogobble,
+            frame=lines,
+            framesep=2mm,
+        ]{kotlin}
+    alice mayNot use(data) asLongAs {
+        val year2022 = (1 of January)..(31 of December) year 2022
+        within { year2022 }
+    }
+    alice may use(data) asLongAs {
+        within { (1 of June)..(30 of June) year 2022 }
+    }
+        \end{minted}
+    \end{minipage}
+    \caption{A correct Confis agreement that contains detectable contradictions}
+    \label{fig:confis:contradictions-example}
+\end{figure}
 
 
 % TODO examples of DSL -> IR and IR -> rules
 
 
 \section{Tooling for Accessible Queryable Contracts}\label{sec:tooling-for-accessible-queryable-contracts}
+
 
 \section{Confis as a Generalisation of Ricardian Contracts}\label{sec:generalisation-of-ricardian-contracts}

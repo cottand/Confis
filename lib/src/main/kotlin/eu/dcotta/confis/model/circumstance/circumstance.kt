@@ -1,8 +1,10 @@
 package eu.dcotta.confis.model.circumstance
 
 import eu.dcotta.confis.model.CircumstanceMap
+import kotlinx.serialization.Serializable
 
-interface Circumstance {
+@Serializable
+sealed interface Circumstance {
 
     /**
      * whether given [other] circumstances, are we in this [Circumstance].
@@ -11,12 +13,14 @@ interface Circumstance {
      */
     infix fun generalises(other: Circumstance): Boolean
 
-    interface Key<T : Circumstance>
+    @Serializable
+    sealed interface Key<out T : Circumstance>
 
     interface SetKey<T : Circumstance> {
         fun Key<*>.fromSetOrNull(): Key<T>?
     }
 
+    @Serializable
     val key: Key<*>
 
     fun render(): String = toString()
@@ -34,8 +38,13 @@ infix fun Circumstance.disjoint(other: Circumstance) = when (this) {
  */
 infix fun Circumstance.generalises(map: CircumstanceMap) = map[key]?.let { generalises(it) } ?: false
 
-interface OverlappingCircumstance : Circumstance {
+@Serializable
+sealed interface OverlappingCircumstance : Circumstance {
     infix fun overlapsWith(other: Circumstance): Boolean
 }
 
 operator fun Circumstance.plus(other: Circumstance) = CircumstanceMap.of(this, other)
+
+interface TestCircumstance : Circumstance {
+    interface Key<T : TestCircumstance> : Circumstance.Key<T>
+}

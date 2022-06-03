@@ -4,7 +4,9 @@ import eu.dcotta.confis.model.Party
 import eu.dcotta.confis.model.Sentence
 import eu.dcotta.confis.model.circumstance.Circumstance.Key
 import eu.dcotta.confis.model.circumstance.Circumstance.SetKey
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Consent(val sentence: Sentence, val from: Party) : Circumstance {
 
     override fun generalises(other: Circumstance): Boolean = other is Consent &&
