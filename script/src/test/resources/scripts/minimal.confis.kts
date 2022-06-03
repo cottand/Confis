@@ -7,6 +7,7 @@ val eat by action
 val cookie by thing
 val cake by thing
 
-alice may eat(cookie)
-alice mayNot eat(cake)
+alice may eat(cookie) unless  {
+    with purpose Commercial
+}
 

@@ -2,16 +2,14 @@
 
 This project includes several software prototypes and a couple formalisms.
 This chapter is meant to provide a high-level overview of how these interact with each other as well as pointing out the relevant sections.\\
-
+\tikzset{font={\fontsize{9pt}{10}\selectfont}}
 \begin{figure}[h]
     \usetikzlibrary{shapes.misc, arrows.meta}
     \colorlet{pastelBlue}{blue!40!white}
 
     \begin{tikzpicture}
         [
-        scale=1,
-        every node/.style={scale=0.8},
-        node distance=1.6cm and 2.2cm,
+        node distance=2cm and 1.8cm,
         >={Stealth[inset=0pt,length=7pt,angle'=30,round]},
         ]
         \node (user) [
@@ -31,7 +29,7 @@ This chapter is meant to provide a high-level overview of how these interact wit
         ] {
             \textbf{Confis Editor}\\
             \emph{Uses:}\\IntelliJ IDEA\\
-            \emph{See:}\\\autoref{sec:confis-editor}
+            \emph{See:}\\\nameref{sec:confis-editor}
         };
 
         \node (lang) [
@@ -41,7 +39,7 @@ This chapter is meant to provide a high-level overview of how these interact wit
         ] {
             \textbf{Confis Language}\\
             \emph{Uses:}\\Kotlin as host language for DSL\\
-            \emph{See:}\\\autoref{sec:language-semantics}
+            \emph{See:}\\\nameref{sec:language-semantics}
         };
 
         \node (queryUi) [
@@ -63,7 +61,7 @@ This chapter is meant to provide a high-level overview of how these interact wit
         ] {
             \textbf{Compiler}\\
             \emph{Uses:}\\Kotlin Compiler\\
-            \emph{See:}\\\autoref{subsec:dsl-implementation}
+            \emph{See:}\\\nameref{subsec:dsl-implementation}
         };
 
         \node (queryEngine) [
@@ -74,7 +72,7 @@ This chapter is meant to provide a high-level overview of how these interact wit
         ] {
             \textbf{Query Engine}\\
             \emph{Uses:}\\EasyRules\\
-            \emph{See:}\\\autoref{TODO}
+            \emph{See:}\\\nameref{sec:rule-generation}
         };
 
         \draw[->]
@@ -84,7 +82,7 @@ This chapter is meant to provide a high-level overview of how these interact wit
         (lang);
 
         \draw[->] (lang.east)
-        -- node [above] {Written into}
+        -- node [above, align=center] {Written\\into}
         (editor);
 
         \draw[->] (editor.270-15)
@@ -93,11 +91,11 @@ This chapter is meant to provide a high-level overview of how these interact wit
 
         \draw[->]
         (compiler.90-15)
-        -- node[right, text width=3cm] { Compiler feedback and IR}
+        -- node[right, text width=3cm] { Compiler\\feedback\\and IR}
         (editor.270+15);
 
         \draw[->] (editor.north)
-        -- node[left] { Visual feedback }
+        -- node[align=center, fill=white] { Visual feedback }
         (user);
 
         \draw[->] (editor.east)
@@ -105,24 +103,24 @@ This chapter is meant to provide a high-level overview of how these interact wit
         (queryUi);
 
         \draw[->] (queryUi.270-15)
-        -- node[left, text width=2cm, align=right] { IR and compiled question }
+        -- node[left, text width=2cm, align=right] { IR and\\compiled\\query }
         (queryEngine.90+15);
 
         \draw[->]
         (queryEngine.90-15)
-        -- node[right, text width=3cm] { Query result }
+        -- node[right, text width=3cm] { Query\\result }
         (queryUi.270+15);
 
         \draw[->]
         (queryUi.90-15)
         to [out=90,in=10]
-        node [right, yshift=0.5cm]{Query selection}
+        node [above, yshift=0.2cm, fill=white, align=left]{Query rendered\\as English text}
         (user);
 
         \draw[->]
         (user)
         to [out=-10,in=90]
-        node [below, yshift=0.6cm, xshift=-0.8cm, fill=white, align=center]{Query result\\rendered as\\English text}
+        node [below, yshift=0.6cm, xshift=-0.8cm, fill=white, align=center]{Query\\selection}
         (queryUi.90+15);
 
     \end{tikzpicture}

@@ -313,7 +313,7 @@ Likewise, the converse is true for disjoint events.
 
 For two events $e_1 = \textit{`Alice pays Bob during June'}$,  $e_2 = \textit{`Alice pays Bob during September'}$, we can say $e_1$'s and $e_2$'s Circumstance Sets are disjoint, therefore if a contract requires $e_1$ but we have a state of the world with $e_2$, we can say Alice still has some legal obligation she has not fulfilled.
 
-\subsection{Internal DSL Implementation}\label{subsec:dsl-implementation}
+\subsection{DSL Implementation}\label{subsec:dsl-implementation}
 
 This subsection is concerned with the implementation details of the Confis DSL.
 For design decisions regarding the language (like what is a Sentence or the difference between a Requirement and a Capability) please see~\nameref{sec:language-semantics}.\\
@@ -328,7 +328,7 @@ For more information on how DSLs can be built in Kotlin in general, see~\autoref
 \subsubsection{Permission Builder Implementation}
 
 Recall a~\nameref{def:permission} is a tuple of~\texttt{(Allowance, Sentence, CircumstanceSet)}, where the \texttt{CircumstanceSet} may be empty.
-For the sake of brevity, we will leave the construction of the Circumstance Set for later and discuss how we can construct a tuple of \texttt{(Allowance, Sentence)} in the DSL.
+For the sake of brevity, we will leave the construction of the Circumstance Set out and discuss how we can construct a tuple of \texttt{(Allowance, Sentence)} in the DSL.
 % TODO CircumstanceMap
 First, we must define the tuple for~\nameref{def:sentence} in Kotlin as in~\autoref{fig:kotlinSentence}.
 Recall a \texttt{Sentence} is simply a tuple of \texttt{(Subject, Action, Object)}.
@@ -352,9 +352,6 @@ Recall a \texttt{Sentence} is simply a tuple of \texttt{(Subject, Action, Object
 
 We now need a DSL to construct this \texttt{Sentence}.
 We use an infix extension function in order to add the \texttt{`may'} adverb (which corresponds to \texttt{Allowance = Allow}) between the subject and the action of the sentence (\autoref{fig:permissionKotlin}).
-
-% PICKUP add operator overloading reference in code comment
-
 
 \begin{figure}[h]
     \centering
