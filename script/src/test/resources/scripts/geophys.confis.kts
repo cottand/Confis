@@ -15,7 +15,7 @@ val licence by thing("this Licence")
 val nda by thing("a confidentiality agreement")
 
 val provideServicesWith by action(
-    "provide any services by using",
+    "provide services with",
     description = "as in providing any service to any third party"
 )
 val transfer by action

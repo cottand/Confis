@@ -135,11 +135,11 @@ We are able to detect such a contradiction thanks to the \texttt{overlapsWith} f
 
 \begin{figure}[h]
     \centering
-        \begin{minted}[
-            autogobble,
-            frame=lines,
-            framesep=2mm,
-        ]{kotlin}
+    \begin{minted}[
+        autogobble,
+        frame=lines,
+        framesep=2mm,
+    ]{kotlin}
     alice mayNot use(data) asLongAs {
         val year2022 = (1 of January)..(31 of December) year 2022
         within { year2022 }
@@ -147,7 +147,7 @@ We are able to detect such a contradiction thanks to the \texttt{overlapsWith} f
     alice may use(data) asLongAs {
         within { (1 of June)..(30 of June) year 2022 }
     }
-        \end{minted}
+    \end{minted}
     \caption{A correct Confis agreement that contains detectable contradictions}
     \label{fig:confis:contradictions-example}
 \end{figure}
@@ -180,17 +180,29 @@ While most of these have trivial implementations, constructing a Circumstance pr
 It would not have been desirable to require designing a UI for each new Circumstance.
 
 According to~\cite{fowlerLangWorkbench} designing a user interface to assemble queries with the concepts described in~\autoref{sec:language-semantics} is much like building a new DSL, except it is a visual one instead of a textual one.
-The solution to the difficulty of making a UI for assembling Circumstances proved to be in combining the textual DSL that is a Confis agreement, and the visual one that is the query UI.
+The solution to the difficulty of making a UI for assembling Circumstances proved to be in combining the textual DSL that is a Confis agreement, and the visual one that is the query UI\@.
 The end result allows building questions through a UI without having to require a command-line interface or calling a library from code, and permits writing Circumstances as code just like they would be written in an agreement.
-This end result is show in~
+This end result is shown in~\autoref{fig:queryUi-geophys-window}
 
-% TODO queryUI figs
-\\begin{figure}
-\centerin
-\includegraphics{}
-\caption{}
-\label{fig:}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{figures/geophys.confis.queryUI}
+    \caption[Query UI window for Geophysical Libray License]{Query UI window for agreement given in~\autoref{fig:confis:geophys}, featuring Circumstance autocompletion and compliance checking}
+    \label{fig:queryUi-geophys-window}
 \end{figure}
+
+More screenshots can be found in the appendix under~\autoref{sec:app:confis-query-ui}, demonstrating an Allowance question and a compile error in the Circumstances editor text box.
 
 
 \section{Confis as a Generalisation of Ricardian Contracts}\label{sec:generalisation-of-ricardian-contracts}
+
+Ricardian Contracts~\cite{grigg2004ricardian} (discussed in~\autoref{subsec:ricardian-contracts}) are one of the few technologies in the state of the art discussed in the~\nameref{ch:background} chapter and allow querying a contract and are concerned with the~\nameref{def:accessibility} requirement at all.
+
+Confis tries to capture the meaning of the agreement it encodes.
+For example, a party should be able to query about their compliance with the contract without needing to know whether the contract is a tenancy agreement, a bond, or a license.
+A Ricardian contract, on the other hand, is closer to an instance of a specific kind of contract -- therefore knowledge about the contract `type', or `template', are necessary to extract the metadata encoded in it.\\
+
+This project is a generalisation of Ricardian contracts in that Confis agreements meet all the requirements given by definition of~\nameref{def:ricardian}\footnote{It is worth noting that while Confis as a formalism does meet the requirements given by the definition of a~\nameref{def:ricardian}, the artefacts included in the project do not implement the signing infrastructure.}, but it also tries to convey and capture the meaning of the contract, so that both a machine and a human can take every single possible state into account.
+
+Another crucial difference from what was first specified by Grigg in~\cite{grigg2004ricardian} is that Confis does not intend to let a user write legal prose.
+Rather, it hopes to produce machine-generated but human-readable prose legal prose from its internal encoding of the agreement -- see~\autoref{sec:additional-tooling:doc-rendering} for a discussion of this feature.

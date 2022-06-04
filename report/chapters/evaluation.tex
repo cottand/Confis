@@ -31,7 +31,7 @@ Please see~\nameref{sec:language-semantics} for the definitions of~\nameref{def:
     A Confis agreement $C$ is complete with respect to a legal agreement $L$ if it represents $L$ and:
 
     \begin{itemize}
-        \item If $L$ allows a legal capability $c$, then a $C$ also allows $c$ through an equivalent permission
+        \item If $L$ allows a legal capability $c$, then $C$ also allows $c$ through an equivalent permission
         \item If $L$ forbids a legal capability $c$, then $C$ also forbids $c$ through an equivalent permission
         \item If $L$ has a requirement $r$, then $C$ has $r$
     \end{itemize}
@@ -44,7 +44,7 @@ Please see~\nameref{sec:language-semantics} for the definitions of~\nameref{def:
 
     \begin{itemize}
         \item If $C$ has an \texttt{Allow} permission $p$ equivalent to a capability $c$, then a $L$ also allows $c$
-        \item If $C$ has an \texttt{Forbid} permission $p$ equivalent to a capability $c$, then a $L$ also forbids $c$
+        \item If $C$ has a \texttt{Forbid} permission $p$ equivalent to a capability $c$, then a $L$ also forbids $c$
         \item If $C$ has a requirement $r$, then $L$ has $r$
     \end{itemize}
 \end{definition}
