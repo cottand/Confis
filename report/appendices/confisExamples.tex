@@ -133,8 +133,62 @@ The clause is translated into the following IR:
             title = null,
             description = null,
         )
-\end{minted}
+    \end{minted}
     \caption{IR of minimal Confis agreement with a circumstance from~\autoref{fig:confis:min-circumstance}}
     \label{fig:confis:min-circumstance-ir}
+\end{code}
+
+\subsubsection{Meat Contract example}
+
+\begin{table}
+    \centering
+    \setlength{\fboxsep}{10pt}
+    \fbox{
+        \begin{minipage}{0.8\textwidth}
+            \renewcommand{\labelenumii}{\theenumii}
+            \renewcommand{\theenumii}{\theenumi.\arabic{enumii}.}
+
+            This agreement is entered into as of the date <effDate>, between
+            <party1> as Seller with the address <retAdd>, and <party2> as Buyer
+            with the address <delAdd>.\\
+            \begin{enumerate}
+                \item \textbf{Payment \& Delivery}
+                \begin{enumerate}
+                    \item Seller shall sell an amount of <qnt> meat with <qlt> quality (“goods”) to the Buyer.
+                    \item Title in the Goods shall not pass on to the Buyer until payment of the amount owed has been made in full.
+                    \item The Seller shall deliver the Order in one delivery within <delDueDateDays> days to the Buyer at its warehouse.
+                    \item The Buyer shall pay <amt> (“amount”) in <curr> (“currency”) to the Seller before <payDueDate>.
+                    \item In the event of late payment of the amount owed due, the Buyer shall pay interests equal to <intRate> the Seller may suspend performance of all of its obligations under the agreement until payment of amounts due has been received in full.
+                \end{enumerate}
+                \item \textbf{Assignment}
+                \begin{enumerate}
+                    \item The rights and obligations are not assignable by Buyer.
+                \end{enumerate}
+                \item \textbf{Termination}
+                \begin{enumerate}
+                    \item Any delay in delivery of the goods will not entitle the Buyer to terminate the Contract unless such delay exceeds 10 Days.
+                \end{enumerate}
+                \item \textbf{Confidentiality}
+                \begin{enumerate}
+                    \item Both Seller and Buyer must keep the contents of this contract conﬁdential during the execution of the contract and six months after the termination of the contract.
+                \end{enumerate}
+            \end{enumerate}
+        \end{minipage}
+%    \vspace{0.2cm}
+    }
+    \caption{Sample of a meat purchase and sales contract}
+    \label{tab:meat}
+\end{table}
+
+\begin{code}
+    \inputminted[
+        autogobble,
+        frame=lines,
+        framesep=2mm,
+        fontsize=\small
+    ]
+    {prolog}{figures/meatSales.symboleo}
+    \caption{Symboleo Specification for~\nameref{tab:meat}}
+    \label{fig:symbolio:meatSales}
 \end{code}
 

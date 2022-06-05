@@ -601,11 +601,21 @@ The formalisation involves establishing a calculus based in multi-agents systems
 Note how the event calculus can be generalised by~\autoref{eq:basic-rule}.\\
 
 Unlike Ricardian contracts~(see~\autoref{subsec:ricardian-contracts}), contract-driven agents attempt to describe the behaviours of all parties as well as how they react to other parties' behaviours.
-Therefore, unlike Ricardian contracts, they also capture the semantics of the agreement between the contract.
+Therefore, unlike Ricardian contracts, they also capture the semantics of the agreement between all the parties.
 
-\subsubsection{Symboleo}
+\subsubsection{Symboleo}\label{subsubsec:symboleo}
 
-TODO talk about~\cite{symboleo2020}
+\emph{Symboleo}~\cite{symboleo2020} is a formal contract specification Language.
+Much like~\nameref{subsubsec:contract-driven-agents} it aims to capture the semantics of the agreement.
+It does this by providing several abstractions relating to legal concepts, such as \emph{powers} and \emph{obligations}, and creating axioms around them.
+
+Time and events through a model based on temporal logic~\cite{temporalLogic1984} which specifies time instances for events, time intervals for situations, and makes use of pre-state and post-state situations for events.\\
+
+% TODO Solidity ref
+Symboleo also hopes to provide an implementation-agnostic specification by transpiling to blockchain languages such as Solidity -- much like~\nameref{subsec:accord}.
+At the time of writing, Accord has such an implementation in place while Symboleo does not.
+
+An example of a contract (a meat sales agreement that can be found in~\autoref{tab:meat}) translated into Symboleo is given under the Appendix in~\autoref{fig:symbolio:meatSales}.
 
 
 \section{Natural Language Processing and its Limitations}\label{sec:nlp}
@@ -636,12 +646,13 @@ An example of this is using the term ``and'' to represent a disjunction instead 
 \paragraph{Sentence Complexity}
 
 Sentences used in legal prose tend to be much longer than sentences from other domains.
-The average number of lexical units in a sentence written in English in Wikipedia is about 19~\cite{wiki19words}, while sentences from a legal document can have more than 50~\cite{ferraroLegalNLPSSurvey} as well as have complex syntactic structures (see for example~\autoref{fig:geophys-long-clause}).
+The average number of lexical units in a sentence written in English in Wikipedia is about 19~\cite{wiki19words}, while sentences from a legal document can have more than 50~\cite{ferraroLegalNLPSSurvey} as well as have complex syntactic structures (see for example~\autoref{tab:geophys-long-clause}).
 
 Current NLP technologies struggle with such sentences: syntactic analysers and predicate-argument extraction tools sometimes do no correctly capture the scope of coordinate conjunctions, nor the antecedents of subordinate phrases.
 
-\begin{figure}[h]
+\begin{table}[h]
     \centering
+    \setlength{\fboxsep}{10pt}
     \fbox{
         \begin{minipage}{0.8\textwidth}
             On termination of this Licence the Licensee shall cease to have any rights or Licence in
@@ -653,8 +664,8 @@ Current NLP technologies struggle with such sentences: syntactic analysers and p
         \end{minipage}
     }
     \caption{Clause \textsection3.2 of~\citetitle{seismicDataLicence}~\cite{seismicDataLicence}}
-    \label{fig:geophys-long-clause}
-\end{figure}
+    \label{tab:geophys-long-clause}
+\end{table}
 
 \paragraph{Normative Effects and Modalities}
 
