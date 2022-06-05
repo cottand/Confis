@@ -17,8 +17,19 @@ This chapter is meant to provide a high-level overview of how these interact wit
             rounded corners,
             text=white,
             fill=mdtBlue,
-        ] { Contract Drafter };
+        ] {\textbf{Contract Drafter}};
 
+        \node (docs) [
+            draw,
+            text width=3cm,
+            rectangle,
+            above=of user,
+            rectangle,
+        ] {
+            \textbf{Documentation}\\
+            \emph{Uses:}\\Online Web\\Documentation\\
+            \emph{See:}\\\nameref{TODO}
+        };
 
         \node (editor) [
             draw,
@@ -48,9 +59,9 @@ This chapter is meant to provide a high-level overview of how these interact wit
             rectangle,
             right=of editor,
         ] {
-            \textbf{Query GUI}\\
+            \textbf{Query UI}\\
             \emph{Uses:}\\IntelliJ IDEA\\
-            \emph{See:}\\\autoref{TODO}
+            \emph{See:}\\\nameref{sec:queryUI}
         };
 
         \node (compiler) [
@@ -110,6 +121,11 @@ This chapter is meant to provide a high-level overview of how these interact wit
         (queryEngine.90-15)
         -- node[right, text width=3cm] { Query\\result }
         (queryUi.270+15);
+
+        \draw[->]
+        (docs.south)
+        -- node[align=center, fill=white] { Provides knowledge\\ \& examples }
+        (user);
 
         \draw[->]
         (queryUi.90-15)

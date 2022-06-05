@@ -138,7 +138,11 @@ The clause is translated into the following IR:
     \label{fig:confis:min-circumstance-ir}
 \end{code}
 
-\subsubsection{Meat Contract example}
+
+\subsection{Meat Contract Comparison}\label{subsec:meat-contract-comparison}
+
+This subsection hopes to illustrate the main differences between different representations of the same contract (given in~\autoref{tab:meat}).
+These differences are discussed under~\nameref{ch:evaluation} under~\autoref{sec:language-formalism-evaluation}.
 
 \begin{table}
     \centering
@@ -170,15 +174,26 @@ The clause is translated into the following IR:
                 \end{enumerate}
                 \item \textbf{Confidentiality}
                 \begin{enumerate}
-                    \item Both Seller and Buyer must keep the contents of this contract conﬁdential during the execution of the contract and six months after the termination of the contract.
+                    \item Both Seller and Buyer must keep the contents of this contract confidential during the execution of the contract and six months after the termination of the contract.
                 \end{enumerate}
             \end{enumerate}
         \end{minipage}
 %    \vspace{0.2cm}
     }
-    \caption{Sample of a meat purchase and sales contract}
+    \caption[Sample meat sales contract]{Sample of a meat purchase and sales contract, from~\cite{symboleo2020}}
     \label{tab:meat}
 \end{table}
+\begin{code}
+    \inputminted[
+        autogobble,
+        frame=lines,
+        framesep=2mm,
+        fontsize=\small
+    ]
+    {kotlin}{../script/src/test/resources/scripts/meat.confis.kts}
+    \caption{Confis Agreement for~\nameref{tab:meat}}
+    \label{fig:confis:meat}
+\end{code}
 
 \begin{code}
     \inputminted[
@@ -188,7 +203,6 @@ The clause is translated into the following IR:
         fontsize=\small
     ]
     {prolog}{figures/meatSales.symboleo}
-    \caption{Symboleo Specification for~\nameref{tab:meat}}
+    \caption{Symboleo Specification for~\nameref{tab:meat}, from~\cite{symboleoMeat, symboleo2020}}
     \label{fig:symbolio:meatSales}
 \end{code}
-

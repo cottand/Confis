@@ -16,13 +16,13 @@ sealed interface TimeRange : OverlappingCircumstance {
         Circumstance,
         OverlappingCircumstance {
 
-        override fun contains(other: TimeRange) = when(other) {
+        override fun contains(other: TimeRange) = when (other) {
             is Date -> other in this
             is OpenFutureRange -> false
             is Range -> other.start in this && other.endInclusive in this
         }
 
-        override fun overlapsWith(other: Circumstance) = other is TimeRange && when(other) {
+        override fun overlapsWith(other: Circumstance) = other is TimeRange && when (other) {
             is Date -> other in this
             is OpenFutureRange -> other.start <= endInclusive
             is Range -> start in other || endInclusive in other
@@ -41,14 +41,14 @@ sealed interface TimeRange : OverlappingCircumstance {
     companion object Key : Circumstance.Key<TimeRange>
 
     @Serializable
-    data class OpenFutureRange(val start: Date): TimeRange, OverlappingCircumstance {
-        override fun contains(other: TimeRange): Boolean = when(other) {
+    data class OpenFutureRange(val start: Date) : TimeRange, OverlappingCircumstance {
+        override fun contains(other: TimeRange): Boolean = when (other) {
             is Date -> other >= start
             is OpenFutureRange -> other.start >= start
             is Range -> other.start >= start
         }
 
-        override fun overlapsWith(other: Circumstance): Boolean = other is TimeRange && when(other) {
+        override fun overlapsWith(other: Circumstance): Boolean = other is TimeRange && when (other) {
             is Date -> other >= start
             is OpenFutureRange -> true
             is Range -> other.endInclusive >= start
@@ -82,8 +82,8 @@ data class Date(val day: Int, val month: Month, val year: Int) :
     Circumstance,
     TimeRange {
 
-    constructor(c: Calendar)
-        : this(c.get(Calendar.DATE), Month.values()[c.get(Calendar.MONTH)], c.get(Calendar.YEAR))
+    constructor(c: Calendar) :
+        this(c.get(Calendar.DATE), Month.values()[c.get(Calendar.MONTH)], c.get(Calendar.YEAR))
 
     val cal: Calendar
         get() = calendarZero().apply {

@@ -1,8 +1,5 @@
 package eu.dcotta.confis.model
 
-import eu.dcotta.confis.dsl.Days
-import eu.dcotta.confis.dsl.Months
-import eu.dcotta.confis.dsl.Years
 import eu.dcotta.confis.dsl.days
 import eu.dcotta.confis.dsl.months
 import eu.dcotta.confis.dsl.of
@@ -48,7 +45,7 @@ class TimeRangeTest : StringSpec({
     }
 
     "can sum days in DSL" {
-        may.plus(31.days    ) shouldBe june
+        may.plus(31.days) shouldBe june
     }
 
     "can sum months in DSL" {

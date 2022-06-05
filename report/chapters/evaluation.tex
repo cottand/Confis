@@ -49,11 +49,133 @@ Please see~\nameref{sec:language-semantics} for the definitions of~\nameref{def:
     \end{itemize}
 \end{definition}
 
+
 \section{Language Formalism Evaluation}\label{sec:language-formalism-evaluation}
 
 The Confis language formalism and semantics are discussed in~\autoref{sec:language-semantics}.
-This project will evaluate it in how it meets the requirements described in~\autoref{sec:eval:goals}, its expressiveness (how capable it is to represent complex contracts) as well as how it performs in relation to comparable formalisms (like~\nameref{subsubsec:symboleo} or~\nameref{subsec:accord}).
+This project will evaluate it in how it meets the requirements described in~\autoref{sec:eval:goals}, its expressiveness (how capable it is to represent complex contracts) as well as how it performs in relation to comparable formalisms (like~\nameref{subsubsec:symboleo}~\cite{symboleo2020} or~\nameref{subsec:accord}~\cite{accordHomepage}).
 
+As far as fulfilling the~\nameref{def:accessibility} requirement, Confis is the only formalism in the literature that makes an effort to penetrate industry by
+\begin{itemize}
+    \item Trying to avoid requiring a scientific or engineering background from its users.
+    \item Providing additional tools to ease development and shorten the iteration loop.
+\end{itemize}
+
+The Query UI~(\autoref{sec:queryUI}), Confis-to-English conversion~(\autoref{sec:additional-tooling:doc-rendering}), the Confis Editor~(\autoref{sec:confis-editor}) and the structure of the Confis language itself (\autoref{sec:language-semantics}) were all developed with this goal in mind.
+
+Exceptions to this statement include accessible technologies like Juro (\autoref{subsec:juro}).
+Such tools add contract metadata without actually allowing for querying beyond fetching the metadata, nor attempt to capture the semantics of the agreement -- like Adobe Signing tools or typical Ricardian Contracts~\cite{ricardianWeb}, but unlike Symboleo or The Accord Project.\\
+
+We translate to Confis a sample contract used in Symbolio~\cite{symboleo2020} in order to compare the same agreement in two different languages.
+For the sake of brevity, we wille examine an extract, but the full original (in plain English) can be found at~\autoref{tab:meat}, the full Symbolio specification at~\autoref{fig:symbolio:meatSales}, and the full Confis agreement at~\autoref{fig:confis:meat}.
+
+\begin{table}[h]
+    \centering
+    \setlength{\fboxsep}{10pt}
+    \fbox{
+        \begin{minipage}{0.8\textwidth}
+            \textbf{Confidentiality}
+            \begin{enumerate}
+                \item Both Seller and Buyer must keep the contents of this contract confidential during the execution of the contract and six months after the termination of the contract.
+            \end{enumerate}
+        \end{minipage}
+    }
+    \caption[Sample Confidentiality clause]{Sample confidentiality clause, extracted from~\autoref{tab:meat}}
+    \label{tab:meat-confidentiality}
+\end{table}
+
+The comparison will be performed on a rather simple clause of the agreement, a confidentiality clause specified by~\autoref{tab:meat-confidentiality}.
+The Confis representation is specified by~\autoref{fig:confis:meat-confidentiality}, while the Symbolio one is specified by~\autoref{fig:symbolio:meatSales-confidentiality}.
+Both are re-written self-contained examples (rather than text extracts from the original, longer contracts).
+This was done in order to fully reflect the necessary boilerplate and ceremony of each language.\\
+
+
+\begin{figure}[h]
+    \centering
+    \begin{minted}[
+        autogobble,
+        frame=lines,
+        framesep=2mm,
+        fontsize=\small
+    ]{kotlin}
+val effDate = 1 of June year 2022
+val reveal by action(
+    description = "as in not keeping the contents confidential"
+)
+val contract by thing("the Contract", description = "this Agreement")
+val seller by party("the Seller", description = "Alice Liddell")
+val buyer by party("the Buyer", description = "The Meat Supermarket, Inc")
+
+seller mayNot reveal(contract) asLongAs {
+    within { effDate..(effDate + 6.months) }
+}
+
+buyer mayNot reveal(contract) asLongAs {
+    within { effDate..(effDate + 6.months) }
+}
+    \end{minted}
+    \caption{Confis for~\nameref{tab:meat-confidentiality}, extracted from~\autoref{fig:confis:meat}}
+    \label{fig:confis:meat-confidentiality}
+\end{figure}
+
+\begin{figure}[h]
+    \begin{minted}[
+        autogobble,
+        frame=lines,
+        framesep=2mm,
+        fontsize=\small
+    ]{prolog}
+        Domain meatSaleDomain
+        Seller isA Role with returnAddress: String, name: String;
+        Buyer isA Role with warehouse: String;
+        Disclosed isAn Event;
+
+        endDomain
+
+        Contract MeatSale (buyer: Buyer, seller: Seller, effDate: Date)
+
+        Declarations
+        disclosed: Disclosed;
+
+        Surviving Obligations
+        so1 : Obligation(seller, buyer, true,
+            not WhappensBefore(disclosed, Date.add(Activated(self), 6, months))
+        );
+
+        so2 : Obligation(buyer, seller, true,
+            not WhappensBefore(disclosed, Date.add(Activated(self), 6, months))
+        );
+        endContract
+
+    \end{minted}
+    \caption{Symboleo Specification for~\nameref{tab:meat-confidentiality}, extracted from~\autoref{fig:symbolio:meatSales}}
+    \label{fig:symbolio:meatSales-confidentiality}
+\end{figure}
+
+\paragraph{Specifying a legal Obligation}
+Notice how Symboleo allows representing a more complex domain by specifying an \emph{Event} \texttt{`Disclosed'}, and constraining the legal capabilities of Buyer by creating an \emph{Obligation} (with a notion of this obligation being \emph{from} Buyer \emph{towards} Seller) which specifies that the \texttt{disclosed} event cannot happen before six months after the end of the contract.
+In Symbolio's model if \texttt{disclosed} happen, the breach cannot be attributed to either Seller nor Buyer.
+
+Confis specifies a simpler domain -- while it also specifies Seller and Buyer and represents `disclosing' as an Action, it has no notion of \emph{creditor} and \emph{lender} when it comes to Requirements (defined in Definition~\autoref{def:requirement}).
+On the other hand, Confis can `blame' specific parties for a breach, as it attributes Actions to Subjects.
+Confis is also unable to keep track of its own execution time -- instead it requires specifying the date in the contract.
+Notice how this abstracts away the document from the real-world execution date, and how this limitation of Symboleo is omitted in the original paper~\cite{symboleo2020}, but present in the sample source code~\cite{symboleoMeat}.
+
+Both models are capable of expressing periods of time, but in Confis they are not part of the algebra (they are instead more general~\nameref{def:circumstance}s).
+
+\paragraph{Accessibility} While both contracts require language knowledge to write them, Confis can be read without prior training and its functions (\texttt{within}, \texttt{mayNot}, \texttt{asLongAs},~\dots) are easy to memorise.
+The best example of this is the operation of summing six months to a time period -- while Symboleo requires specifying a \texttt{Date} library and wrapping the duration with a function (\texttt{`Date.add(..., 6, months)'}), Confis uses operator overloading to sum to a date (\texttt{`... + 6.months'}).
+
+As far as readability goes, Confis goes the extra mile by trying to combine metadata and language semantics to provide an English-like preview.
+This prose rendering is shown in~\autoref{fig:confis-render-meat-confidentiality}.
+While the preview is not as clear as the original plain-English clause, it conveys the obligations of each party well and is unambiguous thanks to its definition referencing (which is common in real legal agreements).
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\columnwidth]{figures/confis.meat.prose}
+    \caption{Confis prose rendering of~\autoref{tab:meat-confidentiality}}
+    \label{fig:confis-render-meat-confidentiality}
+\end{figure}
 
 
 \section{Software Deliverables}\label{sec:software-deliverables}
