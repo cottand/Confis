@@ -1,7 +1,15 @@
 package eu.dcotta.confis.model
 
+import eu.dcotta.confis.dsl.Days
+import eu.dcotta.confis.dsl.Months
+import eu.dcotta.confis.dsl.Years
+import eu.dcotta.confis.dsl.days
+import eu.dcotta.confis.dsl.months
 import eu.dcotta.confis.dsl.of
+import eu.dcotta.confis.dsl.plus
 import eu.dcotta.confis.dsl.year
+import eu.dcotta.confis.dsl.years
+import eu.dcotta.confis.model.circumstance.Month.January
 import eu.dcotta.confis.model.circumstance.Month.June
 import eu.dcotta.confis.model.circumstance.Month.May
 import eu.dcotta.confis.model.circumstance.Month.September
@@ -37,5 +45,17 @@ class TimeRangeTest : StringSpec({
     "no circumstances is more general than a time range" {
 
         (CircumstanceMap.empty generalises CircumstanceMap.of(may..may)) shouldBe true
+    }
+
+    "can sum days in DSL" {
+        may.plus(31.days    ) shouldBe june
+    }
+
+    "can sum months in DSL" {
+        may.plus(1.months) shouldBe june
+    }
+
+    "can sum years in DSL" {
+        ((1 of January year 2020) + 1.years) shouldBe (1 of January year 2021)
     }
 })
