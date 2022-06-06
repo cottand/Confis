@@ -2,7 +2,7 @@
 
 One of the key focuses of this project is not just to be able to represent legal contracts with specific properties and capabilities as described in~\autoref{ch:queries};
 but also to make it as easy as possible for people with non-technical backgrounds to use such representations.
-Simply put, a lawyer should not need to learn JSON.\\
+Simply put, a lawyer should not need to learn JSON.
 
 This is the main motivation for developing tooling which aims to make it easier for people of non-technical backgrounds to produce, modify, and understand Confis legal agreement representations.
 The core of this tooling is the Confis language~(\autoref{sec:developing-a-dsl}) and an IDE-assisted editor~(\autoref{sec:confis-editor}).
@@ -18,7 +18,7 @@ This involves prioritising~\nameref{def:accessibility} while making sure~\namere
 \subsubsection{Easy to write while still machine-readable}
 
 Writing a Confis agreement should be close to writing plain English, while still being machine-readable.
-For more details on the meaning of \emph{machine-readable} in the context of this project, see~\autoref{sec:machine-readable-contracts}.\\
+For more details on the meaning of \emph{machine-readable} in the context of this project, see~\autoref{sec:machine-readable-contracts}.
 
 
 A compromise must be struck between ease of writing and machine-readability.
@@ -89,14 +89,14 @@ This should allow developing a stand-alone language as an external DSL (or alter
 
 \paragraph{Kotlin as a host language} Several host languages can serve to build a DSL.
 A few options are discussed in~\autoref{subsec:dsl-host-candidates}, like Groovy and Haskell.
-The choice to use Kotlin stems from how feature-rich the surrounding tooling is -- such as its stand-alone custom scripting~\cite{kotlinScriptKeep} and IDE support~\cite{intelliJRepo}.\\
+The choice to use Kotlin stems from how feature-rich the surrounding tooling is -- such as its stand-alone custom scripting~\cite{kotlinScriptKeep} and IDE support~\cite{intelliJRepo}.
 
 
 \section{Language Semantics and Design}\label{sec:language-semantics}
 
 This section is concerned with the structure, semantics, and design decisions regarding the Confis DSL.
 For the implementations details of the DSL, see~\nameref{subsec:dsl-implementation}.
-For motivations and priorities of the project, see~\nameref{sec:eval:goals}.\\
+For motivations and priorities of the project, see~\nameref{sec:eval:goals}.
 
 %Given decoupling the Confis language and the Confis IR is a requirement as discussed in~\autoref{subsec:dsl:requirements}, the language
 
@@ -259,7 +259,7 @@ A Circumstance Set is made up of Circumstances.
 
 A circumstance key $k$ is simply an element with a notion of equality.
 When two circumstances $c_1$ and $c_2$ produce they same key $k$, they are said to be~\emph{of the same type}.
-\texttt{render} is a function made to satisfy the requirement of being able to convert a Confis agreement into readable English for the sake of~\nameref{def:accessibility}.\\
+\texttt{render} is a function made to satisfy the requirement of being able to convert a Confis agreement into readable English for the sake of~\nameref{def:accessibility}.
 
 A Circumstance Set is an indexed set of~\nameref{def:circumstance}s, unique in that only one circumstance of each type can be stored.
 For example, we can only store a single circumstance representing time and a single circumstance representing purpose, because these are implemented to produce the same key $k$ each.
@@ -314,7 +314,7 @@ For two events $e_1 = \textit{`Alice pays Bob during June'}$,  $e_2 = \textit{`A
 \subsection{DSL Implementation}\label{subsec:dsl-implementation}
 
 This subsection is concerned with the implementation details of the Confis DSL.
-For design decisions regarding the language (like what is a Sentence or the difference between a Requirement and a Capability) please see~\nameref{sec:language-semantics}.\\
+For design decisions regarding the language (like what is a Sentence or the difference between a Requirement and a Capability) please see~\nameref{sec:language-semantics}.
 
 Because of the nature of internal DSLs~(see~\autoref{sec:dsls}), the syntax of the Confis DSL must be a subset of the Kotlin language's.
 % TODO add future work link for own lang
@@ -443,7 +443,7 @@ The full example is demonstrated in~\autoref{fig:permissionKotlinFull}, and a us
 We now can call the function \texttt{may()} in order to create a \texttt{Permission} and add it to \texttt{clauses}.
 Most of the Confis DSL is implemented similarly.
 An advantage of using a statically typed language for a DSL with well-defined types like in the examples given above means that only semantically correct sentences can be written.
-For example, \texttt{`cake may eat(alice)'} produces a compilation error, because \texttt{`cake'} is not a \texttt{Subject}.\\
+For example, \texttt{`cake may eat(alice)'} produces a compilation error, because \texttt{`cake'} is not a \texttt{Subject}.
 
 
 % TODO is this worth writing about at all
@@ -454,7 +454,7 @@ For example, \texttt{`cake may eat(alice)'} produces a compilation error, becaus
 In order to comply with the~\nameref{def:accessibility} requirement, it should be possible to generate a traditional document (perhaps in plaintext or PDF format) written in legal prose.
 This generated document should then be usable in place of traditional agreement documents -- for example, a reviewer of an agreement will not need Confis software or to know about the Confis DSL in order to read a copy of the contract.
 
-We will call this feature \textbf{\emph{legal prose rendering}}.\\
+We will call this feature \textbf{\emph{legal prose rendering}}.
 
 If NLP~(see~\autoref{sec:nlp}) aims to translate traditional human-written legal-prose into a machine-readable format, you can think of legal prose rendering as the inverse process: we go from a machine-readable representation to a more human-readable one.
 
@@ -464,7 +464,7 @@ If NLP~(see~\autoref{sec:nlp}) aims to translate traditional human-written legal
 
 One of the key requirements for Confis is~\nameref{def:accessibility}.
 In order to achieve this the Confis framework includes an extension to the IntelliJ Development Environment~\cite{intelliJRepo} - the \textbf{\emph{Confis Plugin}}.
-Bundled with this plugin is the \textbf{\emph{Confis Editor}}.\\
+Bundled with this plugin is the \textbf{\emph{Confis Editor}}.
 
 The Confis Editor has two main goals:
 
@@ -489,7 +489,7 @@ See~\nameref{subsec:scripting-support} for a discussion on what is meant by scri
 In order to implement writing Confis agreements as stand-alone files, we create a \emph{Kotlin Custom Script definition}~\cite{kotlinScriptKeep}, which essentially contains information that assigns an instance of a class to a script.
 By placing DSL builder functions like those introduced in~\autoref{fig:permissionKotlinFull} inside a class (called \texttt{AgreementBuilder}, for example) and assigning an instance of this class to a script, we can let the script author (ie, the Confis agreement author) \textbf{mutate} our class when we evaluate their script.
 
-See~\autoref{fig:agreementBuilderSmall} for an example of such a class, and~\autoref{fig:confis:minimal} for an example of a single script bound to that class.\\
+See~\autoref{fig:agreementBuilderSmall} for an example of such a class, and~\autoref{fig:confis:minimal} for an example of a single script bound to that class.
 
 We can then pass the script definition mentioned above to an extension point present in the IntelliJ API engineered specifically for this purpose~\cite{ideaExtensionPoints, intelliJRepo}.
 If we include some additional information (such as a file extension for Confis agreements) IntelliJ will now provide visual hints for Confis Scripts.
@@ -503,7 +503,7 @@ If we include some additional information (such as a file extension for Confis a
 
 See~\autoref{fig:intelliScriptAid} for an example where the Confis editor reports a compile error (where the user attempted to form a Sentence with a Party that does not exist) as well as autocompletion for building a Permission clause.
 % TODO actually do this on the website
-A live video example can be found in the~\href{https://confis.dcotta.eu/0.1.1/IDE%20Support/IDEAPlugin/}{Confis Documentation Page}.\\
+A live video example can be found in the~\href{https://confis.dcotta.eu/0.1.1/IDE%20Support/IDEAPlugin/}{Confis Documentation Page}.
 
 In order to achieve (2.), we can implement a new editor in IntelliJ based on its existing markdown editor~\cite{ideaMarkdownPreview} which achieves a very similar purpose: providing a live preview of machine-readable code.
 

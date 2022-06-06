@@ -24,7 +24,7 @@ In public key cryptography, two communicating parties (say Alice and Bob) can co
 numbers that are related mathematically and which allow converting cleartext into cyphertext and
 back~\cite{smart2016publicKey}.
 This pair of numbers is called an asymmetric keypair, and is composed of a \textbf{public key} $e$ and a \textbf{private
-key} $d$.\\
+key} $d$.
 
 In this example, if Alice wishes to communicate with Bob, Bob can generate a keypair $(d, e)$ and publish $e$.
 Alice can then encrypt her cleartext with $e$, and only Bob will be able to decrypt it (because only Bob knows $d$).
@@ -174,7 +174,7 @@ Bitcoin enforces that participants can only sign transactions once thanks to its
 
 Bitcoin ensures 'unique signatures' in transactions by grouping transactions in immutable, public \textit{blocks}.
 Participants can then verify a payer has not signed a hash of a single transaction twice by looking at all existing
-transactions.\\
+transactions.
 
 Blocks are made immutable by including in them a value (called a \textit{nonce}) and the hash of the previous block.
 % TODO verify it is the hash of the entire block that must yield the zeroes (implementation detail really)
@@ -255,7 +255,7 @@ payee can access the coins being transferred.
 Bitcoin's Script has several limitations, such as lack of Turing-completeness (not all computable functions can be
 represented in Script), value blindness (a script cannot easily specify an exact amount to be
 withdrawn) and lack of internal state (beyond whether a transaction output is spent or
-unspent)~\cite{buterin2015ethereum}.\\
+unspent)~\cite{buterin2015ethereum}.
 
 Ethereum is also a blockchain sharing many of Bitcoin's features, such as transactions and
 a proof-of-work consensus algorithm.
@@ -266,7 +266,7 @@ The name of the coin of the Ethereum ecosystem is \textit{ether}.
 
 Ethereum's state is encoded in \textit{accounts} - objects with their own address that contain the account's
 balance~(in ether), the contract code~(if present), the nonce~(a transaction counter), and the account's
-storage~(a persistent key-value store which is initially empty)~\cite{buterin2015ethereum}.\\
+storage~(a persistent key-value store which is initially empty)~\cite{buterin2015ethereum}.
 
 % TODO talk about eth state transitions (slides from distrib are good) if we'll be using eth
 
@@ -295,12 +295,12 @@ Computational steps when scripting are priced in units of \textit{gas} (most com
 1 gas).
 When performing a transaction, the sender specifies the values \texttt{STARTGAS} (the maximum amount
 of gas they are willing to spend in the transaction execution) and \texttt{GASPRICE} (the price of a
-single gas unit in ether).\\
+single gas unit in ether).
 
 Therefore, when executing a smart contract its cost (the fee to be paid for its execution, in ether)
 will be determined by the computation it requires (more computation means more gas!).
 It is in the interest of the caller of the contract that the contract requires as little computation
-as possible, so that the fee they pay for the call remains low.\\
+as possible, so that the fee they pay for the call remains low.
 
 This project may have to rule out an Ethereum DApp as a good option for implementing a decentralised
 prototype.
@@ -362,7 +362,7 @@ efficient because it can run in polynomial time~\cite{naranker2022zeroknowledge}
 Additionally, if the prover is unable to construct a proof without some sort of secret (in our previous example, the
 preimage of a hash function), then we have an argument \textit{of knowledge}.
 Intuitively, in a zero-knowledge argument of knowledge, $V$ becomes convinced that $P$ knows some secret without the
-protocol leaking any information about the secret.\\
+protocol leaking any information about the secret.
 
 If our zero-knowledge argument of knowledge additionally satisfies the properties of being \textit{non-interactive}~(no
 or little interaction between prover and verifier) and \textit{succinct}~(the sizes of the messages are small in
@@ -373,14 +373,14 @@ Knowledge} (or \textit{zkSNARK})~\cite{reitwiessner2016zksnarks}.
 
 Recent applications of zkSNARKs include privacy preserving blockchains (see~\ref{sec:bitcoin}) where a network can
 verify a participant does not spend more funds that their balance without leaking any knowledge about the amount being
-spent, the balance itself, or the identities of payer and payee~\cite{zerocash_whitepaper}.\\
+spent, the balance itself, or the identities of payer and payee~\cite{zerocash_whitepaper}.
 
 Complex smart contracts (see~\ref{sec:ethereum}) quickly result in high costs for callers due to gas costs that increase with complexity of the
 contract's computation (see~\nameref{subsec:eth:gas}).
 zkSNARKs allow to verify a computation for a fraction of the cost of running it~\cite{zokrates_intro}.
 
 % TODO cite other frameworks?
-Several frameworks allow writing zkSNARKs and deploying them to a blockchain that supports smart contracts.\\
+Several frameworks allow writing zkSNARKs and deploying them to a blockchain that supports smart contracts.
 
 \textit{ZoKrates}~\cite{zokrates_repo} allows writing off-chain programs (which can be run tested locally) for a
 verifier.
@@ -452,7 +452,7 @@ to deny issuing a licence~\citeTODO.
 \section{Previous Work on Machine-Readable Contracts}\label{sec:machine-readable-contracts}
 
 In the context of this project, \emph{machine-readable}~\cite{cambridgeMachineReadable, openDataMachineReadable} refers to an encoding for a formalisation of a legal agreement which can be processed by a suitable program.
-The processing must relate specifically to uses of legal documents (therefore formats like Microsoft Word, plain UTF encoded text, or PDF do not qualify).\\
+The processing must relate specifically to uses of legal documents (therefore formats like Microsoft Word, plain UTF encoded text, or PDF do not qualify).
 
 See also~\autoref{sec:nlp} for normative rule generation from legal text, and~\autoref{subsec:reasoning-with-legal-agreements} for reasoning with existing formalisms.
 
@@ -473,7 +473,7 @@ with the assistance of a web graphical user interface (GUI).
 This document keeps all version control information and can be rendered into a human-readable format or exported
 to PDF~\cite{pdf2020spec} or Microsoft Word~\cite{microsoftWordWeb} formats.
 The JSON document can be further processed to provide extra analytics and tools, like summarization statistics or
-agreement renewal reminders.\\
+agreement renewal reminders.
 
 Juro's whitepaper lists `self-executing' clauses as future work~\cite[p.~6]{juroWhitepaper}.
 Therefore Juro does not attempt to make any contributions with respect to verification of compliance or enforcement of
@@ -492,7 +492,7 @@ computations~(such as compounding interest over a period of time).
 After signature, more behaviour can be written in code to check information against a contract (like checking for
 breach of contract, or what action to take in a specific situation).
 See Figure~\ref{fig:accord-post-signature-code} for an example where the clause checks for the state of a
-delivery~(whether it is timely, has passed inspection, etc).\\
+delivery~(whether it is timely, has passed inspection, etc).
 
 \begin{figure}[th]
     \centering
@@ -535,7 +535,7 @@ delivery~(whether it is timely, has passed inspection, etc).\\
 
 \textit{Ergo} code (the language in which Accord allows specifying contract behaviour~\cite{accordErgo}) can then be
 deployed to a permissioned open-source enterprise-oriented blockchain called \textit{HyperLedger
-Fabric}~\cite{hyperledgerFabric_repo, accordFabricDeployDocs} or to a NodeJS server~\cite{accordNodeJSDeployDocs}.\\
+Fabric}~\cite{hyperledgerFabric_repo, accordFabricDeployDocs} or to a NodeJS server~\cite{accordNodeJSDeployDocs}.
 
 While the Accord project does also aim to represent machine-readable contracts, its representation
 cannot be easily written by a non-software developer (unlike Juro's~\ref{subsec:juro}).
@@ -570,7 +570,7 @@ giving it some extra cryptographic guarantees (for example, signatures cannot be
     \end{itemize}
 \end{definition}
 
-Using human-written legal prose has the advantages of leading to faster dispute resolution, better enforceability and more transparency when operating within the classical framework of agreements -- for all purposes, there is no difference between a traditional agreement and a Ricardian contract in this area.\\
+Using human-written legal prose has the advantages of leading to faster dispute resolution, better enforceability and more transparency when operating within the classical framework of agreements -- for all purposes, there is no difference between a traditional agreement and a Ricardian contract in this area.
 
 \subsubsection{Drawbacks}
 
@@ -588,17 +588,17 @@ The process of representing or acquiring knowledge from a legal agreement is typ
     r: \text{IF} \  a_{1}, \dots ,a_n \ \text{THEN} \ c
 \end{equation}
 
-Where $r$ is the unique identifier of the rule, $a_1, \dots, a_n $ are the \emph{antecedent} representing the conditions (which includes the context under which the rule is created) of applicability of the norm, and $c$ is the \emph{conclusion} representing the effect of the norm.\\
+Where $r$ is the unique identifier of the rule, $a_1, \dots, a_n $ are the \emph{antecedent} representing the conditions (which includes the context under which the rule is created) of applicability of the norm, and $c$ is the \emph{conclusion} representing the effect of the norm.
 
 Note how~\nameref{subsec:juro} does not try to capture norms at all, and~\nameref{subsec:accord} chooses to use the abstraction of a program rather than that of a set of rules.
 NLP, on the other hand (discussed in~\autoref{sec:nlp}) struggles to extract such rules from existing documents.
 
 \subsubsection{Contract-Driven Agents}\label{subsubsec:contract-driven-agents}
 
-An attempt at formalising a representation of the behaviours involved in a legal agreement and the interactions between the parties to such agreements contract-driven agents as presented in~\cite{knottenbeltContractDriven}.\\
+An attempt at formalising a representation of the behaviours involved in a legal agreement and the interactions between the parties to such agreements contract-driven agents as presented in~\cite{knottenbeltContractDriven}.
 
 The formalisation involves establishing a calculus based in multi-agents systems specifically oriented towards legal agreements, through the event calculus as first introduced by~\cite{kowalski1989logicEventBased}~(a logic-based system).
-Note how the event calculus can be generalised by~\autoref{eq:basic-rule}.\\
+Note how the event calculus can be generalised by~\autoref{eq:basic-rule}.
 
 Unlike Ricardian contracts~(see~\autoref{subsec:ricardian-contracts}), contract-driven agents attempt to describe the behaviours of all parties as well as how they react to other parties' behaviours.
 Therefore, unlike Ricardian contracts, they also capture the semantics of the agreement between all the parties.
@@ -609,7 +609,7 @@ Therefore, unlike Ricardian contracts, they also capture the semantics of the ag
 Much like~\nameref{subsubsec:contract-driven-agents} it aims to capture the semantics of the agreement.
 It does this by providing several abstractions relating to legal concepts, such as \emph{powers} and \emph{obligations}, and creating axioms around them.
 
-Time and events through a model based on temporal logic~\cite{temporalLogic1984} which specifies time instances for events, time intervals for situations, and makes use of pre-state and post-state situations for events.\\
+Time and events through a model based on temporal logic~\cite{temporalLogic1984} which specifies time instances for events, time intervals for situations, and makes use of pre-state and post-state situations for events.
 
 % TODO Solidity ref
 Symboleo also hopes to provide an implementation-agnostic specification by transpiling to blockchain languages such as Solidity -- much like~\nameref{subsec:accord}.
@@ -620,7 +620,7 @@ An example of a contract (a meat sales agreement that can be found in~\autoref{t
 
 \section{Natural Language Processing and its Limitations}\label{sec:nlp}
 
-Human-written text, which is how legal agreements are typically persisted\footnote{Note other formats like verbal agreements may also constitute legal agreements~\cite{larsonContractLawIntro}} can be converted into machine-readable form by attempting to translate the natural language in which they are written through Natural Language Processing~(NLP), which uses techniques such as symbolic reasoning and deep learning~\cite{GoldbergNLPReview}.\\
+Human-written text, which is how legal agreements are typically persisted\footnote{Note other formats like verbal agreements may also constitute legal agreements~\cite{larsonContractLawIntro}} can be converted into machine-readable form by attempting to translate the natural language in which they are written through Natural Language Processing~(NLP), which uses techniques such as symbolic reasoning and deep learning~\cite{GoldbergNLPReview}.
 
 Existing technologies trying to process legal text -- such as~\cite{angeli2015NLP1},~\cite{lapata2016NLP2},~\cite{lapata2018NLP3}, or~\cite{sleimi2018NLP4} -- try to produce normative rules.
 
@@ -680,7 +680,7 @@ The use-case of representing complex, formalised abstractions in a machine-reada
 A class of languages made to target a specific problem, rather than being general purpose, also exists: these are \emph{Domain-Specific Languages} (or \emph{DSLs})
 
 According to~\cite{fowlerDsl}: ``A DSL is a computer language that is targeted to a particular kind of problem, rather than a general purpose language that is aimed at any kind of software problem''.
-In order to write legal agreements and lower the barrier of entry as much as possible (ideally, no software engineering training should be required) a well-documented and easy-to-use DSL is a good solution: expressive enough to be able to represent a large range of agreements, but restrictive enough that language features should not require extensive training.\\
+In order to write legal agreements and lower the barrier of entry as much as possible (ideally, no software engineering training should be required) a well-documented and easy-to-use DSL is a good solution: expressive enough to be able to represent a large range of agreements, but restrictive enough that language features should not require extensive training.
 
 Several modalities of DSLs exist that can be used.
 The compromises they make are in cost (for developing a framework for them), ease of writing, readability, and expressiveness~\cite{fowlerDslGuide, fowlerLangWorkbench}.

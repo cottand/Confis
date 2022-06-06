@@ -64,7 +64,7 @@ As far as fulfilling the~\nameref{def:accessibility} requirement, Confis is the 
 The Query UI~(\autoref{sec:queryUI}), Confis-to-English conversion~(\autoref{sec:additional-tooling:doc-rendering}), the Confis Editor~(\autoref{sec:confis-editor}) and the structure of the Confis language itself (\autoref{sec:language-semantics}) were all developed with this goal in mind.
 
 Exceptions to this statement include accessible technologies like Juro (\autoref{subsec:juro}).
-Such tools add contract metadata without actually allowing for querying beyond fetching the metadata, nor attempt to capture the semantics of the agreement -- like Adobe Signing tools or typical Ricardian Contracts~\cite{ricardianWeb}, but unlike Symboleo or The Accord Project.\\
+Such tools add contract metadata without actually allowing for querying beyond fetching the metadata, nor attempt to capture the semantics of the agreement -- like Adobe Signing tools or typical Ricardian Contracts~\cite{ricardianWeb}, but unlike Symboleo or The Accord Project.
 
 We translate to Confis a sample contract used in Symbolio~\cite{symboleo2020} in order to compare the same agreement in two different languages.
 For the sake of brevity, we wille examine an extract, but the full original (in plain English) can be found at~\autoref{tab:meat}, the full Symbolio specification at~\autoref{fig:symbolio:meatSales}, and the full Confis agreement at~\autoref{fig:confis:meat}.
@@ -169,7 +169,7 @@ The best example of this is the operation of summing six months to a time period
 
 As far as readability goes, Confis goes the extra mile by trying to combine metadata and language semantics to provide an English-like preview.
 This prose rendering is shown in~\autoref{fig:confis-render-meat-confidentiality}.
-While the preview is not as clear as the original plain-English clause, it conveys the obligations of each party well and is unambiguous thanks to its definition referencing (which is common in real legal agreements).\\
+While the preview is not as clear as the original plain-English clause, it conveys the obligations of each party well and is unambiguous thanks to its definition referencing (which is common in real legal agreements).
 
 \begin{figure}[H]
     \centering
@@ -210,7 +210,7 @@ In Confis semantics, this represents a contradiction in the logic of the contrac
 This compromise between contradiction detection (extremely useful for helping the drafter produce well-formed contracts) and expressiveness (allowing these do-in-case-of-breach clauses) is unavoidable in the current semantics of Confis Allowance~(see~\nameref{def:allowance} for more details).
 
 In order to circumvent this limitation, it is possible to create two `cases': a Permission that allows paying on time, and different Permission that allows paying at any time with interest.
-While this removes the contradiction, it does not capture the violation semantics of the original legal agreement.\\
+While this removes the contradiction, it does not capture the violation semantics of the original legal agreement.
 
 Symboleo is capable of capturing such a scenario thanks to its \texttt{Happens(Violated(\_))} predicate, which can create a new obligation when a different obligation is violated.
 
@@ -223,7 +223,7 @@ Confis only has a concept of time as a~\nameref{def:circumstance} -- an event do
 Ordering of events is established with an additional circumstance called a Past Action.
 Again, this Circumstance does not receive special treatment and like the others it is up to the author of the contract to specify it.
 
-While this design choice greatly simplifies rule generation and language semantics (thus making Confis easier to learn) it is a sacrifice in expressiveness.\\
+While this design choice greatly simplifies rule generation and language semantics (thus making Confis easier to learn) it is a sacrifice in expressiveness.
 
 For example, unlike Symboleo, Confis is unable to allow a new Capability only after an event $E$ occurred at a time $t$ and $E$ has happened after another event $E_{\text{past}}$.
 Instead, Confis only allows a new capability after $E$ and $E_{\text{past}}$ have both happened, regardless of whether $E$ happened at time $t$, or whether $E$ happened before or after $E_{\text{past}}$.
@@ -237,26 +237,39 @@ Other than the absolutely necessary abstractions for the domain (such as Parties
 The language then usually needs to define operations on these types, as well as extend them with other types such as Dates, Lists, etc.
 
 Confis lowers the entry barrier by doing without most of this mental overhead (the only type concerned with numerical values it allows is a Date).
-It does not require using libraries in order to perform operations -- mostly because there are no such operations, but partly thanks to operator overloading like in \texttt{`today + 3.months'}.
+It does not require using libraries in order to perform operations -- mostly because there are no such operations, but partly thanks to operator overloading like in \autoref{fig:confis:meat-confidentiality}.
 
 This greatly limits its expressiveness in terms of numerical amounts and the computations that can be done on them during the contract evaluation.
-
-
 Consider The Accord Project~\cite{accordHomepage}~(see~\autoref{subsec:accord}), which models programs computationally with a more general-purpose language.
-It is able to perform complex floating-point arithmetic in order to compute interest rates and fees.\\
+It is able to perform complex floating-point arithmetic in order to compute interest rates and fees.
 
 On the other hand, Symboleo (and similar logic-based technologies) struggle more to perform such time-based calculations (possibly due to their declarative nature).
 In the original Symboleo paper~\cite{symboleo2020} which contains a meat sales example hand-picked to showcase the language, the authors do not attempt to perform an interest calculation over time even though their original agreement specifies one -- this is shown in~\autoref{fig:symbolio:meat-interest} for convenience.
 
 \begin{figure}[h]
     \centering
-    \begin{minipage}{0.67\textwidth}
+    \begin{minipage}{0.85\textwidth}
     \begin{minted}[
         autogobble,
         frame=lines,
         framesep=2mm,
         fontsize=\small
     ]{prolog}
+        Domain
+        Currency isAn Enumeration(CAD, USD, EUR);
+        PaidLate isAn Event with
+            amount: Number, currency: Currency, from: Buyer, to: Seller;
+
+        Contract MeatSale (
+            buyer : Buyer,
+            seller : Seller,
+            curr : Currency,
+            interestRate: Number
+        )
+
+        endDomain
+
+        Declarations
         paidLate: PaidLate with
             % where interestRate is a constant
             amount := (1 + interestRate / Math.abs(2)),
@@ -269,7 +282,7 @@ In the original Symboleo paper~\cite{symboleo2020} which contains a meat sales e
     \label{fig:symbolio:meat-interest}
 \end{figure}
 
-Overall, Confis is not that lacking when compared to Symboleo as it does allow specifying numerical constants, except without having to specify their types.
+In short, while Confis lacks the computational capabilities of a programming language, it is not that lacking when compared to Symboleo since it does allow specifying numerical constants (except without having to specify their types).
 
 \section{Software Deliverables}\label{sec:software-deliverables}
 
@@ -293,7 +306,7 @@ structured data.
 The project should come up with, or find in the literature and adapt, a suitable format for a legal
 agreement.
 In order to limit the scope of the project, we will narrow the agreement to be encoded to
-licences.\\
+licences.
 
 A successful project should include:
 \begin{itemize}
@@ -319,7 +332,7 @@ For example, a successful prototype should be aware of this enough to refer the 
 license when it is unable to provide certainties with respect to a query against a license.
 
 In other words, this uncertainty created by attempting to represent a contract in a machine-readable
-encoding should be part of the encoding itself, for the sake of completeness and usability.\\
+encoding should be part of the encoding itself, for the sake of completeness and usability.
 
 Evaluation criteria would include whether the project can successfully encode a wide range of
 licence agreements.
