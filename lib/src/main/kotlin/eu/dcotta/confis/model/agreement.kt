@@ -2,7 +2,9 @@ package eu.dcotta.confis.model
 
 import eu.dcotta.confis.dsl.AgreementBuilder
 import kotlinx.collections.immutable.toPersistentSet
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Agreement(
     val clauses: List<Clause>,
     val parties: List<Party>,
@@ -17,10 +19,13 @@ fun Agreement(builder: AgreementBuilder.() -> Unit): Agreement = AgreementBuilde
 
 sealed interface NoCircumstance
 
+@Serializable
 sealed interface Clause {
     @JvmInline
+    @Serializable
     value class Text(val string: String) : Clause, NoCircumstance
 
+    @Serializable
     data class PermissionWithCircumstances(
         val permission: Permission,
         val circumstanceAllowance: Allowance,
@@ -29,11 +34,13 @@ sealed interface Clause {
         val sentence by permission::sentence
     }
 
+    @Serializable
     data class RequirementWithCircumstances(
         val sentence: Sentence,
         val circumstances: CircumstanceMap,
     ) : Clause
 
+    @Serializable
     data class Requirement(val sentence: Sentence) : Clause, NoCircumstance {
         val subject by sentence::subject
         val obj by sentence::obj
@@ -42,6 +49,7 @@ sealed interface Clause {
         override fun toString() = "Requirement($sentence)"
     }
 
+    @Serializable
     data class Permission(val allowance: Allowance, val sentence: Sentence) : Clause, NoCircumstance {
         val subject by sentence::subject
         val obj by sentence::obj

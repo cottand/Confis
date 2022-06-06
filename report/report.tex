@@ -33,25 +33,26 @@
 \usepackage{listings}
 \usepackage{textcomp}
 \usepackage{color}
+\usepackage{markdown}
 \usetikzlibrary{arrows,positioning}
-\tikzset{
-%Define standard arrow tip
-    >=stealth',
-%Define style for boxes
-    punkt/.style={
-        rectangle,
-        rounded corners,
-        draw=black, thick,
-        text width=6.5em,
-        minimum height=2em,
-        text centered},
-% Define arrow style
-    pil/.style={
-        ->,
-        thick,
-        shorten <=2pt,
-        shorten >=2pt,}
-}
+%\tikzset{
+%%Define standard arrow tip
+%    >=stealth',
+%%Define style for boxes
+%    punkt/.style={
+%        rectangle,
+%        rounded corners,
+%        draw=black, thick,
+%        text width=6.5em,
+%        minimum height=2em,
+%        text centered},
+%% Define arrow style
+%    pil/.style={
+%        ->,
+%        thick,
+%        shorten <=2pt,
+%        shorten >=2pt,}
+%}
 \geometry{
     paper=a4paper,
     inner=2.5cm,
@@ -69,6 +70,9 @@
     \ordinal{DAY}\ of \monthname[\THEMONTH]
 }
 \newcommand{\monthdate}[2]{ \daymonth\formatdate{#1}{#2}{2022}}
+% TODO find a nice definition format
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
 %
 %\newcommand{\thickerhline}{
 %    \setlength{\arrayrulewidth}{.11.6.105em}
@@ -77,7 +81,7 @@
 %}
 
 %\thesistitle{Exploring Trustless Licensing} % print with \ttitle
-\thesistitle {Confis, a Framework for Authoring and Querying Machine-Readable Legal Agreements}
+\thesistitle {Confis: A Framework for Authoring and Querying Machine-Readable Legal Agreements}
 \supervisor{Prof. William J. \textsc{Knottenbelt}} % print with \supname
 \marker{Dr. Paul A. \textsc{Bilokon}}
 \degree{MEng Computing} % print with \degreename
@@ -97,8 +101,11 @@
     \hypersetup{pdfkeywords=\keywordnames} % Set the PDF's keywords to your keywords
 }
 
+
 \begin{document}
     \usemintedstyle{tango}
+    \setlength{\parskip}{\medskipamount}
+    \setlength{\parindent}{0pt}
 
     \frontmatter
     \pagestyle{plain}
@@ -151,18 +158,46 @@
     \end{titlepage}
 
 
-%    \begin{abstract}
-%        \addchaptertocentry{\abstractname} % Add the abstract to the table of contents
-%        The Thesis Abstract is written here (and usually kept to just this page).
-%        The page is kept centered vertically so can expand into the blank space above the title too\ldots
-%    \end{abstract}
+    \begin{abstract}
+        \addchaptertocentry{\abstractname} % Add the abstract to the table of contents
 
 
-%    \begin{acknowledgements}
-%        \addchaptertocentry{\acknowledgementname} % TODO
-%        The acknowledgments and the people to thank go here, don't forget to include your project advisor\ldots
-%    \end{acknowledgements}
+        The notion of formalising contracts was first introduced by Szabo in~\cite{szabo1997smart-contracts} in 1997, but at the time of writing (25 years later) in practice how we interact with legal agreements has remained unchanged -- we still use them as plain text.
+        Rather than replacing existing legal infrastructure, some new technologies like blockchain-based smart contracts have created a new class of self-enforcing software systems which mostly revolve around financial products.
+        Other, more logic-based attempts to automate reasoning with legal documents are very specialist and require understanding of advanced topics, such as logic programming, linear temporal logic, or the event calculus.
+        This lack of accessibility of existing technologies means that they have not seen practical adoption in industry.
 
+        This project introduces \textbf{\emph{Confis}}, a Kotlin-based accessible language that specifies legal agreements and allows for complex queries.
+%        Its features include converting documents back to plain English, an intelligent editor with a live preview, and a user interface for performing complex queries on documents as they are written.
+        Contracts are written as stand-alone scripts inside a fully-capable editor based on IntelliJ IDEA~\cite{intelliJRepo}, inside which a live preview displays a plain English render of the encoded agreement.
+        A graphical UI allows making questions involving parties' legal capabilities and their compliance, such as \emph{`What needs to happen for my landlord evict me?'} or \emph{`Has the seller breached the contract?'}
+
+
+        % something in this technical paragraph about architecture ^
+        % showcase your technical achievement!
+
+        The result is an end-to-end framework that provides abstractions that successfully represent most use-cases for contracts comparable to those of Symboleo~\cite{symboleo2020} or The Accord Project~\cite{accordHomepage}, except with a strong focus on accessibility and ease-of-use aimed at industry.
+        Simple and easier to learn abstractions are brought forward by compromising mainly language expressiveness -- and therefore in the complexity of the contracts that can be represented.
+        % specify what kind of queries exactly you are able to answer
+
+        % Last paragraph is kind of queries
+        Overall, this project hopes to operationalise legal agreements by providing the industry with relevant and pragmatic tools, proving that it is possible to make use of a formalisation for a sales contract without a strong technical background.
+        Next steps include communicating with other services for them to be aware of their legal capabilities (rather than relying on legal advice across teams inside an organisation), as well as improving the compromise between the contracts that can be represented and the complexity of the language.
+        % specify how you built on top of another lang as an internal DSL
+
+        % last para did you manage succesfully?? what about the future of contracts in general
+        % what works what does not work
+        % general outlook
+
+        % what case studies
+
+    \end{abstract}
+
+
+    \begin{acknowledgements}
+        \addchaptertocentry{\acknowledgementname} % TODO write akcnowledgements
+        I would like to thank William, my supervisor\dots.
+    \end{acknowledgements}
 
     \tableofcontents
     \listoffigures
@@ -176,7 +211,7 @@
 
     \include{chapters/introduction}
     \include{chapters/background}
-    \include{chapters/goals}
+    \include{chapters/overview}
     \include{chapters/lang}
     \include{chapters/queries}
     \include{chapters/ethical}
@@ -184,6 +219,9 @@
     \include{chapters/conclusions}
 
     \appendix
+
+    \include{appendices/confisExamples}
+    \include{appendices/editorPreviews}
 
     \printbibliography[heading=bibintoc]
 

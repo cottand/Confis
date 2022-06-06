@@ -1,0 +1,208 @@
+\chapter{Confis Code Samples}\label{ch:confis-examples}
+
+\newenvironment{code}{\captionsetup{type=figure}}{}
+
+
+\section{Confis Software Archive Code Extracts}\label{sec:confis-software-code-extracts}
+
+The following is a stripped-down version of the \texttt{AgreementBuilder} class (the full version can be found in the software archive).
+It is meant ot demonstrate how normal Kotlin functions can come together inside a single class that can be bound to a script in order to write agreements like that of~\autoref{fig:confis:minimal}.
+\begin{code}
+    \begin{minted}[
+        autogobble,
+        frame=lines,
+        framesep=2mm,
+        fontsize=\small
+    ]{kotlin}
+
+open class AgreementBuilder {
+
+    // metadata
+    var title: String? = null
+    var introduction: String? = null
+
+    private val clauses = mutableListOf<Clause>()
+
+    operator fun Action.invoke(obj: Obj): ActionObject = ActionObject(this, obj)
+
+    /**
+     * Specifies that [Subject] may perform [sentence]
+     */
+    infix fun Subject.may(s: ActionObject): Permission {
+        val permission = Permission(Allow, Sentence(this, s.action, s.object)
+        clauses += permission
+        return permission
+    }
+
+    /**
+     * Specifies that [Subject] may NOT perform [sentence]
+     */
+    infix fun Subject.may(s: ActionObject): Permission {
+        val permission = Permission(Forbid, Sentence(this, s.action, s.object)
+        clauses += permission
+        return permission
+    }
+    // allows declaring parties, actions, and things to use in Sentences
+    val party = oneTimeProperty<Any?, Subject> { prop -> Party(prop.name) }
+    val action = oneTimeProperty<Any?, Action> { prop -> Action(prop.name) }
+    val thing = oneTimeProperty<Any?, Obj> { prop -> Obj.Named(prop.name) }
+
+}
+    \end{minted}
+    \caption{A minimal example of the \texttt{AgreementBuilder} DSL}
+    \label{fig:agreementBuilderSmall}
+\end{code}
+
+
+\section{Confis Agreements Samples}\label{sec:confis-agreements-samples}
+
+
+\begin{code}
+    \inputminted[
+        autogobble,
+        frame=lines,
+        framesep=2mm,
+        fontsize=\small
+    ]
+    {kotlin}{../script/src/test/resources/scripts/minimal.confis.kts}
+    \caption[A minimal example of a contract]{A minimal example of a contract, writable with the \texttt{AgreementBuilder} from~\autoref{fig:agreementBuilderSmall}}
+    \label{fig:confis:minimal}
+\end{code}
+
+
+
+\begin{code}
+    \inputminted[
+        autogobble,
+        frame=lines,
+        framesep=2mm,
+        fontsize=\small
+    ]
+    {kotlin}{../script/src/test/resources/scripts/geophys.confis.kts}
+    \caption{A prototype Confis representation of a seismic data license (given in~\cite{seismicDataLicence})}
+    \label{fig:confis:geophys}
+\end{code}
+
+\subsection*{From Agreement, to IR, to Rules}
+
+The following is an example of a very simple Confis Agreement:
+
+\begin{figure}[h]
+    \begin{minted}[
+        autogobble,
+        frame=lines,
+        framesep=2mm,
+    ]{kotlin}
+    val alice by party
+    val use by action
+    val data by thing
+    alice may use(data) asLongAs {
+        within { (1 of June)..(30 of June) year 2022 }
+    }
+    \end{minted}
+    \caption{Minimal Confis agreement with a circumstance}
+    \label{fig:confis:min-circumstance}
+\end{figure}
+
+This clause is simple and generates a single rule when querying for a circumstance question~(\emph{`Under what circumstances may Alice use data?'}).
+The clause is translated into the following IR:
+
+\begin{code}
+    \begin{minted}[
+        autogobble,
+        frame=lines,
+        framesep=2mm,
+        fontsize=\small,
+    ]{haskell}
+        Agreement(
+            clauses = [
+                    PermissionWithCircumstances(
+                        allowance = Allow,
+                        sentence = Sentence(
+                            Party("alice"),
+                            Action("use"),
+                            Obj.Named("data")
+                        ),
+                        circumstanceAllowance = Allow,
+                        circumstances = CircumstanceSet(
+                            TimeRange.Key -> TimeRange(01/07/2022..30/01/2022),
+                        ),
+                    ),
+                ],
+            parties = [Party("alice")],
+            title = null,
+            description = null,
+        )
+    \end{minted}
+    \caption{IR of minimal Confis agreement with a circumstance from~\autoref{fig:confis:min-circumstance}}
+    \label{fig:confis:min-circumstance-ir}
+\end{code}
+
+
+\subsection{Meat Contract Comparison}\label{subsec:meat-contract-comparison}
+
+This subsection hopes to illustrate the main differences between different representations of the same contract (given in~\autoref{tab:meat}).
+These differences are discussed under~\nameref{ch:evaluation} under~\autoref{sec:language-formalism-evaluation}.
+
+\begin{table}
+    \centering
+    \setlength{\fboxsep}{10pt}
+    \fbox{
+        \begin{minipage}{0.8\textwidth}
+            \renewcommand{\labelenumii}{\theenumii}
+            \renewcommand{\theenumii}{\theenumi.\arabic{enumii}.}
+
+            This agreement is entered into as of the date <effDate>, between
+            <party1> as Seller with the address <retAdd>, and <party2> as Buyer
+            with the address <delAdd>.
+            \begin{enumerate}
+                \item \textbf{Payment \& Delivery}
+                \begin{enumerate}
+                    \item Seller shall sell an amount of <qnt> meat with <qlt> quality (“goods”) to the Buyer.
+                    \item Title in the Goods shall not pass on to the Buyer until payment of the amount owed has been made in full.
+                    \item The Seller shall deliver the Order in one delivery within <delDueDateDays> days to the Buyer at its warehouse.
+                    \item The Buyer shall pay <amt> (“amount”) in <curr> (“currency”) to the Seller before <payDueDate>.
+                    \item In the event of late payment of the amount owed due, the Buyer shall pay interests equal to <intRate> the Seller may suspend performance of all of its obligations under the agreement until payment of amounts due has been received in full.
+                \end{enumerate}
+                \item \textbf{Assignment}
+                \begin{enumerate}
+                    \item The rights and obligations are not assignable by Buyer.
+                \end{enumerate}
+                \item \textbf{Termination}
+                \begin{enumerate}
+                    \item Any delay in delivery of the goods will not entitle the Buyer to terminate the Contract unless such delay exceeds 10 Days.
+                \end{enumerate}
+                \item \textbf{Confidentiality}
+                \begin{enumerate}
+                    \item Both Seller and Buyer must keep the contents of this contract confidential during the execution of the contract and six months after the termination of the contract.
+                \end{enumerate}
+            \end{enumerate}
+        \end{minipage}
+%    \vspace{0.2cm}
+    }
+    \caption[Sample meat sales contract]{Sample of a meat purchase and sales contract, from~\cite{symboleo2020}}
+    \label{tab:meat}
+\end{table}
+\begin{code}
+    \inputminted[
+        autogobble,
+        frame=lines,
+        framesep=2mm,
+        fontsize=\small
+    ]
+    {kotlin}{../script/src/test/resources/scripts/meat.confis.kts}
+    \caption{Confis Agreement for~\nameref{tab:meat}}
+    \label{fig:confis:meat}
+\end{code}
+
+\begin{code}
+    \inputminted[
+        autogobble,
+        frame=lines,
+        framesep=2mm,
+        fontsize=\small
+    ]
+    {prolog}{figures/meatSales.symboleo}
+    \caption{Symboleo Specification for~\nameref{tab:meat}, from~\cite{symboleoMeat, symboleo2020}}
+    \label{fig:symbolio:meatSales}
+\end{code}

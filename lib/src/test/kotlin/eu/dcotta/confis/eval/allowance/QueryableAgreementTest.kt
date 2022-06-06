@@ -85,7 +85,7 @@ class QueryableAgreementTest : StringSpec({
         a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Commercial)) shouldBe Unspecified
     }
 
-    "purposes in rules create precedence between them" {
+    "purposes in rules create no precendence" {
         val a = Agreement {
 
             val alice by party
@@ -99,6 +99,8 @@ class QueryableAgreementTest : StringSpec({
 
             // alice cannot eat cookies unless it is for research
             alice mayNot { eat(cookie) }
+
+            // contradictory
             alice may { eat(cookie) } asLongAs {
                 with purpose Research
             }
@@ -108,8 +110,8 @@ class QueryableAgreementTest : StringSpec({
         a.ask(AllowanceQuestion(aliceEatsCake, purpose = Commercial)) shouldBe Unspecified
         a.ask(AllowanceQuestion(aliceEatsCake, purpose = Research)) shouldBe Allow
 
-        a.ask(AllowanceQuestion(aliceEatsCookie)) shouldBe Depends
-        a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Research)) shouldBe Allow
+        a.ask(AllowanceQuestion(aliceEatsCookie)) shouldBe Forbid
+        a.ask(AllowanceQuestion(aliceEatsCookie, purpose = Research)) shouldBe Forbid
     }
 
     "double negation well handled" {

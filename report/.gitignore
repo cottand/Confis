@@ -16,3 +16,6 @@ _minted-report/
 *.run.xml
 *.synctex.gz
 *.toc
+*.markdown.in
+*.markdown.lua
+_markdown_report/

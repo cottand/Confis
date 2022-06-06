@@ -9,6 +9,13 @@ import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.plus
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.collections.immutable.toPersistentMap
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
 /**
  * A [CircumstanceMap] functions a lot like a CoroutineContext: it is a collection of [Circumstance]s that can be
@@ -18,6 +25,7 @@ import kotlinx.collections.immutable.toPersistentMap
  * uniqueness of their [Circumstance.Key], which is what uniquely identifies a [Circumstance] within a [CircumstanceMap]
  * (and what keeps track of its type).
  */
+@Serializable(with = CircumstanceMap.Serializer::class)
 class CircumstanceMap private constructor(
     private val map: PersistentMap<Key<*>, Circumstance>,
 ) {
@@ -87,5 +95,25 @@ class CircumstanceMap private constructor(
     companion object {
         val empty = CircumstanceMap(persistentMapOf())
         fun of(vararg elems: Circumstance) = CircumstanceMap(elems.associateBy { it.key }.toPersistentMap())
+    }
+
+    object Serializer : KSerializer<CircumstanceMap> {
+
+        private val mapSerializer: KSerializer<Map<Key<Circumstance>, Circumstance>> =
+            MapSerializer(Key.serializer(Circumstance.serializer()), Circumstance.serializer())
+
+        @Suppress("OPT_IN_IS_NOT_ENABLED")
+        @OptIn(ExperimentalSerializationApi::class)
+        override val descriptor: SerialDescriptor =
+            SerialDescriptor("CircumstanceMap", mapSerializer.descriptor)
+
+        override fun deserialize(decoder: Decoder): CircumstanceMap {
+            val decoded = decoder.decodeSerializableValue(mapSerializer)
+            return CircumstanceMap(decoded.toPersistentMap())
+        }
+
+        override fun serialize(encoder: Encoder, value: CircumstanceMap) {
+            encoder.encodeSerializableValue(mapSerializer, value.map)
+        }
     }
 }

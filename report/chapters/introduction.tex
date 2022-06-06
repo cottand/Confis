@@ -1,31 +1,50 @@
 \chapter{Introduction}\label{ch:introduction}
 
-\section*{The Hassle of Enterprise Legal Agreements}\label{sec:intro:legal-hassle}
-
-Businesses are routinely bound by legal agreements to each other and those agreements give them
-constraints with respect to the legal boundaries they can operate within.
+Businesses are routinely bound by legal agreements to each other and those agreements give them constraints with respect to the legal boundaries they can operate within, as well as legal capabilities they would not otherwise have.
 While compliance with the agreement is typically in the interest of all parties involved, it is
 difficult to achieve: legal advice - most commonly costly and billed by the hour - must be sought
 out to deal with any non-routine situation.
 
-Additionally, even when an agreement is being complied with by all, parties must be able to prove
-they are compliant, leading to large amounts of unstructured documents of audit trails.\\
+Legal agreements are most typically handwritten documents with no machine-readable metadata.
+While some technologies~(digital signing, PDF, collaborative drafting tools, etc) have changed the medium of the documents and have facilitated some hassles involved in dealing with them, how they are authored and examined, as well as how they interact with the world, has remained largely unchanged.
 
-I suggest automating some hassles of legal agreement compliance, audit and verification, by encoding
-a contract in a machine-readable format and enable querying it and logging interactions, while
-preserving privacy.
-The goals are:
-\begin{itemize}
-    \item Minimising costs in legal advice by allowing a business to 'ask questions' about the legal
-    boundaries within which they are able to operate.
-    \item Enabling secure audit trails that all parties involved in the agreement can trust in order
-    to prove compliance (or lack thereof!) without the need for trusted third parties.
-    \item Meeting business' privacy requirements with respect to information about the contracts
-    they sign.
-\end{itemize}
+\section*{Problem Relevance}\label{sec:problem-relevance}
 
-In order to limit the scope of work, this project will initially focus on data and software
-licences, particular kinds of legal agreements where access is granted to documents existing in
-digital formats (eg, bytes) and parties are likely to employ technical staff.
+Attempts to formalise legal agreements include smart contracts~(see~\autoref{sec:ethereum}).
+While revolutionary in their capability to self-enforce agreements between parties and achieve consensus between disagreeing parties, the technology has created a new class of software systems rather than automating and disrupting the operations around existing legal documents.
 
-\section{Core Contributions}
+Other attempts include formalisations through logic calculi~(see~\autoref{subsec:reasoning-with-legal-agreements}).
+These tend to have very desirable properties: expressiveness (which allows them to formalise a larger share of legal documents), invariants, and computability among others;
+but are usually specified through logic programs or more complex specification languages or algebras.
+This that means in practice they require a strong background in logic to be authored and even read, which is a strong barrier to their use in industry.
+They also tend to make little effort in compromising with existing frameworks for dealing with legal agreements: while being machine-readable is a desirable property of a contract, being human-readable (eg, for use in court) is a necessary property.
+
+\section*{Core Contributions}
+
+Please see~\autoref{fig:confis-overview} for a diagram on how these contributions interact with each other.
+
+\paragraph{A Language for Specifying Legal Agreements}
+The \textbf{Confis DSL} is a domain-specific language that specifies contracts.
+Like Applescript or Python, is engineered to be close to English.
+It has simple abstractions (by compromising on expressiveness) with the goal of easing its learning curve.
+
+See~\autoref{sec:language-semantics} for more details on the language.
+
+\paragraph{A Prototype Implementation of the Confis DSL}
+By using Kotlin as a \emph{host language} for the DSL (see~\nameref{sec:dsls}), we present a prototype which allows compiling the Confis language.
+
+See~\autoref{subsec:dsl-implementation} for more details on the language implementation.
+
+\paragraph{An Intelligent Editor for the Confis DSL}
+By using an existing development environment, we greatly improve the~\nameref{def:accessibility} of the Confis Language relative to other specification languages in the literature (like Accord or Symbolio) by also implementing a prototype that eases the drafting of Confis agreements and is able to provide human-readable live previews.
+
+See~\autoref{sec:confis-editor} for more details on the editor.
+
+\paragraph{Queryable Documents} We also introduce a prototype rules engine that compiles a Confis Agreement and is able to answer complex queries (such as \emph{`Under what circumstances can my landlord evict me?'}) by generating rules depending on the type of query and then evaluating them.
+
+See~\autoref{sec:rule-generation} for more details on the querying engine.
+
+\paragraph{A User Interface for Querying Documents} In addition to the formalisms necessary to examine a contract by querying it, we introduce a prototype that allows asking these questions through an accessible graphical user interface, and producing understandable human-readable answers to them.
+
+See~\autoref{sec:queryUI} for more details on the querying UI\@.
+

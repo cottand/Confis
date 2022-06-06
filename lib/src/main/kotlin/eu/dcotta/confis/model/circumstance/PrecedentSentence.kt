@@ -2,11 +2,13 @@ package eu.dcotta.confis.model.circumstance
 
 import eu.dcotta.confis.model.Sentence
 import eu.dcotta.confis.model.circumstance.Circumstance.SetKey
+import kotlinx.serialization.Serializable
 
 /**
  * A [Circumstance] that represents a [Sentence] that may have happened in the past
  * with respect to its corresponding clause
  */
+@Serializable
 data class PrecedentSentence(val sentence: Sentence) : Circumstance {
 
     override val key get() = Key(sentence)
@@ -20,6 +22,7 @@ data class PrecedentSentence(val sentence: Sentence) : Circumstance {
     }
 
     @JvmInline
+    @Serializable
     value class Key(val sentence: Sentence) : Circumstance.Key<PrecedentSentence>
 
     companion object KeySet : SetKey<PrecedentSentence> {

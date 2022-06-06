@@ -5,6 +5,7 @@ import eu.dcotta.confis.model.Party
 import eu.dcotta.confis.model.Sentence
 import eu.dcotta.confis.model.Subject
 import eu.dcotta.confis.model.circumstance.Consent
+import eu.dcotta.confis.model.circumstance.Date
 import eu.dcotta.confis.model.circumstance.PrecedentSentence
 import eu.dcotta.confis.model.circumstance.Purpose
 import eu.dcotta.confis.model.circumstance.PurposePolicy
@@ -52,6 +53,14 @@ class CircumstanceBuilder(val sentence: Sentence) {
      */
     fun within(timePeriod: () -> TimeRange.Range) {
         circumstances += timePeriod()
+    }
+
+    fun after(date: Date) {
+        circumstances += TimeRange.OpenFutureRange(date)
+    }
+
+    fun at(date: () -> Date) {
+        circumstances += date()
     }
 
     // conditional

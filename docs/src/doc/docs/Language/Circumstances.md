@@ -47,6 +47,37 @@ There are several ways of writing time periods and dates in general. All the fol
     }
     ```
 
+
+### Time Instants
+
+Like Time Periods, except they only last a day.
+Meant to restrict a clause to happen in a specific point in time, or for specifying a time at which an event happened in the past.
+
+```kotlin
+alice may { see(data) } asLongAs {
+    at { 1 of May year 2021 }
+}
+```
+
+#### Formats
+
+Like with Time Periods, you can use all the formats of a Date when specifying an Instant
+
+=== "Inline"
+    ```kotlin
+    alice may { see(data) } asLongAs {
+        at { 1 of May year 2021 }
+    }
+    ```
+
+=== "Dates as variables"
+    ```kotlin
+    val startOfContract = 1 of May year 2021
+
+    alice may { see(data) } asLongAs {
+        at { startOfContract }
+    }
+    ```
 ### Past Actions
 
 A past action is a circumstance where we declare something to have already happened in the past.
@@ -119,3 +150,5 @@ alice may { see(data) } asLongAs {
     with purpose Research
 }
 ```
+
+You can combine several Past Actions in a single clause, but you cannot use several Time Ranges, or a Time Range and an Instant.
