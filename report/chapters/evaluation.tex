@@ -80,14 +80,14 @@ For the sake of brevity, we wille examine an extract, but the full original (in 
             \end{enumerate}
         \end{minipage}
     }
-    \caption[Sample Confidentiality clause]{Sample confidentiality clause, extracted from~\autoref{tab:meat}}
+    \caption[Sample confidentiality clause]{Sample confidentiality clause, extracted from~\autoref{tab:meat}}
     \label{tab:meat-confidentiality}
 \end{table}
 
 The comparison will be performed on a rather simple clause of the agreement, a confidentiality clause specified by~\autoref{tab:meat-confidentiality}.
 The Confis representation is specified by~\autoref{fig:confis:meat-confidentiality}, while the Symbolio one is specified by~\autoref{fig:symbolio:meatSales-confidentiality}.
 Both are re-written self-contained examples (rather than text extracts from the original, longer contracts).
-This was done in order to fully reflect the necessary boilerplate and ceremony of each language.\\
+This was done in order to fully reflect the necessary boilerplate and ceremony of each language.
 
 
 \begin{figure}[h]
@@ -96,7 +96,7 @@ This was done in order to fully reflect the necessary boilerplate and ceremony o
         autogobble,
         frame=lines,
         framesep=2mm,
-        fontsize=\small
+        fontsize=\footnotesize
     ]{kotlin}
 val effDate = 1 of June year 2022
 val reveal by action(
@@ -123,7 +123,7 @@ buyer mayNot reveal(contract) asLongAs {
         autogobble,
         frame=lines,
         framesep=2mm,
-        fontsize=\small
+        fontsize=\footnotesize
     ]{prolog}
         Domain meatSaleDomain
         Seller isA Role with returnAddress: String, name: String;
@@ -146,7 +146,6 @@ buyer mayNot reveal(contract) asLongAs {
             not WhappensBefore(disclosed, Date.add(Activated(self), 6, months))
         );
         endContract
-
     \end{minted}
     \caption{Symboleo Specification for~\nameref{tab:meat-confidentiality}, extracted from~\autoref{fig:symbolio:meatSales}}
     \label{fig:symbolio:meatSales-confidentiality}
@@ -163,20 +162,114 @@ Notice how this abstracts away the document from the real-world execution date, 
 
 Both models are capable of expressing periods of time, but in Confis they are not part of the algebra (they are instead more general~\nameref{def:circumstance}s).
 
-\paragraph{Accessibility} While both contracts require language knowledge to write them, Confis can be read without prior training and its functions (\texttt{within}, \texttt{mayNot}, \texttt{asLongAs},~\dots) are easy to memorise.
+\paragraph{Accessibility}
+
+While both contracts require language knowledge to write them, Confis can be read without prior training and its functions (\texttt{within}, \texttt{mayNot}, \texttt{asLongAs},~\dots) are easy to memorise.
 The best example of this is the operation of summing six months to a time period -- while Symboleo requires specifying a \texttt{Date} library and wrapping the duration with a function (\texttt{`Date.add(..., 6, months)'}), Confis uses operator overloading to sum to a date (\texttt{`... + 6.months'}).
 
 As far as readability goes, Confis goes the extra mile by trying to combine metadata and language semantics to provide an English-like preview.
 This prose rendering is shown in~\autoref{fig:confis-render-meat-confidentiality}.
-While the preview is not as clear as the original plain-English clause, it conveys the obligations of each party well and is unambiguous thanks to its definition referencing (which is common in real legal agreements).
+While the preview is not as clear as the original plain-English clause, it conveys the obligations of each party well and is unambiguous thanks to its definition referencing (which is common in real legal agreements).\\
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\columnwidth]{figures/confis.meat.prose}
+    \includegraphics[width=0.67\columnwidth]{figures/confis.meat.prose}
     \caption{Confis prose rendering of~\autoref{tab:meat-confidentiality}}
     \label{fig:confis-render-meat-confidentiality}
 \end{figure}
 
+For a more detailed comparison of the specifications of this agreement in the Confis and Symboleo languages, please refer tor\autoref{ch:confis-examples}, in partcular~\autoref{subsec:meat-contract-comparison}.
+
+\subsection{Confis Limitations in its Semantics}\label{subsec:confis-lang-limits}
+
+While the focus Confis makes in Accessibility makes it easier to learn, read, and write;
+it comes at a price in the guarantees it brings and the expressiveness of the contracts that it can represent.
+% TODO solutions in future work?
+This section provides a couple examples of clauses in existing contracts that Confis struggles to formalise and tries to generalise the situations it cannot encode, as well as suggesting solutions for the problem.
+
+\subsubsection{Act Upon Violation}
+
+Contracts are sometimes defensively written (not unlike defensive programming software engineering practices) where they may include clauses that specify what should happen upon breach of other clauses (an example of such a clause is given in~\autoref{tab:meat-breach}).
+
+\begin{table}[h]
+    \centering
+    \setlength{\fboxsep}{10pt}
+    \fbox{
+        \begin{minipage}{0.9\textwidth}
+            \textbf{Payment \& Delivery}
+            \begin{itemize}
+                \item In the event of late payment of the amount owed due, the Buyer shall pay interests equal to <intRate> the Seller may suspend performance of all of its obligations under the agreement until payment of amounts due has been received in full.
+            \end{itemize}
+        \end{minipage}
+    }
+    \caption[Sample breach clause]{Sample breach clause, extracted from~\autoref{tab:meat}}
+    \label{tab:meat-breach}
+\end{table}
+
+In Confis semantics, this represents a contradiction in the logic of the contract, because we have a rule specifying that a set of states is a breach, and then other rules specifying capabilities when in those states.
+This compromise between contradiction detection (extremely useful for helping the drafter produce well-formed contracts) and expressiveness (allowing these do-in-case-of-breach clauses) is unavoidable in the current semantics of Confis Allowance~(see~\nameref{def:allowance} for more details).
+
+In order to circumvent this limitation, it is possible to create two `cases': a Permission that allows paying on time, and different Permission that allows paying at any time with interest.
+While this removes the contradiction, it does not capture the violation semantics of the original legal agreement.\\
+
+Symboleo is capable of capturing such a scenario thanks to its \texttt{Happens(Violated(\_))} predicate, which can create a new obligation when a different obligation is violated.
+
+\subsubsection{Confis Does Not Have Time in its Event Algebra}
+
+Symboleo (and other logic-based solutions like~\cite{knottenbeltContractDriven}) relate events through \emph{happensBefore} partial orderings (introduced by~\cite{kowalski1989logicEventBased}).
+They then can use these relations to model enforcing conditions, pre-conditions, and post-conditions over periods of time.
+
+Confis only has a concept of time as a~\nameref{def:circumstance} -- an event does not necessarily happen at a given time, the same way it does not necessarily happen with a given purpose.
+Ordering of events is established with an additional circumstance called a Past Action.
+Again, this Circumstance does not receive special treatment and like the others it is up to the author of the contract to specify it.
+
+While this design choice greatly simplifies rule generation and language semantics (thus making Confis easier to learn) it is a sacrifice in expressiveness.\\
+
+For example, unlike Symboleo, Confis is unable to allow a new Capability only after an event $E$ occurred at a time $t$ and $E$ has happened after another event $E_{\text{past}}$.
+Instead, Confis only allows a new capability after $E$ and $E_{\text{past}}$ have both happened, regardless of whether $E$ happened at time $t$, or whether $E$ happened before or after $E_{\text{past}}$.
+
+It is possible to mitigate this issue by explicitly forbidding $E_{\text{past}}$ to happen before $E$ -- but then we would be slightly altering the original contract's semantics by introducing a new clause breach scenario.
+
+\subsubsection{Confis Does Not Model Amounts}
+
+A key barrier to accessibility in existing formalisms -- and even any general-purpose programming language -- is their type systems.
+Other than the absolutely necessary abstractions for the domain (such as Parties or Actions) users need to know what a strictly positive integer or a floating point number are.
+The language then usually needs to define operations on these types, as well as extend them with other types such as Dates, Lists, etc.
+
+Confis lowers the entry barrier by doing without most of this mental overhead (the only type concerned with numerical values it allows is a Date).
+It does not require using libraries in order to perform operations -- mostly because there are no such operations, but partly thanks to operator overloading like in \texttt{`today + 3.months'}.
+
+This greatly limits its expressiveness in terms of numerical amounts and the computations that can be done on them during the contract evaluation.
+
+
+Consider The Accord Project~\cite{accordHomepage}~(see~\autoref{subsec:accord}), which models programs computationally with a more general-purpose language.
+It is able to perform complex floating-point arithmetic in order to compute interest rates and fees.\\
+
+On the other hand, Symboleo (and similar logic-based technologies) struggle more to perform such time-based calculations (possibly due to their declarative nature).
+In the original Symboleo paper~\cite{symboleo2020} which contains a meat sales example hand-picked to showcase the language, the authors do not attempt to perform an interest calculation over time even though their original agreement specifies one -- this is shown in~\autoref{fig:symbolio:meat-interest} for convenience.
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.67\textwidth}
+    \begin{minted}[
+        autogobble,
+        frame=lines,
+        framesep=2mm,
+        fontsize=\small
+    ]{prolog}
+        paidLate: PaidLate with
+            % where interestRate is a constant
+            amount := (1 + interestRate / Math.abs(2)),
+            currency := curr,
+            from := buyer,
+            to := seller;
+    \end{minted}
+    \end{minipage}
+    \caption{Symboleo extract from~\autoref{fig:symbolio:meatSales} concerned with interest rates}
+    \label{fig:symbolio:meat-interest}
+\end{figure}
+
+Overall, Confis is not that lacking when compared to Symboleo as it does allow specifying numerical constants, except without having to specify their types.
 
 \section{Software Deliverables}\label{sec:software-deliverables}
 

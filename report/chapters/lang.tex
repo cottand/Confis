@@ -159,10 +159,10 @@ This is shown in~\autoref{fig:allowance-venn} and~\autoref{eq:allowance-cake-exa
             val eat by action
             val cake by thing
 
-            alice may eat(cake) {
+            alice may eat(cake) asLongAs {
                 with purpose Research
             }
-            alice mayNot eat(cake) {
+            alice mayNot eat(cake) asLongAs {
                 with purpose Commercial
             }
         \end{minted}
@@ -234,8 +234,7 @@ Confis also assumes a that providing a legal obligation entails providing the le
 
 \subsection{Circumstance and Circumstance Set}\label{subsec:circumstance}
 
-% TODO refs to rulegen section
-Circumstances are a core abstraction in Confis, both in the language and in rule generation and evaluation (hence why they deserve their own section).
+Circumstances are a core abstraction in Confis, both in the language and in~\nameref{sec:rule-generation} (hence why they deserve their own section).
 
 A Circumstance Set represents the context in which a~\nameref{def:sentence} may occur.
 In the context of a legal agreement, it would contain everything in a clause that is not the core sentence, including the parent clause, conditions, etc.
@@ -245,7 +244,7 @@ A Circumstance Set is made up of Circumstances.
 
 \begin{definition}[Circumstance]
     \label{def:circumstance}
-    $C$ is a \emph{Circumstance} if it is equipped with the following operations for any other circumstance $C'$:
+    $c$ is a \emph{Circumstance} if and only if it is equipped with the following operations for any other circumstance $c'$:
     \begin{align}
         \label{def:c:generalise}
         \texttt{generalise}&: \ c \to\ c' \to\ \texttt{Boolean}\\
@@ -267,11 +266,10 @@ For example, we can only store a single circumstance representing time and a sin
 
 \begin{definition}[Circumstance Set]
     \label{def:circumstanceSet}
-    A \emph{Circumstance Set} is a key-value mapping of Circumstance Keys to \nameref{def:circumstance} like $\texttt{CircumstanceSet} = \{ k \to \texttt{Circumstance} \}$.
+    A \emph{Circumstance Set} is a key-value mapping of Circumstance Keys to \nameref{def:circumstance}, like $\texttt{CircumstanceSet} = \{ k \to \texttt{Circumstance} \}$.
 \end{definition}
 
-% TODO ref rule generation
-Defining \texttt{generalise} for circumstances will be of use when trying to define rules (see~\autoref{TODO}) because it will allow checking whether a circumstance from a clause `matches' that of a question~(see~\nameref{subsubsec:circumstances-intuition} for an explanation).
+Defining \texttt{generalise} for circumstances will be of use when trying to define rules (see~\autoref{sec:rule-generation}) because it will allow checking whether a circumstance from a clause `matches' that of a question~(see~\nameref{subsubsec:circumstances-intuition} for an explanation).
 
 \begin{definition}[Circumstance Set Generalisation]
     Fot two Circumstance Sets $C_1$ and $C_2$ we say $C_1$ \emph{generalises} $C_2$ if and only if:
@@ -309,9 +307,9 @@ The empty circumstance set can be thought of as the least specific context for a
 Indeed, the event \emph{`Alice pays Bob'} generalises the event \emph{`Alice pays Bob during June'}.
 If a contract has a requirement for the former, and we supply it with a state of the world containing the latter, we can say that Alice is compliant with the contract!\\
 
-Likewise, the converse is true for disjoint events.
+Likewise, the converse is true for \emph{disjoint} (not overlapping) events.
 
-For two events $e_1 = \textit{`Alice pays Bob during June'}$,  $e_2 = \textit{`Alice pays Bob during September'}$, we can say $e_1$'s and $e_2$'s Circumstance Sets are disjoint, therefore if a contract requires $e_1$ but we have a state of the world with $e_2$, we can say Alice still has some legal obligation she has not fulfilled.
+For two events $e_1 = \textit{`Alice pays Bob during June'}$,  $e_2 = \textit{`Alice pays Bob during September'}$, we can say the Circumstance Sets of $e_1$ and $e_2$ are disjoint, therefore if a contract requires $e_1$ but we have a state of the world with $e_2$, we can say Alice still has some legal obligation she has not fulfilled.
 
 \subsection{DSL Implementation}\label{subsec:dsl-implementation}
 
@@ -381,7 +379,6 @@ We use an infix extension function in order to add the \texttt{`may'} adverb (wh
             autogobble,
             frame=lines,
             framesep=2mm]{kotlin}
-
             val alice: Subject
             val eat: Action
             val cake: Object
