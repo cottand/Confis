@@ -54,10 +54,12 @@ Please see~\nameref{sec:language-semantics} for the definitions of~\nameref{def:
 
 The Confis language formalism and semantics are discussed in~\autoref{sec:language-semantics}.
 This project will evaluate it in how it meets the requirements described in~\autoref{sec:eval:goals}, its expressiveness (how capable it is to represent complex contracts) as well as how it performs in relation to comparable formalisms (like~\nameref{subsubsec:symboleo}~\cite{symboleo2020} or~\nameref{subsec:accord}~\cite{accordHomepage}).
+Due to the nature of legal agreements (and the impossibility of formalising large amounts of existing legal contracts) this assessment is a qualitative one.
 
-As far as fulfilling the~\nameref{def:accessibility} requirement, Confis is the only formalism in the literature that makes an effort to penetrate industry by
+As far as fulfilling the~\nameref{def:accessibility} requirement, Confis is one of the few formalisms in the literature that makes an effort to penetrate industry by
 \begin{itemize}
-    \item Trying to avoid requiring a scientific or engineering background from its users.
+    \item Making few assumptions about the user's background (including knowledge such as event fluidity, event calculus, or first order predicate logic).
+    \item Choosing language constructs to purposefully resemble natural language.
     \item Providing additional tools to ease development and shorten the iteration loop.
 \end{itemize}
 
@@ -188,6 +190,7 @@ it comes at a price in the guarantees it brings and the expressiveness of the co
 This section provides a couple examples of clauses in existing contracts that Confis struggles to formalise and tries to generalise the situations it cannot encode, as well as suggesting solutions for the problem.
 
 \subsubsection{Act Upon Violation}
+\label{subsubsec:limits-violations}
 
 Contracts are sometimes defensively written (not unlike defensive programming software engineering practices) where they may include clauses that specify what should happen upon breach of other clauses (an example of such a clause is given in~\autoref{tab:meat-breach}).
 
@@ -215,6 +218,7 @@ While this removes the contradiction, it does not capture the violation semantic
 Symboleo is capable of capturing such a scenario thanks to its \texttt{Happens(Violated(\_))} predicate, which can create a new obligation when a different obligation is violated.
 
 \subsubsection{Confis Does Not Have Time in its Event Algebra}
+\label{subsubsec:limits-time}
 
 Symboleo (and other logic-based solutions like~\cite{knottenbeltContractDriven}) relate events through \emph{happensBefore} partial orderings (introduced by~\cite{kowalski1989logicEventBased}).
 They then can use these relations to model enforcing conditions, pre-conditions, and post-conditions over periods of time.
@@ -231,6 +235,7 @@ Instead, Confis only allows a new capability after $E$ and $E_{\text{past}}$ hav
 It is possible to mitigate this issue by explicitly forbidding $E_{\text{past}}$ to happen before $E$ -- but then we would be slightly altering the original contract's semantics by introducing a new clause breach scenario.
 
 \subsubsection{Confis Does Not Model Amounts}
+\label{subsubsec:limits-amounts}
 
 A key barrier to accessibility in existing formalisms -- and even any general-purpose programming language -- is their type systems.
 Other than the absolutely necessary abstractions for the domain (such as Parties or Actions) users need to know what a strictly positive integer or a floating point number are.
@@ -241,20 +246,20 @@ It does not require using libraries in order to perform operations -- mostly bec
 
 This greatly limits its expressiveness in terms of numerical amounts and the computations that can be done on them during the contract evaluation.
 Consider The Accord Project~\cite{accordHomepage}~(see~\autoref{subsec:accord}), which models programs computationally with a more general-purpose language.
-It is able to perform complex floating-point arithmetic in order to compute interest rates and fees.
+It is able to perform complex floating-point arithmetic in order to compute interest rates and fees, such as the one given in~\autoref{tab:economist-interest}.
 
 On the other hand, Symboleo (and similar logic-based technologies) struggle more to perform such time-based calculations (possibly due to their declarative nature).
-In the original Symboleo paper~\cite{symboleo2020} which contains a meat sales example hand-picked to showcase the language, the authors do not attempt to perform an interest calculation over time even though their original agreement specifies one -- this is shown in~\autoref{fig:symbolio:meat-interest} for convenience.
+In the original Symboleo paper~\cite{symboleo2020} which contains a meat sales example hand-picked to showcase the language, the authors do not attempt to perform an interest calculation over time even though their original agreement (given in~\autoref{tab:meat}) specifies one -- this is shown in~\autoref{fig:symbolio:meat-interest} for convenience.
 
 \begin{figure}[h]
     \centering
     \begin{minipage}{0.85\textwidth}
-    \begin{minted}[
-        autogobble,
-        frame=lines,
-        framesep=2mm,
-        fontsize=\small
-    ]{prolog}
+        \begin{minted}[
+            autogobble,
+            frame=lines,
+            framesep=2mm,
+            fontsize=\small
+        ]{prolog}
         Domain
         Currency isAn Enumeration(CAD, USD, EUR);
         PaidLate isAn Event with
@@ -276,21 +281,87 @@ In the original Symboleo paper~\cite{symboleo2020} which contains a meat sales e
             currency := curr,
             from := buyer,
             to := seller;
-    \end{minted}
+        \end{minted}
     \end{minipage}
     \caption{Symboleo extract from~\autoref{fig:symbolio:meatSales} concerned with interest rates}
     \label{fig:symbolio:meat-interest}
 \end{figure}
 
-In short, while Confis lacks the computational capabilities of a programming language, it is not that lacking when compared to Symboleo since it does allow specifying numerical constants (except without having to specify their types).
+In short, while Confis lacks the computational capabilities of a programming language, it is not lacking when compared to Symboleo since it does allow specifying numerical constants (except without having to specify their types).
+Additionally, traditional contracts also tend to leave to the reader such computations.
+
+\begin{table}[h]
+    \centering
+    \setlength{\fboxsep}{10pt}
+    \fbox{
+        \begin{minipage}{0.9\textwidth}
+            \textbf{Payment Terms}
+            \begin{itemize}
+                \item
+                \ [\dots]
+                Payments made after the due date may be [\dots] subject to a late fee equal to the lesser of 1.5\% per month or the maximum allowed by law.
+            \end{itemize}
+        \end{minipage}
+    }
+    \caption[The Econoimist licence interest rate clause]{Clause concerning an interest rate, extracted from~\cite{economistIU2016licence}, a Licence Agreement by The Economist Group}
+    \label{tab:economist-interest}
+\end{table}
+
+\subsubsection{Confis Circumstances Are Domain-Aware}
+\label{subsubsec:limits-domain-circumstances}
+
+A Circumstance is an instance of an object that implements the functions given in Definition~\autoref{def:circumstance}.
+These operations vary greatly depending on the domain that the Circumstance is meant to represent.
+For example, for time-type Circumstances, the \texttt{overlapsWith} function checks for overlaps in time ranges;
+while in past-event-type Circumstances \texttt{overlapsWith} checks the union of the sets of past events.
+This makes Circumstances very intuitive to use in practice: if the contract specifies Alice must pay this week and she paid this Monday, she expects `Monday' to be generalised by `this week', without needing to learn about the abstractions behind Circumstances.
+
+
+The price to be paid for this ease-of-use is that Circumstances for new domains must be implemented before they can be used.
+The most simple example is geographical locations.
+This Circumstance is not already built into Confis.
+If we were to make such an extension to the language, we would need to define a location-type circumstance as some coordinates (or perhaps an address).
+The functions \texttt{generalises} and \texttt{overlapsWith} would compare coordinates in order to determine if one is a location included in the other (say, a house within a street), or if they are close enough to be the same place.
+
+In short, making domains accessible at the language level requires less general abstractions that require domain knowledge at the implementation level.
+While Confis is built to be easily extensible implementation-wise, this is a rare limitation in specification languages, which usually aim to be as general as possible in order to cover all possible cases.
+The trade-off is once again in accessibility and expressiveness, and can be circumvented by encoding a Circumstance inside a~\nameref{def:sentence}'s~\nameref{def:action} -- following the previous example, rather than `deliver', the Action can be rewritten as `deliver to 10 Downing St.'.
+
+\subsection{Gravity of Language Semantics Limitations}\label{subsec:gravity--lang-limits}
+
+This subsection aims to determine to what extent the limitations presented in~\autoref{subsec:confis-lang-limits} affect negatively the practical usability of Confis.
+Given how Confis is superior in its accessibility to comparable languages in the literature like Symboleo and The Accord Project (by virtue of the compromises it makes) we focus on comparing real-world contracts with their Confis representations, including~\cite{economistIU2016licence, symboleoMeat, jetbrainsToolbox, seismicDataLicence}.
+
+The main discrepancies between the intended meaning of the plaintext agreements and their Confis counterparts concern re-evaluation of legal capabilities and obligations (ie, Confis'~\nameref{def:permission} and~\nameref{def:requirement}) when the state-of-the-world changes.
+This includes the~\nameref{subsubsec:limits-violations} and~\nameref{subsubsec:limits-time} limitations.
+Other lacks in expressiveness (like~\nameref{subsubsec:limits-domain-circumstances}) can be more easily circumvented by adapting Sentences to convey the intended meaning and by splitting clauses into several such Sentences.
+
+Full examples of such discrepancies can be found in the code archive, as well as in~\autoref{ch:confis-examples}.
+
+% TODO and is this ok??
 
 \section{Software Deliverables}\label{sec:software-deliverables}
 
 \subsection{Language Implementation}
 
+\begin{itemize}
+    \item \textbf{Coverage} 92.8\%
+\end{itemize}
+
 \subsection{Querying Engine}
 
-\subsection{Tooling Implementation}
+\begin{itemize}
+    \item \textbf{Coverage} 81.6\%
+\end{itemize}
+
+\subsection{Tooling Implementation: Legal Prose Rendering}
+
+\begin{itemize}
+    \item \textbf{Coverage} 94.6\%
+\end{itemize}
+
+\subsection{Tooling Implementation: Editor and Query UI}
+
 
 \section[Overall Evaluation]{Overall Evaluation With Respect to Goals}
 
