@@ -5,7 +5,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm")
     // until 1.5.4+
-    id("org.jetbrains.intellij") version "1.6.0-SNAPSHOT"
+    id("org.jetbrains.intellij") version "1.6.0"
 }
 
 repositories {

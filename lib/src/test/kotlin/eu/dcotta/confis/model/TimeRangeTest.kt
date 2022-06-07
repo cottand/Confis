@@ -10,6 +10,7 @@ import eu.dcotta.confis.model.circumstance.Month.January
 import eu.dcotta.confis.model.circumstance.Month.June
 import eu.dcotta.confis.model.circumstance.Month.May
 import eu.dcotta.confis.model.circumstance.Month.September
+import eu.dcotta.confis.model.circumstance.TimeRange
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 
@@ -54,5 +55,41 @@ class TimeRangeTest : StringSpec({
 
     "can sum years in DSL" {
         ((1 of January year 2020) + 1.years) shouldBe (1 of January year 2021)
+    }
+
+    "cannot store both timeRange and instant in a circumstanceMap" {
+        (CircumstanceMap.of(may..sept) + may) shouldBe CircumstanceMap.of(may)
+    }
+
+    "cannot store openRange and timeRange in a circumstanceMap" {
+        (CircumstanceMap.of(TimeRange.OpenFutureRange(may)) + (may..sept)) shouldBe
+            CircumstanceMap.of(may..sept)
+    }
+
+    "TimeRange generalises date" {
+        ((may..sept) generalises may) shouldBe true
+        ((may..sept) generalises sept) shouldBe true
+        ((may..sept) generalises june) shouldBe true
+        ((may..june) generalises sept) shouldBe false
+
+        (may generalises (may..sept)) shouldBe false
+    }
+
+    "OpenFutureRange generalises Date, TimeRange" {
+        (TimeRange.OpenFutureRange(may) generalises may) shouldBe true
+        (TimeRange.OpenFutureRange(may) generalises june) shouldBe true
+        (TimeRange.OpenFutureRange(june) generalises may) shouldBe false
+        (TimeRange.OpenFutureRange(june) generalises (may..june)) shouldBe false
+        (TimeRange.OpenFutureRange(june) overlapsWith (may..june)) shouldBe true
+        (TimeRange.OpenFutureRange(june) overlapsWith (june..sept)) shouldBe true
+        (TimeRange.OpenFutureRange(june) generalises (june..sept)) shouldBe true
+
+        (may generalises TimeRange.OpenFutureRange(may)) shouldBe false
+        ((june..sept) generalises TimeRange.OpenFutureRange(may)) shouldBe false
+        ((may..sept) generalises TimeRange.OpenFutureRange(june)) shouldBe false
+
+        (may overlapsWith TimeRange.OpenFutureRange(may)) shouldBe true
+        ((june..sept) overlapsWith TimeRange.OpenFutureRange(may)) shouldBe true
+        ((may..sept) overlapsWith TimeRange.OpenFutureRange(june)) shouldBe true
     }
 })
