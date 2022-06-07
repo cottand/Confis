@@ -112,7 +112,8 @@ Confis introduces the following formalisms in order to limit the complexity of t
 
 \begin{definition}[Action]
     \label{def:action}
-    An
+    An \emph{Action} represents something that can be initiated by a Party.
+    It is unique in an agreement and is identifiable by a name (encoded as a UTF-8 string).
 \end{definition}
 
 \begin{definition}[Thing]
@@ -272,6 +273,7 @@ For example, we can only store a single circumstance representing time and a sin
 Defining \texttt{generalise} for circumstances will be of use when trying to define rules (see~\autoref{sec:rule-generation}) because it will allow checking whether a circumstance from a clause `matches' that of a question~(see~\nameref{subsubsec:circumstances-intuition} for an explanation).
 
 \begin{definition}[Circumstance Set Generalisation]
+    \label{def:circumstanceSet:generalise}
     Fot two Circumstance Sets $C_1$ and $C_2$ we say $C_1$ \emph{generalises} $C_2$ if and only if:
     \begin{equation}
         \label{eq:circumstanceSet:generalisation}
@@ -283,6 +285,7 @@ Defining \texttt{generalise} for circumstances will be of use when trying to def
 \end{definition}
 
 \begin{definition}[Circumstance Set Overlap]
+    \label{def:circumstanceSet:overlap}
     For any two Circumstance Sets $C_1$ and $C_2$, we say $C_1$ \emph{overlaps with} $C_1$ if and only if
     \begin{equation}
         \label{eq:circumstanceSet:overlap}
@@ -298,6 +301,10 @@ This definitions of Circumstance Set Generalisation and Overlap have the followi
     \item The empty circumstance set overlaps with all circumstance sets
 \end{itemize}
 
+
+Although nothing requires Circumstance Set overlap to be commutative, it will be commutative if the Circumstances it contains have a commutative implementation of \texttt{overlapsWith}.
+This is the case for every Circumstance built into Confis so far.
+
 \subsubsection{Intuition Behind Circumstances}\label{subsubsec:circumstances-intuition}
 
 Circumstance Sets can be thought of as contexts for a sentence, which together constitute an event.
@@ -305,11 +312,34 @@ Defining overlaps and generalisations between these contexts allows us to reason
 
 The empty circumstance set can be thought of as the least specific context for an event (think of it as \emph{anywhere} when thinking about a place).
 Indeed, the event \emph{`Alice pays Bob'} generalises the event \emph{`Alice pays Bob during June'}.
-If a contract has a requirement for the former, and we supply it with a state of the world containing the latter, we can say that Alice is compliant with the contract!\\
+If a contract has a requirement for the former, and we supply it with a state of the world containing the latter, we can say that Alice is compliant with the contract!
 
 Likewise, the converse is true for \emph{disjoint} (not overlapping) events.
 
 For two events $e_1 = \textit{`Alice pays Bob during June'}$,  $e_2 = \textit{`Alice pays Bob during September'}$, we can say the Circumstance Sets of $e_1$ and $e_2$ are disjoint, therefore if a contract requires $e_1$ but we have a state of the world with $e_2$, we can say Alice still has some legal obligation she has not fulfilled.
+
+Generally, Circumstance Sets describe more specific situations the more elements they have.
+How different Circumstance Sets can overlap and generalise each other is shown by example through the definitions of the sets $A$, $B$, $C$, $D$ and $E$ below.
+
+\begin{align}
+    A &= \{ \texttt{time} \to \text{`10th of June 2022 - 12th of June 2022'} \}\\
+    B &= \{ \texttt{time} \to \text{`1st of June 2022 - 31st of June 2022'} \}\\
+    C &= \{ \texttt{purpose} \to \text{`Commercial'} \}\\
+    D &= A \cup C\\
+    E &= \{ \texttt{time} \to \text{`1st of June 2022 - 11th of June 2022'} \}
+\end{align}
+
+% TODO this is wrong fix it
+We have:
+\begin{itemize}
+    \item The empty Circumstance Set $\emptyset$ generalises and overlaps with $A$, $B$, $C$, $D$ and $E$
+    \item $B$ generalises $A$ and $E$
+    \item $A$ overlaps with $B$, $D$ and $E$
+    \item $B$ overlaps with $A$, $D$ and $E$.
+    \item $D$ overlaps with $A$, $B$, $C$, and $E$.
+    \item $E$ overlaps with $B$, $D$ and $A$
+    \item $C$ overlaps with $D$
+\end{itemize}
 
 \subsection{DSL Implementation}\label{subsec:dsl-implementation}
 
@@ -509,7 +539,7 @@ In order to achieve (2.), we can implement a new editor in IntelliJ based on its
 
 The live preview is implemented as a preview of an in-memory Markdown document which is in turn generated upon code changes in the editor:
 \begin{equation*}
-    \text{Confis Code}\; \to\; \text{Confis IR}\; \to\; \text{Markdown document}\; \to \text{HTML page}\ \to\; \text{Live preview}
+    \text{Confis Code}\; \to\; \text{Confis IR}\; \to\; \text{Markdown document}\; \to \text{HTML page}\; \to\; \text{Live preview}
 \end{equation*}
 
 A screenshot of the Confis Editor, including syntax highlighting and the live preview, can be found in~\autoref{fig:confis.minimal.editor}.
@@ -524,6 +554,7 @@ A screenshot of the Confis Editor, including syntax highlighting and the live pr
 
 
 For the sake of brevity, this report will omit the implementation details of the live preview -- but a starting point can be found in the software archive under the \texttt{ConfisEditor} class.
+
 
 \section{Language Documentation}\label{sec:language-documentation}
 

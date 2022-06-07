@@ -162,18 +162,223 @@ Implementing a UI to build queries involves:
     \item Displaying the result from the rules' evaluation in an English-readable fashion
 \end{itemize}
 
-While most of these have trivial implementations, constructing a Circumstance proved to be an interesting challenge: at the time of writing Confis has four different types of Circumstance, and is designed to be able to accommodate any number.
+Out of all of these, constructing a Circumstance proved to be an interesting challenge.
+This section will go into more detail about how this was done as an example of overcoming some of the technical difficulty in developing the prototype.
+
+At the time of writing Confis has four different types of Circumstance, and is designed to be able to accommodate any number.
 It would not have been desirable to require designing a UI for each new Circumstance.
 
 According to~\cite{fowlerLangWorkbench} designing a user interface to assemble queries with the concepts described in~\autoref{sec:language-semantics} is much like building a new DSL, except it is a visual one instead of a textual one.
 The solution to the difficulty of making a UI for assembling Circumstances proved to be in combining the textual DSL that is a Confis agreement, and the visual one that is the query UI\@.
 The end result allows building questions through a UI without having to require a command-line interface or calling a library from code, and permits writing Circumstances as code just like they would be written in an agreement.
-This end result is shown in~\autoref{fig:queryUi-geophys-window}
+
+Allowing the user to type in Circumstances in a text box involves creating a synthetic Abstract Syntax Tree (AST) of the Kotlin language (which Confis is based on, see~\autoref{subsec:dsl-implementation} for more details) which includes the necessary imports for the DSL, and then compiling this language fragment in order to instantiate a Circumstance Set in memory.
+This synthetic Circumstance Set can then be passed to the query engine for rule generation.
+
+While the goal of assembling a Circumstance has been achieved, the Circumstance editor in the query UI is far from being on-par with the main Confis Editor (discussed in~\autoref{sec:confis-editor}, it provides compiler error reporting, autocompletion, and syntax highlighting).
+We decided to make intelligent editing inside the Circumstance editor a priority, because the only other way to inform the user about malformed circumstance code would be to expose them to the Kotlin Compiler logs.
+In order to achieve this, Confis reuses the open-source implementation of IntelliJ's Java expression evaluator~\cite{intelliJRepo}~(meant to be used inside debugging sessions).
+It parses the Circumstance editor and constructs a new AST which is then instantiated in a new program.
+The program is then fed to the debugging evaluator, which is then able to provide relevant editing hints to the user.
+Upon changes of the Confis script or the Circumstance test box content, the synthetic AST is reconstructed so the editor can provide up-to-date aid.
+
+This end result is a smart Circumstance editor on par with the normal contract editor, able to report compilation errors and aware of the symbols present in the contract.
+This is shown in~\autoref{fig:queryUi-geophys-window}.
+
+
+\tikzset{font={\fontsize{8pt}{9}\selectfont}}
+\begin{figure}[h]
+    \usetikzlibrary{shapes.misc, arrows.meta}
+    \colorlet{pastelBlue}{blue!40!white}
+    \begin{tikzpicture}
+    [
+        node distance=1.6cm and 1.4cm,
+    ]
+
+        \node (textBox) [
+            draw,
+            align=left,
+            rectangle,
+            rounded corners,
+            rectangle,
+            text width=3.6cm,
+        ] {
+            \textbf{Circumstance editor text box}\\
+            Contains circumstance code:
+            \vspace{-6mm}
+            \begin{minted}[autogobble]{kotlin}
+                after {
+                    alice did pay(bob)
+                }
+            \end{minted}
+        };
+        \node (queryUi) [
+            draw,
+            align=left,
+            rectangle,
+            rounded corners,
+            rectangle,
+            left=of textBox,
+        ] {
+            \textbf{Query UI}\\
+            Contains\\dropdowns\\
+            to assemble\\question
+        };
+
+        \node (editor) [
+            draw,
+            align=left,
+            rectangle,
+            rounded corners,
+            rectangle,
+            right=of textBox,
+            text width=4cm,
+        ] {
+            \textbf{Confis Contract Editor}\\
+            Contains file contents of Confis contract:
+            \vspace{-2mm}
+            \begin{minted}[autogobble]{kotlin}
+                val alice by party
+                val bob by party
+                val pay by action
+                // ...
+            \end{minted}
+        };
+
+        \node (compiler1) [
+            draw,
+            align=left,
+            rectangle,
+            rounded corners,
+            rectangle,
+            below=of textBox,
+        ] {
+            \textbf{Circumstance Compiler}\\
+            see:\\~\autoref{subsec:dsl-implementation}
+        };
+
+
+        \node (synth1) [
+            align=left,
+            rectangle,
+            below=of editor,
+        ] {Synthetic AST};
+
+        \node (compiler2) [
+            draw,
+            align=left,
+            rectangle,
+            rounded corners,
+            rectangle,
+            right=of synth1,
+        ] {
+            \textbf{Contract Compiler}\\
+            see:\\~\autoref{subsec:dsl-implementation}
+        };
+
+        \node (eval) [
+            draw,
+            align=left,
+            rectangle,
+            rounded corners,
+            rectangle,
+            below=of synth1,
+        ] {
+            \textbf{Java Debugging Expression Evaluator}\\
+            Provides editing context to an AST
+        };
+        \node (synth2) [
+            align=center,
+            rectangle,
+            left=of compiler1,
+        ] {Assembled\\Question};
+
+        \node (queryEngine) [
+            draw,
+            align=left,
+            rectangle,
+            rounded corners,
+            rectangle,
+            below=of synth2,
+        ] {
+            \textbf{Query Engine}\\
+            see~\autoref{sec:rule-generation}
+        };
+
+
+        \draw[->]
+        (textBox.270+50)
+        to [out=270+30,in=90+30]
+        node [align=center, fill=white]{Circumstance\\code}
+        (synth1.90+70);
+
+        \draw[->]
+        (eval.90+30)
+        to [out=90+30,in=-90+30]
+        node [align=center, fill=white]{Editor\\Hints}
+        (textBox.-60);
+
+        \draw[->] (textBox.south)
+        -- node[align=center, fill=white] { Synthetic\\AST }
+        (compiler1);
+
+        \draw[->] (compiler1.90+55)
+        to [out=90+45,in=90-45]
+        node[align=center, fill=white, yshift=0.2cm] { Instantiated\\circumstance }
+        (synth2.90-45);
+
+        \draw[->] (editor.south)
+        -- node[align=center, fill=white] { Contract code }
+        (synth1);
+
+        \draw[->] (synth1.south)
+        -- node {}
+        (eval);
+
+        \draw[->] (synth2.south)
+        -- node {}
+        (queryEngine);
+
+        \draw[->] (queryUi.south)
+        -- node[align=center, fill=white] {Question\\selection}
+        (synth2);
+
+        \draw[->]
+        (editor.east)
+        to [out=0,in=90]
+        node [align=center, fill=white]{Contract\\code}
+        (compiler2);
+
+        \draw[->]
+        (compiler2.south)
+        to [out=270,in=0]
+        node [align=center, fill=white]{IR}
+        (queryEngine);
+
+        \draw[->]
+        (queryEngine.90+30)
+        to [out=90+65,in=-90-20]
+        node [align=center, fill=white, xshift=4mm, yshift=-12mm]{Result}
+        (queryUi);
+
+
+    \end{tikzpicture}
+    \caption
+    [Diagram of the Query UI's Circumstance editor]
+    {Diagram showing the architecture behind the Query UI's Circumstance editor}
+    \label{fig:circumstance-editor-arch}
+\end{figure}
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{figures/geophys.confis.queryUI}
-    \caption[Query UI window for Geophysical Libray License]{Query UI window for agreement given in~\autoref{fig:confis:geophys}, featuring Circumstance autocompletion and compliance checking}
+    \caption[Query UI window for Geophysical Libray License]{
+        Query UI window for agreement given in~\autoref{fig:confis:geophys}
+
+        \par\small
+        Note how the question is built by selecting the \emph{Compliance} tab and assembling the Sentence \emph{`the Licensee sell the Data'} from dropdown menus.
+        Circumstances are built through the text box, featuring autocompletion and compliance checking
+    }
     \label{fig:queryUi-geophys-window}
 \end{figure}
 

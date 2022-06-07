@@ -157,7 +157,7 @@ buyer mayNot reveal(contract) asLongAs {
 Notice how Symboleo allows representing a more complex domain by specifying an \emph{Event} \texttt{`Disclosed'}, and constraining the legal capabilities of Buyer by creating an \emph{Obligation} (with a notion of this obligation being \emph{from} Buyer \emph{towards} Seller) which specifies that the \texttt{disclosed} event cannot happen before six months after the end of the contract.
 In Symbolio's model if \texttt{disclosed} happen, the breach cannot be attributed to either Seller nor Buyer.
 
-Confis specifies a simpler domain -- while it also specifies Seller and Buyer and represents `disclosing' as an Action, it has no notion of \emph{creditor} and \emph{lender} when it comes to Requirements (defined in Definition~\autoref{def:requirement}).
+Confis specifies a simpler domain -- while it also specifies Seller and Buyer and represents `disclosing' as an Action, it has no notion of \emph{creditor} and \emph{lender} when it comes to Requirements (defined in~\autoref{def:requirement}).
 On the other hand, Confis can `blame' specific parties for a breach, as it attributes Actions to Subjects.
 Confis is also unable to keep track of its own execution time -- instead it requires specifying the date in the contract.
 Notice how this abstracts away the document from the real-world execution date, and how this limitation of Symboleo is omitted in the original paper~\cite{symboleo2020}, but present in the sample source code~\cite{symboleoMeat}.
@@ -310,7 +310,7 @@ Additionally, traditional contracts also tend to leave to the reader such comput
 \subsubsection{Confis Circumstances Are Domain-Aware}
 \label{subsubsec:limits-domain-circumstances}
 
-A Circumstance is an instance of an object that implements the functions given in Definition~\autoref{def:circumstance}.
+A Circumstance is an instance of an object that implements the functions given in~\autoref{def:circumstance}.
 These operations vary greatly depending on the domain that the Circumstance is meant to represent.
 For example, for time-type Circumstances, the \texttt{overlapsWith} function checks for overlaps in time ranges;
 while in past-event-type Circumstances \texttt{overlapsWith} checks the union of the sets of past events.
