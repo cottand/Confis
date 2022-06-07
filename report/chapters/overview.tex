@@ -1,6 +1,6 @@
 \chapter{Confis Overview}\label{ch:overview}
 
-This project includes several software prototypes and a couple formalisms.
+This project includes several software prototypes and several definitions.
 This chapter is meant to provide a high-level overview of how these interact with each other as well as pointing out the relevant sections.
 \tikzset{font={\fontsize{9pt}{10}\selectfont}}
 \begin{figure}[h]
@@ -23,6 +23,7 @@ This chapter is meant to provide a high-level overview of how these interact wit
             draw,
             align=left,
             rectangle,
+            rounded corners,
             above=of user,
             rectangle,
         ] {
@@ -35,6 +36,7 @@ This chapter is meant to provide a high-level overview of how these interact wit
             draw,
             text width=3cm,
             rectangle,
+            rounded corners,
             below=of user,
             rectangle,
         ] {
@@ -57,6 +59,7 @@ This chapter is meant to provide a high-level overview of how these interact wit
             draw,
             text width=3cm,
             rectangle,
+            rounded corners,
             right=of editor,
         ] {
             \textbf{Query UI}\\
@@ -68,6 +71,7 @@ This chapter is meant to provide a high-level overview of how these interact wit
             draw,
             text width=3cm,
             rectangle,
+            rounded corners,
             below=of editor,
         ] {
             \textbf{Compiler}\\
@@ -79,6 +83,7 @@ This chapter is meant to provide a high-level overview of how these interact wit
             draw,
             text width=3cm,
             rectangle,
+            rounded corners,
             right=of compiler,
         ] {
             \textbf{Query Engine}\\

@@ -1,3 +1,43 @@
 \chapter{Conclusions}\label{ch:conclusions}
 
+This project has introduced:
+\begin{itemize}
+    \item Confis, an accessible specification language for legal agreements, implemented as an internal DSL~\cite{fowlerDsl} using Kotlin~\cite{kotlinLang} as a host language.
+    \item An intelligent and language-aware editor equipped with all the utilities of the IDE of a general-purpose programming language, implemented as an IntelliJ~\cite{intelliJRepo} editor.
+    \item Conversion from Confis back to legal prose in plain English, encoded in Markdown and rendered as a live preview side-to-side with the editor.
+    \item A rules engine that generates normative rules from a Confis agreement and a complex query, accompanied by a graphical interface that allows assembling such queries and rendering query results in plain English
+    \item A user guide as an online website to complement the above tools.
+\end{itemize}
+
+% TODO
+
+Confis is novel in that it sets a precedent for reconciling rule-based formalisms for legal agreements with accessible industry-oriented software.
+We find that it largely succeeds at introducing a machine-readable formalism for representing contracts (aided by novel features such as graphical query UIs and converting a formalism back to plain English), but at the cost of compromising on the expressiveness of its language when compared to the state of the art.
+This lack of expressiveness stems primarily from its lack of temporal logic and its lack of ability to deal with contract violations after they happen.
+
 \section{Future Work}\label{sec:future-work}
+
+Future work could build upon the baseline ???? in order to improve upon Confis' main flaw: its lack of expressiveness in the language compared to similar specification languages (as discussed in~\autoref{subsec:confis-lang-limits}).
+
+\subsection{More Circumstances and Temporal logic}\label{subsec:future:more-circumstances-and-temporal-logic}
+A better version of Confis that does not compromise on Accessibility should be possible with more Circumstance implementations, as well as perhaps integrating time and causality in the IR\@.
+Indeed, this project chose to compromise on that area for the sake of a leaner learning curve -- but it does not conclude new abstractions with stronger guarantees are not possible.
+
+\subsubsection{An `On Breached' Allowance}
+
+As discussed in~\autoref{subsubsec:limits-violations}, Confis struggles to deal with planning for a scenario after the contract has been breached.
+This stems from the fact that a scenario can only stem from an \texttt{Allow}~\nameref{def:allowance}, but breaches fall under the~\texttt{Forbidden} state space.
+
+Addressing this limitation could be possible by introducing a fifth type of Allowance that would account for the intersection of these two possible states.
+
+\subsection{A Query API}\label{subsec:future:query-api}
+One of the key contributions of the project is the rule-based querying that allows asking a contract complex questions like \emph{`Under what circumstances may I access this data set?'}.
+While Confis makes a strong focus on human interaction through accessible graphical interfaces, it has a binary interface that makes the prototype usable in any JVM-based application~\cite{venners1998java}.
+
+
+We envision distributed systems where services query and act according to the legal capabilities of their organisations given the circumstances they find themselves in.
+An example would be dataset access control and GDPR for an organisation that holds sensitive personal data: services would be able to update and process data while aware of what the organisation is and is not allowed to do it.
+Similarly, employees' access to customers' data can be automatically permissioned depending on how or why they are accessing teh data, or which customer's data they are tampering with.
+
+The notion of services acting following the specifications of a legal agreement is in line with Szabo's original vision of smart contracts~\cite{szabo1997smart-contracts}, much like Knottenbelt's work on contract-driven agents~\cite{knottenbeltContractDriven} -- except Confis aims for non-logicians to write and review the contract specifications.
+

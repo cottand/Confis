@@ -56,6 +56,8 @@ open class AgreementBuilder {
 
 \section{Confis Agreements Samples}\label{sec:confis-agreements-samples}
 
+Software Archive code path for~\autoref{fig:confis:minimal}:\\
+\texttt{script/src/test/resources/scripts/minimal.confis.kts}
 
 \begin{code}
     \inputminted[
@@ -69,14 +71,15 @@ open class AgreementBuilder {
     \label{fig:confis:minimal}
 \end{code}
 
-
+Software Archive code path for~\autoref{fig:confis:geophys}:\\
+\texttt{script/src/test/resources/scripts/geophys.confis.kts}
 
 \begin{code}
     \inputminted[
         autogobble,
         frame=lines,
         framesep=2mm,
-        fontsize=\small
+        fontsize=\footnotesize
     ]
     {kotlin}{../script/src/test/resources/scripts/geophys.confis.kts}
     \caption{A prototype Confis representation of a seismic data license (given in~\cite{seismicDataLicence})}
@@ -144,7 +147,7 @@ The clause is translated into the following IR:
 This subsection hopes to illustrate the main differences between different representations of the same contract (given in~\autoref{tab:meat}).
 These differences are discussed under~\nameref{ch:evaluation} under~\autoref{sec:language-formalism-evaluation}.
 
-\begin{table}
+\begin{table}[H]
     \centering
     \setlength{\fboxsep}{10pt}
     \fbox{
@@ -183,6 +186,10 @@ These differences are discussed under~\nameref{ch:evaluation} under~\autoref{sec
     \caption[Sample meat sales contract]{Sample of a meat purchase and sales contract, from~\cite{symboleo2020}}
     \label{tab:meat}
 \end{table}
+
+Software Archive code path for~\autoref{fig:confis:meat}:\\
+\texttt{script/src/test/resources/scripts/meat.confis.kts}
+
 \begin{code}
     \inputminted[
         autogobble,
