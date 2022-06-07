@@ -57,14 +57,14 @@ class QuestionWindowModel(project: Project) : Disposable {
     private val logger = thisLogger()
     private val listeners: MutableList<ConfisAgreementListener> = mutableListOf()
 
-    var latestAgreement: Agreement? = null
-    var latestCircumstanceContext: PsiElement? = null
-    var latestConfisFile: VirtualFile? = null
+    private var latestAgreement: Agreement? = null
+    private var latestCircumstanceContext: PsiElement? = null
+    private var latestConfisFile: VirtualFile? = null
 
     val _currentDocTitle = AtomicProperty("Please open a valid Confis agreement")
     var currentDocTitle by _currentDocTitle
 
-    val scope = CoroutineScope(
+    private val scope = CoroutineScope(
         Dispatchers.Default + CoroutineExceptionHandler { _, throwable ->
             thisLogger().error("Error during QuestionWindowModel coroutine", throwable)
         }
@@ -103,16 +103,16 @@ class QuestionWindowModel(project: Project) : Disposable {
         listeners += listener
     }
 
-    val psiManager by lazy { PsiManager.getInstance(project) }
-    val docManager by lazy { FileDocumentManager.getInstance() }
+    private val psiManager by lazy { PsiManager.getInstance(project) }
+    private val docManager by lazy { FileDocumentManager.getInstance() }
 
-    val builderScope = """
+    private val builderScope = """
         val builder: CircumstanceBuilder.() -> Unit = {
             this
         }
     """.trimIndent()
 
-    private suspend fun craftCircumstanceContextFor(agreementFile: VirtualFile): PsiElement? {
+    private fun craftCircumstanceContextFor(agreementFile: VirtualFile): PsiElement? {
         val psi = ReadAction.compute<PsiElement?, Exception> { psiManager.findFile(agreementFile) }
         val doc = ReadAction.compute<Document?, Exception> { docManager.getDocument(agreementFile) }
         if (psi == null) {
@@ -125,10 +125,7 @@ class QuestionWindowModel(project: Project) : Disposable {
         return ReadAction.compute<PsiElement, Exception> {
             val synthPsi = psiManager.findFile(lvf) ?: error("")
 
-            // val block = synthPsi
             val block = synthPsi.lastChild?.lastChild?.lastChild?.lastChild?.firstChild?.children?.get(0)?.firstChild // this
-            // val block = synthPsi.lastChild.lastChild
-            // val block = synthPsi.lastChild?.lastChild?.lastChild?.lastChild?.firstChild?.children?.get(0)
             block
         }
     }
@@ -200,8 +197,4 @@ class QuestionWindowModel(project: Project) : Disposable {
 
     override fun dispose() {
     }
-}
-
-enum class ConfisQueryType {
-    Allowance, Compliance;
 }
