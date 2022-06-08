@@ -179,26 +179,22 @@ While the goal of assembling a Circumstance has been achieved, the Circumstance 
 We decided to make intelligent editing inside the Circumstance editor a priority, because the only other way to inform the user about malformed circumstance code would be to expose them to the Kotlin Compiler logs.
 In order to achieve this, Confis reuses the open-source implementation of IntelliJ's Java expression evaluator~\cite{intelliJRepo}~(meant to be used inside debugging sessions).
 It parses the Circumstance editor and constructs a new AST which is then instantiated in a new program.
-The program is then fed to the debugging evaluator, which is then able to provide relevant editing hints to the user.
-Upon changes of the Confis script or the Circumstance test box content, the synthetic AST is reconstructed so the editor can provide up-to-date aid.
-
-This end result is a smart Circumstance editor on par with the normal contract editor, able to report compilation errors and aware of the symbols present in the contract.
-This is shown in~\autoref{fig:queryUi-geophys-window}.
 
 
 \tikzset{font={\fontsize{8pt}{9}\selectfont}}
 \begin{figure}[h]
-    \usetikzlibrary{shapes.misc, arrows.meta}
     \colorlet{pastelBlue}{blue!40!white}
     \begin{tikzpicture}
-    [
+        [
         node distance=1.6cm and 1.4cm,
-    ]
+        >={Stealth[inset=0pt,length=6pt,angle'=30,round]},
+        ]
 
         \node (textBox) [
             draw,
             align=left,
             rectangle,
+            very thick,
             rounded corners,
             rectangle,
             text width=3.6cm,
@@ -216,9 +212,11 @@ This is shown in~\autoref{fig:queryUi-geophys-window}.
             draw,
             align=left,
             rectangle,
+            very thick,
             rounded corners,
             rectangle,
             left=of textBox,
+            xshift=7mm,
         ] {
             \textbf{Query UI}\\
             Contains\\dropdowns\\
@@ -229,12 +227,14 @@ This is shown in~\autoref{fig:queryUi-geophys-window}.
             draw,
             align=left,
             rectangle,
+            very thick,
             rounded corners,
             rectangle,
             right=of textBox,
-            text width=4cm,
+            text width=3cm,
         ] {
-            \textbf{Confis Contract Editor}\\
+            \textbf{Confis Contract}\\
+            \textbf{Editor}\\
             Contains file contents of Confis contract:
             \vspace{-2mm}
             \begin{minted}[autogobble]{kotlin}
@@ -252,9 +252,12 @@ This is shown in~\autoref{fig:queryUi-geophys-window}.
             rounded corners,
             rectangle,
             below=of textBox,
+%            yshift=-6mm,
         ] {
-            \textbf{Circumstance Compiler}\\
-            see:\\~\autoref{subsec:dsl-implementation}
+            \textbf{Circumstance}\\
+            \textbf{Compiler}\\
+            see:\\
+            \autoref{subsec:dsl-implementation}
         };
 
 
@@ -271,9 +274,12 @@ This is shown in~\autoref{fig:queryUi-geophys-window}.
             rounded corners,
             rectangle,
             right=of synth1,
+            xshift=-8mm,
         ] {
-            \textbf{Contract Compiler}\\
-            see:\\~\autoref{subsec:dsl-implementation}
+            \textbf{Contract}\\
+            \textbf{Compiler}\\
+            see:\\
+            \autoref{subsec:dsl-implementation}
         };
 
         \node (eval) [
@@ -283,8 +289,10 @@ This is shown in~\autoref{fig:queryUi-geophys-window}.
             rounded corners,
             rectangle,
             below=of synth1,
+            yshift=8mm,
         ] {
-            \textbf{Java Debugging Expression Evaluator}\\
+            \textbf{Java Debugging}\\
+            \textbf{Expression Evaluator}\\
             Provides editing context to an AST
         };
         \node (synth2) [
@@ -350,7 +358,7 @@ This is shown in~\autoref{fig:queryUi-geophys-window}.
         (compiler2);
 
         \draw[->]
-        (compiler2.south)
+        (compiler2.-90+35)
         to [out=270,in=0]
         node [align=center, fill=white]{IR}
         (queryEngine);
@@ -365,9 +373,18 @@ This is shown in~\autoref{fig:queryUi-geophys-window}.
     \end{tikzpicture}
     \caption
     [Diagram of the Query UI's Circumstance editor]
-    {Diagram showing the architecture behind the Query UI's Circumstance editor}
+    {Diagram showing the architecture behind the Query UI's Circumstance editor
+    \par\footnotesize
+    Elements the user interacts with are highlighted with a thicker outline
+    }
     \label{fig:circumstance-editor-arch}
 \end{figure}
+
+The program is then fed to the debugging evaluator, which is then able to provide relevant editing hints to the user.
+Upon changes of the Confis script or the Circumstance test box content, the synthetic AST is reconstructed so the editor can provide up-to-date aid.
+
+This end result is a smart Circumstance editor on par with the normal contract editor, able to report compilation errors and aware of the symbols present in the contract.
+This is shown in~\autoref{fig:queryUi-geophys-window}, and a diagram of the architecture can be seen in~\autoref{fig:circumstance-editor-arch}.
 
 \begin{figure}[h]
     \centering
