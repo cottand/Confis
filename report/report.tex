@@ -171,41 +171,41 @@
         % no technologies succeed at helping us understand a contract
         % lots of automation tech around contracts but it focuses on bureaucratic overheads (such as signing, version control, and proof of existence).
 
-        % For more than 4 thousand years, humankind has utilised contracts to govern trades, bargains and exchanges // that stem from the converging wills of parties to conduct a trade, or a bargain. Since their conception in ancient times (sumeria, 4k times), their are represented as antural language and how we reason about them as remained unchanged, even though their are a main driver of economical activity and progress
 
-        % For more than 4 thousand years, humankind has utilised contracts to govern economic activity.
-        % Since their conception in ancient times (sumeria, 4k times), they have been represented as clauses of natural language and how we reason about them has remained unchanged, despite technological leaps.
-
-        % In the last few decades, since the seminal work on smart contracts by Szabo, the benefits of formalising and automating contracts have become increasingly obvious.
-        % Such benefits include making it easier for parties to understand the legal constraints they are under, as well as the capabilities they have
+        For more than four thousand years, humankind has utilised contracts to govern economic activity.
+        Since their conception in ancient times, they have been represented as clauses of natural language and how we reason about them has remained unchanged, despite technological leaps and civilization's dependence on them.
+        In the last few decades, since the seminal work on smart contracts by Szabo in 1997, the benefits of formalising and automating contracts have become increasingly obvious.
+        Such benefits include making it easier for parties to understand the legal constraints they are under, as well as the capabilities they have.
 
         % missing direction of travel at the end of 1st paragrapgh
 
         % there are lots of contracts -> they are nat language -> how we reason about them has remained unchanged since their conception 3 thousand years ago
 
 
-        The notion of formalising contracts was first introduced by Szabo in 1997, but at the time of writing (25 years later) in practice how we interact with legal agreements has remained unchanged~-- we still represent their clauses in natural language and rely on human understanding to interpret them.
         Rather than replacing existing legal infrastructure, some new technologies like blockchain-based smart contracts have created a new class of self-enforcing software systems which mostly revolve around financial products.
-        Other, more logic-based attempts to automate reasoning with legal documents are very specialist and require understanding of advanced topics, such as logic programming, linear temporal logic, or the event calculus.
+        Other, more logic-based attempts to automate reasoning with legal documents are very specialist and require understanding of advanced topics, such as logic programming, linear temporal logic, or the event calculus;
+        and are not self-contained solutions.
         This lack of accessibility of existing technologies means that they have not seen practical adoption in industry.
 
         This project introduces \textbf{\emph{Confis}}, a Kotlin-based accessible language that specifies legal agreements and immediately answers complex queries.
 %        Its features include converting documents back to plain English, an intelligent editor with a live preview, and a user interface for performing complex queries on documents as they are written.
-        Contracts are written as stand-alone scripts inside a fully-capable editor based on IntelliJ IDEA~\cite{intelliJRepo}, inside which a live preview displays a plain English render of the encoded agreement.
+        Contracts are written as stand-alone scripts inside a fully-capable editor based on IntelliJ IDEA, inside which a live preview displays a plain English render of the encoded agreement.
         In stark contrast with the state of the art, Confis does not require engineering, logical, nor legal expertise for its effective use.
-        A graphical UI allows making questions involving parties' legal capabilities and their compliance, such as \emph{`What needs to happen for my landlord evict me?'} or \emph{`Has the seller breached our agreement?'}
-
+        A graphical UI allows making questions involving parties' legal capabilities and their compliance, such as \emph{`What needs to happen for my landlord evict me?'} or \emph{`Has the seller breached our agreement?'} -- which Confis is able to answer in plain English.
 
 
         % something in this technical paragraph about architecture ^
         % showcase your technical achievement!
 
-        The result is an end-to-end framework that provides abstractions that successfully represent most use-cases for contracts comparable to those of Symboleo or The Accord Project, except with a strong focus on accessibility and ease-of-use aimed at industry.
-        Simple and easier to learn abstractions are brought forward by compromising mainly on language expressiveness -- and therefore in the complexity of the contracts that can be represented.
-        % specify what kind of queries exactly you are able to answer
+%        The result is an end-to-end framework that provides abstractions that successfully represents a broad range of contracts, comparable to Symboleo or The Accord Project, except with a strong focus on accessibility and ease-of-use aimed at industry.
+%        Simple and easier to learn abstractions are brought forward by compromising mainly on language expressiveness -- and therefore in the complexity of the contracts that can be represented.
 
         % Last paragraph is kind of queries
-        Overall, this project hopes to operationalise legal agreements by providing the industry with relevant and pragmatic tools, proving that it is possible to make use of a formalisation for a sales contract without a strong technical background.
+        Overall, this project operationalises legal agreements by providing the industry with relevant and pragmatic tools.
+        By formalising the fewest key abstractions, we prove it successfully represents common classes of contracts (such as licenses and sales agreements) much like Symboleo or The Accord project -- except with a strong focus on accessibility and through a self-contained solution.
+        Confis also succeeds at avoiding exposing advanced complexities that hinder its accessibility, by compromising on language expressiveness.
+        We show this accessibility is at the price of not being able to formalise some more specific legal scenarios, which limits the range of contracts Confis can specify.
+
         Next steps include communicating with other services for them to be aware of their legal capabilities (rather than relying on legal advice across teams inside an organisation), as well as improving the compromise between the contracts that can be represented and the complexity of the language.
         % specify how you built on top of another lang as an internal DSL
 
@@ -236,7 +236,6 @@
 
     \include{chapters/introduction}
     \include{chapters/background}
-    \include{chapters/overview}
     \include{chapters/lang}
     \include{chapters/queries}
     \include{chapters/ethical}
