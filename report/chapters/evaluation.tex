@@ -92,7 +92,7 @@ Both are re-written self-contained examples (rather than text extracts from the 
 This was done in order to fully reflect the necessary boilerplate and ceremony of each language.
 
 
-\begin{figure}[h]
+\begin{listing}[h]
     \centering
     \begin{minted}[
         autogobble,
@@ -118,9 +118,9 @@ buyer mayNot reveal(contract) asLongAs {
     \end{minted}
     \caption{Confis for~\nameref{tab:meat-confidentiality}, extracted from~\autoref{fig:confis:meat}}
     \label{fig:confis:meat-confidentiality}
-\end{figure}
+\end{listing}
 
-\begin{figure}[h]
+\begin{listing}[h]
     \begin{minted}[
         autogobble,
         frame=lines,
@@ -151,7 +151,7 @@ buyer mayNot reveal(contract) asLongAs {
     \end{minted}
     \caption{Symboleo Specification for~\nameref{tab:meat-confidentiality}, extracted from~\autoref{fig:symbolio:meatSales}}
     \label{fig:symbolio:meatSales-confidentiality}
-\end{figure}
+\end{listing}
 
 \paragraph{Specifying a legal Obligation}
 Notice how Symboleo allows representing a more complex domain by specifying an \emph{Event} \texttt{`Disclosed'}, and constraining the legal capabilities of Buyer by creating an \emph{Obligation} (with a notion of this obligation being \emph{from} Buyer \emph{towards} Seller) which specifies that the \texttt{disclosed} event cannot happen before six months after the end of the contract.
@@ -251,7 +251,7 @@ It is able to perform complex floating-point arithmetic in order to compute inte
 On the other hand, Symboleo (and similar logic-based technologies) struggle more to perform such time-based calculations (possibly due to their declarative nature).
 In the original Symboleo paper~\cite{symboleo2020} which contains a meat sales example hand-picked to showcase the language, the authors do not attempt to perform an interest calculation over time even though their original agreement (given in~\autoref{tab:meat}) specifies one -- this is shown in~\autoref{fig:symbolio:meat-interest} for convenience.
 
-\begin{figure}[h]
+\begin{listing}[h]
     \centering
     \begin{minipage}{0.85\textwidth}
         \begin{minted}[
@@ -285,7 +285,7 @@ In the original Symboleo paper~\cite{symboleo2020} which contains a meat sales e
     \end{minipage}
     \caption{Symboleo extract from~\autoref{fig:symbolio:meatSales} concerned with interest rates}
     \label{fig:symbolio:meat-interest}
-\end{figure}
+\end{listing}
 
 In short, while Confis lacks the computational capabilities of a programming language, it is not lacking when compared to Symboleo since it does allow specifying numerical constants (except without having to specify their types).
 Additionally, traditional contracts also tend to leave to the reader such computations.

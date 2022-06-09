@@ -12,16 +12,22 @@ This project has introduced:
 % TODO
 
 Confis is novel in that it sets a precedent for reconciling rule-based formalisms for legal agreements with accessible industry-oriented software.
-We find that it largely succeeds at introducing a machine-readable formalism for representing contracts (aided by novel features such as graphical query UIs and converting a formalism back to plain English), but at the cost of compromising on the expressiveness of its language when compared to the state of the art.
+We find that it largely succeeds at introducing a machine-readable formalism for representing contracts (aided by novel features such as graphical query UIs and converting a formalism back to plain English), but at the cost of compromising on the expressiveness of its language and the contracts it is able to represent.
 This lack of expressiveness stems primarily from its lack of temporal logic and its lack of ability to deal with contract violations after they happen.
+
 
 \section{Future Work}\label{sec:future-work}
 
-Future work could build upon the baseline ???? in order to improve upon Confis' main flaw: its lack of expressiveness in the language compared to similar specification languages (as discussed in~\autoref{subsec:confis-lang-limits}).
+Future work could have two main directions: improving the existing Confis language semantics and software prototype, and building upon the querying engine in order to programmatically deal with legal agreements.
 
-\subsection{More Circumstances and Temporal logic}\label{subsec:future:more-circumstances-and-temporal-logic}
-A better version of Confis that does not compromise on Accessibility should be possible with more Circumstance implementations, as well as perhaps integrating time and causality in the IR\@.
-Indeed, this project chose to compromise on that area for the sake of a leaner learning curve -- but it does not conclude new abstractions with stronger guarantees are not possible.
+\subsection{Better Language Semantics}\label{subsec:future:better-language-semantics}
+
+This project chose to compromise on that area for the sake of a leaner learning curve -- but it does not conclude new abstractions with stronger guarantees are not possible.
+
+\subsubsection{More Circumstances and Temporal logic}\label{subsubsec:future:more-circumstances-and-temporal-logic}
+A better version of Confis that does not compromise on Accessibility may be possible with more Circumstance implementations, as well as perhaps integrating time and causality in the IR\@.
+
+New Circumstances could include geographical location, \emph{force majeure}~\cite{forceMajeureDefinition}, repeated time periods, or possession of assets.
 
 \subsubsection{An `On Breached' Allowance}
 
@@ -41,3 +47,9 @@ Similarly, employees' access to customers' data can be automatically permissione
 
 The notion of services acting following the specifications of a legal agreement is in line with Szabo's original vision of smart contracts~\cite{szabo1997smart-contracts}, much like Knottenbelt's work on contract-driven agents~\cite{knottenbeltContractDriven} -- except Confis aims for non-logicians to write and review the contract specifications.
 
+\subsection{An Implementation for Public-Key Signing Infrastructure}\label{subsec:future:signing}
+
+Digital signatures~(see~\autoref{subsec:crypto:pubkey}) are key to verifying the identity of parties of a contract.
+While Confis has all of the traits of a Ricardian Contract (see~\autoref{def:ricardian}) the public-key signing infrastructure is not implement by this project's prototype.
+
+Developing such infrastructure could be a first step towards persisting verifiable Confis agreement metadata in a blockchain -- which in turn also implements Proof Of Existence, much like what Express Agreement provides~\cite{expressAgreement}.

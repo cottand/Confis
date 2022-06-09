@@ -158,6 +158,8 @@
 \patchcmd{\listoffigures}{\MakeUppercase}{\MakeMarkcase}{}{}
 \patchcmd{\listoftables}{\MakeUppercase}{\MakeMarkcase}{}{}
 \patchcmd{\listoftables}{\MakeUppercase}{\MakeMarkcase}{}{}
+%\patchcmd{\listoflistings}{\MakeUppercase}{\MakeMarkcase}{}{}
+%\patchcmd{\listoflistings}{\MakeUppercase}{\MakeMarkcase}{}{}
 
 % If the option `nolistspacing' is given, the spacing in the different lists is reduced to single spacing. This option is only useful, if the spacing of the document has been changed to onehalfspacing or doublespacing.
 \ifbool{nolistspace}{
@@ -189,7 +191,7 @@
 \RequirePackage{babel} % Required for automatically changing names of document elements to languages besides english
 
 \RequirePackage{scrbase} % Required for handling language-dependent names of sections/document elements
-\RequirePackage{minted}
+\RequirePackage[chapter]{minted}
 \RequirePackage{scrhack} % Loads fixes for various packages
 
 \RequirePackage{setspace} % Required for changing line spacing
@@ -247,7 +249,7 @@
 %	COLOURS
 %----------------------------------------------------------------------------------------
 
-\usepackage{xcolor} % Required for specifying custom colours
+\RequirePackage{xcolor} % Required for specifying custom colours
 
 \colorlet{mdtRed}{red!50!black}
 \colorlet{mdtBlue}{blue!50!black}

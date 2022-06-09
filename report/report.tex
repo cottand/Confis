@@ -31,7 +31,6 @@
 \usetikzlibrary{shapes.misc, arrows.meta}
 \usepackage{amsmath}
 \usepackage{amsthm}
-\usepackage{listings}
 \usepackage{textcomp}
 \usepackage{color}
 \usepackage{markdown}
@@ -174,14 +173,14 @@
         This project introduces \textbf{\emph{Confis}}, a Kotlin-based accessible language that specifies legal agreements and allows for complex queries.
 %        Its features include converting documents back to plain English, an intelligent editor with a live preview, and a user interface for performing complex queries on documents as they are written.
         Contracts are written as stand-alone scripts inside a fully-capable editor based on IntelliJ IDEA~\cite{intelliJRepo}, inside which a live preview displays a plain English render of the encoded agreement.
-        A graphical UI allows making questions involving parties' legal capabilities and their compliance, such as \emph{`What needs to happen for my landlord evict me?'} or \emph{`Has the seller breached the contract?'}
+        A graphical UI allows making questions involving parties' legal capabilities and their compliance, such as \emph{`What needs to happen for my landlord evict me?'} or \emph{`Has the seller breached our agreement?'}
 
 
         % something in this technical paragraph about architecture ^
         % showcase your technical achievement!
 
         The result is an end-to-end framework that provides abstractions that successfully represent most use-cases for contracts comparable to those of Symboleo~\cite{symboleo2020} or The Accord Project~\cite{accordHomepage}, except with a strong focus on accessibility and ease-of-use aimed at industry.
-        Simple and easier to learn abstractions are brought forward by compromising mainly language expressiveness -- and therefore in the complexity of the contracts that can be represented.
+        Simple and easier to learn abstractions are brought forward by compromising mainly on language expressiveness -- and therefore in the complexity of the contracts that can be represented.
         % specify what kind of queries exactly you are able to answer
 
         % Last paragraph is kind of queries
@@ -206,6 +205,7 @@
     \tableofcontents
     \listoffigures
     \listoftables
+    \listoflistings
 
 
     \mainmatter % Begin numeric (1,2,3...) page numbering
@@ -226,6 +226,7 @@
 
     \include{appendices/confisExamples}
     \include{appendices/editorPreviews}
+    \include{appendices/cryptoBackground}
 
     \printbibliography[heading=bibintoc]
 

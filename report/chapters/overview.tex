@@ -2,6 +2,23 @@
 
 This project includes several software prototypes and several definitions.
 This chapter is meant to provide a high-level overview of how these interact with each other as well as pointing out the relevant sections.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\columnwidth]{figures/confis.full-geophys}
+    \caption
+    [Screenshot of the Confis Editor and Query UI]
+    {Screenshot of the Confis Editor and Query UI, depicting a Confis version of a license for seismic data~\cite{seismicDataLicence}
+    \par\footnotesize
+
+    From left to right: the \textbf{Query UI} that allows querying the agreement; the \textbf{Confis code} specifying the agreement; a \textbf{live preview} of the agreement in generated English text.
+    }
+    \label{fig:geophys-full-editor}
+\end{figure}
+
+\autoref{fig:geophys-full-editor} depicts the Confis Editor along with the Query UI
+
+
 \tikzset{font={\fontsize{9pt}{10}\selectfont}}
 \begin{figure}[h]
     \usetikzlibrary{shapes.misc, arrows.meta}
@@ -29,7 +46,7 @@ This chapter is meant to provide a high-level overview of how these interact wit
         ] {
             \textbf{Online Documentation}\\
             \emph{Uses:}\\HTML pages generated\\from Markdown\\
-            \emph{See:}\\\nameref{TODO}
+            \emph{See:}\\\nameref{sec:language-documentation}
         };
 
         \node (editor) [
@@ -47,6 +64,8 @@ This chapter is meant to provide a high-level overview of how these interact wit
 
         \node (lang) [
             draw,
+            rectangle,
+            rounded corners,
             text width=4cm,
             left=of editor,
         ] {
@@ -120,10 +139,10 @@ This chapter is meant to provide a high-level overview of how these interact wit
 
         \draw[->] (queryUi.270-15)
         -- node[left, text width=2cm, align=right] { IR and\\compiled\\query }
-        (queryEngine.90+15);
+        (queryEngine.90+11);
 
         \draw[->]
-        (queryEngine.90-15)
+        (queryEngine.90-11)
         -- node[right, text width=3cm] { Query\\result }
         (queryUi.270+15);
 

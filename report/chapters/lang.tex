@@ -38,7 +38,7 @@ This is approach is discussed in~\autoref{sec:nlp} -- we conclude it does not me
 A compromise between these two solutions would be a language formal enough that it can be parsed by a program, but natural enough that natural language sentences can be recognised in it.
 Python or AppleScript~\cite{Sanderson2010appleScript}~(see~\autoref{fig:appleScript}) are good examples of programming languages (and therefore parseable) that are engineered with the goal of resembling English as much as possible.
 
-\begin{figure}[h]
+\begin{listing}[h]
     \centering
     \begin{minipage}{0.8\textwidth}
         \begin{minted}[
@@ -55,7 +55,7 @@ Python or AppleScript~\cite{Sanderson2010appleScript}~(see~\autoref{fig:appleScr
     \end{minipage}
     \caption{Sample code snippet of the AppleScript Language~\cite{Sanderson2010appleScript}}
     \label{fig:appleScript}
-\end{figure}
+\end{listing}
 
 \subsubsection{Easy to develop and extend}
 
@@ -361,7 +361,7 @@ For the sake of brevity, we will leave the construction of the Circumstance Set 
 First, we must define the tuple for~\nameref{def:sentence} in Kotlin as in~\autoref{fig:kotlinSentence}.
 Recall a \texttt{Sentence} is simply a tuple of \texttt{(Subject, Action, Object)}.
 
-\begin{figure}[h]
+\begin{listing}[h]
     \centering
     \begin{minipage}{0.4\textwidth}
         \begin{minted}[
@@ -376,12 +376,12 @@ Recall a \texttt{Sentence} is simply a tuple of \texttt{(Subject, Action, Object
         \end{minted}
     \end{minipage}
     \caption{\texttt{Sentence} tuple declaration}\label{fig:kotlinSentence}
-\end{figure}
+\end{listing}
 
 We now need a DSL to construct this \texttt{Sentence}.
 We use an infix extension function in order to add the \texttt{`may'} adverb (which corresponds to \texttt{Allowance = Allow}) between the subject and the action of the sentence (\autoref{fig:permissionKotlin}).
 
-\begin{figure}[h]
+\begin{listing}[h]
     \centering
     \begin{minipage}{\textwidth}
         \begin{minted}[
@@ -398,11 +398,11 @@ We use an infix extension function in order to add the \texttt{`may'} adverb (wh
         \end{minted}
     \end{minipage}
     \caption{Extension function to build a Permission}\label{fig:permissionKotlin}
-\end{figure}
+\end{listing}
 
 
 
-\begin{figure}[h]
+\begin{listing}[h]
     \centering
     \begin{minipage}{0.5\textwidth}
         \begin{minted}[
@@ -418,14 +418,14 @@ We use an infix extension function in order to add the \texttt{`may'} adverb (wh
     \end{minipage}
     \caption{Invocation of Permission builder from~\autoref{fig:permissionKotlin}}
     \label{fig:permissionUse}
-\end{figure}
+\end{listing}
 
 Now~\autoref{fig:permissionUse} almost reads like English, except the constructor of the tuple class \texttt{ActionObj}.
 We can use a Kotlin operator function in order to overload the \texttt{Action}, so the user is able to write \texttt{action(object)} as opposed to \texttt{ActionObj(action, obj)}.
 The full example is demonstrated in~\autoref{fig:permissionKotlinFull}, and a usage example is given in~\autoref{fig:finalPermissionInvocationDSL} -- which now reads much more like an English sentence!
 
 
-\begin{figure}[h]
+\begin{listing}[h]
     \centering
     \begin{minipage}{\textwidth}
         \begin{minted}[
@@ -448,11 +448,11 @@ The full example is demonstrated in~\autoref{fig:permissionKotlinFull}, and a us
     \end{minipage}
     \caption[Finished Permission builder]{Finished Permission builder with operator overloading (see~\cite{kotlinInvokeOperator})}
     \label{fig:permissionKotlinFull}
-\end{figure}
+\end{listing}
 
 
 
-\begin{figure}[h]
+\begin{listing}[h]
     \centering
     \begin{minipage}{0.5\textwidth}
         \begin{minted}[
@@ -468,7 +468,7 @@ The full example is demonstrated in~\autoref{fig:permissionKotlinFull}, and a us
     \end{minipage}
     \caption{Example of the DSL invocation of the final Permission builder of~\autoref{fig:permissionKotlinFull}}
     \label{fig:finalPermissionInvocationDSL}
-\end{figure}
+\end{listing}
 
 We now can call the function \texttt{may()} in order to create a \texttt{Permission} and add it to \texttt{clauses}.
 Most of the Confis DSL is implemented similarly.

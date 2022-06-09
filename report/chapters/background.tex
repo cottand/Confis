@@ -1,403 +1,15 @@
 \chapter{Background}\label{ch:background}
 
 
-\section{Cryptography Primitives}\label{sec:cryptography}
-
-\subsection{Hash Functions}\label{subsec:crypto:hash}
-
-Hash functions are cryptographic functions designed to behave like random
-functions~\cite{smart2016randomOracleModel}.
-When building a security proof, they can be assumed to have the following properties~\cite{smart2016randomOracleModel,
-    smart2016hashFunctions}:
-% FIXME needs references
-\begin{description}
-    \item[Determinism] A hash function always produces the same output for the same input
-    \item[One-way] It is computationally impossible to compute the preimage for some output of a hash function
-    \item[Uniformity] Outputs of a hash function are expected to be uniformly distributed.
-    In practice, the output space of a hash function is finite, so \textit{collisions} (where two inputs produce the
-    same output) are possible, but uniformity ensures this is an unlikely scenario.
-\end{description}
-
-\subsection{Public Key Cryptography}\label{subsec:crypto:pubkey}
-
-In public key cryptography, two communicating parties (say Alice and Bob) can communicate privately by using pairs of
-numbers that are related mathematically and which allow converting cleartext into cyphertext and
-back~\cite{smart2016publicKey}.
-This pair of numbers is called an asymmetric keypair, and is composed of a \textbf{public key} $e$ and a \textbf{private
-key} $d$.
-
-In this example, if Alice wishes to communicate with Bob, Bob can generate a keypair $(d, e)$ and publish $e$.
-Alice can then encrypt her cleartext with $e$, and only Bob will be able to decrypt it (because only Bob knows $d$).
-
-\begin{figure}[th]
-    \centering
-    \tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt
-    \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
-%uncomment if require: \path (0,355); %set diagram left start at 0, and has height of 355
-
-%Straight Lines [id:da017592532205451983]
-        \draw    (60.54,179.69) -- (359.87,179.69) ;
-
-% Text Node
-        \draw    (131,104) -- (234,104) -- (234,129.67) -- (131,129.67) -- cycle ;
-        \draw (135,108.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {\small \texttt{Hi from Alice}};
-% Text Node
-        \draw (185.33,52.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {$\displaystyle f_{\texttt{hash}}$};
-% Text Node
-        \draw (275,4.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {$\displaystyle A_{priv}$};
-% Text Node
-        \draw (332.33,263.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {$\displaystyle A_{pub}$};
-% Text Node
-        \draw (269,52) node [anchor=north west][inner sep=0.75pt]   [align=left] {$\displaystyle f_{\texttt{encrypt}}$};
-% Text Node
-        \draw    (241.67,104) -- (360.67,104) -- (360.67,129.33) -- (241.67,129.33) -- cycle ;
-        \draw (245.67,108.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {Encrypted digest};
-% Text Node
-        \draw (60,156) node [anchor=north west][inner sep=0.75pt]   [align=left] {Alice};
-% Text Node
-        \draw (59.67,186.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {Bob};
-% Text Node
-        \draw (159.67,209.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {$\displaystyle f_{\texttt{hash}}$};
-% Text Node
-        \draw (279.33,209.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {$\displaystyle f_{\texttt{decrypt}}$};
-% Text Node
-        \draw (231.67,252.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {equal?};
-% Text Node
-        \draw (59.67,307.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {Message is from Alice};
-% Text Node
-        \draw (208.67,280.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {\textit{{ yes}}};
-% Connection
-        \draw    (182.78,104.67) -- (195.03,78.15) ;
-        \draw [shift={(195.87,76.33)}, rotate = 114.8] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
-% Connection
-        \draw    (223.33,62.25) -- (263,62.11) ;
-        \draw [shift={(265,62.1)}, rotate = 179.79] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
-% Connection
-        \draw    (294.1,76) -- (298.98,102.37) ;
-        \draw [shift={(299.35,104.33)}, rotate = 259.5] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
-% Connection
-        \draw    (291.87,26.33) -- (291.66,46) ;
-        \draw [shift={(291.64,48)}, rotate = 270.59] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
-% Connection
-        \draw    (176.96,129.67) -- (176.72,203.67) ;
-        \draw [shift={(176.71,205.67)}, rotate = 270.19] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
-% Connection
-        \draw    (301.69,129.33) -- (301.81,203.67) ;
-        \draw [shift={(301.81,205.67)}, rotate = 269.91] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
-% Connection
-        \draw    (197.67,230.82) -- (228.87,247.4) ;
-        \draw [shift={(230.63,248.33)}, rotate = 207.98] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
-% Connection
-        \draw    (285.62,233.67) -- (270.15,247.03) ;
-        \draw [shift={(268.64,248.33)}, rotate = 319.18] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
-% Connection
-        \draw    (227.67,272.83) -- (162.1,302.51) ;
-        \draw [shift={(160.28,303.33)}, rotate = 335.64] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
-% Connection
-        \draw    (337.23,259.33) -- (315.66,235.16) ;
-        \draw [shift={(314.33,233.67)}, rotate = 48.25] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
-
-    \end{tikzpicture}
-    \decoRule
-    \caption[Asymmetric signing scheme]{An asymmetric key signing scheme where Bob is able to verify only Alice could
-    have written '\texttt{Hi from Alice}'}
-    \label{fig:pubkey-signing}
-\end{figure}
-
-Conversely, the same keypair can be used by Bob to send a message to Alice where Alice can verify that only Bob
-could have written the message.
-This is called \textit{signing}~\cite{smart2016signatures} and, more generally, it allows a sender of a message to
-prove they are the authors of the message to a recipient.
-An example of a signing scheme can be seen in Figure~\ref{fig:pubkey-signing}.
-
-\subsection{Secure Digital Timestamps}\label{subsec:crypto:timestamps}
-% TODO citation for definiton
-\textit{Trusted (digital) timestamping} is the process of securely proving that a document (for our purposes, a blob of
-bytes) was created, was modified at, or existed at a certain point in time.
-% TODO citation for widely used
-In industry this is commonly implemented by trusting a Time Stamping Authority (TSA)~\cite{timestamps_tsp_rfc} that
-signs (see~\nameref{subsec:crypto:pubkey}) a concatenation of the hash of the document and a timestamp representing some
-time $t$.
-Therefore a party that trusts the TSA to provide the right timestamp can verify that, when the TSA made the signature,
-the current time was $t$.
-\\
-
-This method can be used for confidential data because the TSA does not perform the hashing of the original document
-themselves - they are exposed only to its digest.
-
-Additionally, the requester of the timestamp cannot deny they were not in possession of the original data at the time
-% TODO verify statement
-$t$ given by the timestamp, because it was them that produced its hash digest.
-
-\subsubsection{Decentralised Timestamps}
-
-Secure timestamps can also be achieved without relying on trusted parties by publishing the document digest to a
-blockchain~\cite{gipp2015timestamps_btc}: blocks are public and cannot be tampered with (see~\nameref{subsec:btc:pow}),
-so putting a signed digest in a block shows that the signer knew the original document at the time the block was
-accepted by the network.
-
-
-\section{Bitcoin Protocol}\label{sec:bitcoin}
-
-Blockchain technology was introduced in~\cite{nakamoto2008bitcoin} as a decentralised system allowing for electronic
-cash payments.
-Blockchains are immutable distributed ledgers where participants' balances can be verified by every other participant,
-and it is computationally hard to tamper with balances to perform attacks (such as performing a transaction where a
-participant spends more funds than what they own).
-
-I will provide a brief overview of how Bitcoin provides these guarantees.
-
-\subsection{Transactions}\label{subsec:btc:txs}
-
-\cite{nakamoto2008bitcoin} defines an \textit{electronic coin} as a chain of signatures: a payer can use their private
-key, the hash of the previous transaction, and the payee's public key to create a signed hash that can be verified by
-the payee (and used by them for \textit{their} next transaction).
-This is illustrated in Figure~\ref{fig:bitcoin-tx}.
-
-\begin{figure}[th]
-    \centering
-    \includegraphics[width=0.8\columnwidth]{figures/bitcoin-tx}
-    \caption[Bitcoin coin ownership transfer]{Transfer of ownership signature chain, from~\cite{nakamoto2008bitcoin}}
-    \label{fig:bitcoin-tx}
-\end{figure}
-
-This ensures that, as long as a participants sign transactions at most once:
-\begin{itemize}
-    \item By verifying the chain of signatures, every participant can verify which participant owns which coin
-    \item Only the owner of a coin can initiate a transaction with that coin
-\end{itemize}
-
-Bitcoin enforces that participants can only sign transactions once thanks to its proof-of-work
-(see~\ref{subsec:btc:pow}) algorithm.
-
-\subsection{Proof-Of-Work}\label{subsec:btc:pow}
-
-Bitcoin ensures 'unique signatures' in transactions by grouping transactions in immutable, public \textit{blocks}.
-Participants can then verify a payer has not signed a hash of a single transaction twice by looking at all existing
-transactions.
-
-Blocks are made immutable by including in them a value (called a \textit{nonce}) and the hash of the previous block.
-% TODO verify it is the hash of the entire block that must yield the zeroes (implementation detail really)
-The protocol then accepts only blocks where the $n$ first bits of its hash are zeroes. \\
-
-Thus, in order to publish a block a participant must do work to find a nonce such that the block's hash meets this
-condition - then other participants can verify its validity with a single hash operation.
-This guarantees that a block cannot be changed (ie, a new copy published) without redoing the computational work.
-Because blocks are chained (they include the hash of the previous block), in order to modify a transaction in the past
-an adversary needs to redo the computational work for every block since that transaction (see Figure
-\ref{fig:bitcoin-blockchain}).
-% TODO implementation of mining rewards
-Additionally, participants that successfully find a suitable nonce and propose new blocks (also referred to as
-\textit{miners}) are allowed to add a specific transaction to the block where they own a newly created coin (also
-referred to as \textit{mining reward}).
-
-\begin{figure}[th]
-    \centering
-    \includegraphics[width=0.8\columnwidth]{figures/bitcoin-blockchain}
-    \caption[Two last blocks in a blockhain]{Two last blocks in a blockchain, from~\cite{nakamoto2008bitcoin}}
-    \label{fig:bitcoin-blockchain}
-\end{figure}
-
-This model of consensus ensures that
-\begin{itemize}
-    \item Participants have a monetary incentive to stay honest with respect to the protocol
-    \item An honest chain will out-compete an adversary's chain as long as the majority of computing power is honest
-\end{itemize}
-
-\subsection{Further details of the Bitcoin protocol}\label{subsec:btc.details}
-\begin{figure}[th]
-    \centering
-    \includegraphics[width=0.6\columnwidth]{figures/bitcoin-2txs-outputs}
-    \caption[Outputs and Inputs of two consecutive Transactions]{The outputs of a transaction correspond to
-    the input of the next transaction (miner's fee not represented) from~\cite{gervais2022distribLedgers_transactionsInBitcoin}}
-    \label{fig:bitcoin-2txs-outputs}
-\end{figure}
-
-While I provide a high-level overview of what makes the protocol function, there are many more details that combined
-allow for more efficiency and usability:
-\begin{itemize}
-    \item Transactions may have several inputs and outputs, so participants can transfer amounts rather than single
-    \textit{electronic coins}.
-    When performing a payment, a typical transaction by Alice has two outputs: the amount she is paying Bob and the
-    remainder, which makes up the rest of her funds (see Figure~\ref{fig:bitcoin-2txs-outputs}).
-    Thus, a participant's balance is the sum of all the unspent outputs of previous transactions (the set of unspent
-    outputs is commonly called the \textit{UTXO} set).
-    \item By modifying how many of the leading bits of a blocks' hash must be zeroes, the average computation necessary
-    to produce a new block can be adjusted by the protocol.
-    \item By using Merkle Trees~\cite{merkle1980tree} transactions with fully spent transaction outputs can be discarded
-    without breaking the block's hash.
-    This allows compacting old blocks to reclaim disk space.
-    \item A participant that does not wish to mine or hold a copy of the entire blockchain can still verify payments.
-    It can keep a copy of the block headers of the longest chain and link a transaction to where it is on-chain and
-    check that other network nodes have accepted it.
-    This process is called \textit{Simple Payment Verification} (SPV)~\cite{nakamoto2008bitcoin}.
-    \item Miners have an additional incentive (other than the mining reward) to verify transactions: the
-    \textit{transaction fee}.
-    The difference of the sum of a transaction's inputs and the sum its outputs corresponds to the transaction fee, which
-    goes to the miner.
-    \[
-        \text{fee}_\text{miner} = \sum{\text{inputs}} - \sum{\text{outputs}}
-    \]
-    This provides an incentive for the miner to place this specific transaction in the block they propose.
-\end{itemize}
-
-For more information on all the workings of the Bitcoin protocol, please refer to~\cite{nakamoto2008bitcoin}.
-
-
-\section{Smart Contracts and Ethereum}\label{sec:ethereum}
-
-Smart contracts~\cite{szabo1997smart-contracts}, where a protocol formalises a secure agreement or program over a
-network, are supported to some extent in Bitcoin (see~\ref{sec:bitcoin}) through scripting~\cite{bitcoinwiki-scripts}.
-
-A bitcoin script is a list of instructions in the \textit{Script} language recorded with each transaction
-(see~\nameref{subsec:btc:txs}) that gets executed by every participant that verifies that block and describes how the
-payee can access the coins being transferred.
-Bitcoin's Script has several limitations, such as lack of Turing-completeness (not all computable functions can be
-represented in Script), value blindness (a script cannot easily specify an exact amount to be
-withdrawn) and lack of internal state (beyond whether a transaction output is spent or
-unspent)~\cite{buterin2015ethereum}.
-
-Ethereum is also a blockchain sharing many of Bitcoin's features, such as transactions and
-a proof-of-work consensus algorithm.
-While it also as scripting support, it varies greatly from Bitcoin's in that its built-in programming language is
-Turing-complete, value-aware and allows keeping internal state.
-For more details on Ethereum's scripting language, see~\ref{subsec:eth:contract_langs}.
-The name of the coin of the Ethereum ecosystem is \textit{ether}.
-
-Ethereum's state is encoded in \textit{accounts} - objects with their own address that contain the account's
-balance~(in ether), the contract code~(if present), the nonce~(a transaction counter), and the account's
-storage~(a persistent key-value store which is initially empty)~\cite{buterin2015ethereum}.
-
-% TODO talk about eth state transitions (slides from distrib are good) if we'll be using eth
-
-\subsection{The Ethereum Virtual Machine}\label{subsec:eth:contract_langs}
-
-Ethereum's built-in scripting language is a stack-based low-level bytecode language called
-\textit{EVM language}, and runs on an execution environment called the \textit{Ethereum Virtual
-Machine} (EVM).
-Besides its stack, the EVM does have memory (an infinitely expandable byte array) which resets after
-each computation. For persisting data, the account's storage is used~\cite{buterin2015ethereum}. \\
-
-There are several high level languages that compile to EVM bytecode that are used to write smart
-contracts, such as Solidity~\cite{solidity_repo} and Vyper~\cite{vyper_repo}~(the most active and
-maintained languages at the time of writing~\cite{eth_smartContractLangs}).
-
-% TODO code an examples if you're going to be writing on these
-
-An application built on top of decentralised smart contracts is commonly called a
-\textit{Decentralised Application} (or DApp)~\cite{masteringEthGlossary}.
-
-\subsection{Gas Fees in Eterum}\label{subsec:eth:gas}
-
-When performing a transaction, an Ethereum account pays transaction fees (similarly to bitcoin as
-explained in~\ref{subsec:btc.details}) from their balance.
-Computational steps when scripting are priced in units of \textit{gas} (most commonly, a step costs
-1 gas).
-When performing a transaction, the sender specifies the values \texttt{STARTGAS} (the maximum amount
-of gas they are willing to spend in the transaction execution) and \texttt{GASPRICE} (the price of a
-single gas unit in ether).
-
-Therefore, when executing a smart contract its cost (the fee to be paid for its execution, in ether)
-will be determined by the computation it requires (more computation means more gas!).
-It is in the interest of the caller of the contract that the contract requires as little computation
-as possible, so that the fee they pay for the call remains low.
-
-This project may have to rule out an Ethereum DApp as a good option for implementing a decentralised
-prototype.
-At the time of writing, gas fees are prohibitive: Figure~\ref{fig:eth-gas-price} reports prices
-hovering around the 60 gwei/gas mark.
-Given a ZoKrates~(see~\ref{subsec:onchain-snarks}) verification costs about $1.6 \times 10^{6}$ gas,
-running it costs about $0.96$ ether (well above £$1,500$ as of \formatdate{23}{01}{2022}).
-This is orders of magnitude beyond a reasonable price for a prototype for this project.
-
-
-\begin{figure}[th]
-    \centering
-    \includegraphics[width=0.9\columnwidth]{figures/ethgasprice}
-    \caption
-    [Price for a single gas for the week of \formatdate{17}{01}{2022}]
-    {Price in gwei($10^{-8}$ ether) for a single gas for the week of \formatdate{17}{01}{2022},
-        from~\cite{eth23janGasPrice}}
-    \label{fig:eth-gas-price}
-\end{figure}
-
-
-\section{Zero-Knowledge Proofs}\label{sec:zero-knowledge-proofs}
-
-An \textit{Interactive Proof} is a protocol where a verifier $V$ either \textit{accepts} or \textit{rejects} whether a
-prover $P$ knows something~\cite{damgaard1998zk_protocols}.
-For example, $P$ could be trying to convince $V$ that they know the preimage of a hash.
-
-An interactive proof system has two key properties~\cite{smart2016zeroknowledgeproofs}:
-\begin{description}
-    \item[Completeness] If $P$ knows the thing being proved and follows the protocol, then $V$ should accept with
-    probability one.
-    \item[Soundness] If $P$ does not know the thing being proved, then $V$ should only have a negligible probability of
-    accepting.
-\end{description}
-
-A \textit{Zero-Knowledge Proof} is an interactive proof with the additional property of \textit{zero-knowledge}, where
-$V$ accepts without having learned any new information during their exchange with $P$~\cite{damgaard1998zk_protocols,
-    smart2016zeroknowledgeproofs}.
-In our example, a zero-knowledge proof where $P$ convinces $V$ that they know the preimage of a hash would require $P$
-not sharing any information about (or related to) the preimage itself.
-
-This protocol has the interesting property that the information $P$ has proven to know is still private to $V$, and
-$V$ is unable to reproduce the proof and convince a third party (say, $V'$) that they (or $P$) know that information.
-
-\subsection[zkSNARKs]{Zero-Knowledge Succinct Arguments of Knowledge (zkSNARKs)}\label{subsec:zksnarks}
-
-% TODO do I need to go through eliptic curve math :c
-
-Interactive proofs assume the prover is computationally unbounded (and so worries about computationally
-unbounded adversaries), but by relaxing the soundness property to computationally sound proofs we can assume a
-polynomial time prover~\cite{damgaard1998zk_protocols}.
-
-This variation of an interactive proof is called an \textit{interactive argument} (because an unbounded adversary would
-be able to fool $V$)~\cite{smart2016zeroknowledgeproofs}.
-
-If we also preserve the zero-knowledge property, we have a \textit{zero-knowledge argument}, which can now be
-efficient because it can run in polynomial time~\cite{naranker2022zeroknowledge}.
-
-Additionally, if the prover is unable to construct a proof without some sort of secret (in our previous example, the
-preimage of a hash function), then we have an argument \textit{of knowledge}.
-Intuitively, in a zero-knowledge argument of knowledge, $V$ becomes convinced that $P$ knows some secret without the
-protocol leaking any information about the secret.
-
-If our zero-knowledge argument of knowledge additionally satisfies the properties of being \textit{non-interactive}~(no
-or little interaction between prover and verifier) and \textit{succinct}~(the sizes of the messages are small in
-comparison to the length of the actual computation), then we have a \textit{Zero-Knowledge Succinct Argument of
-Knowledge} (or \textit{zkSNARK})~\cite{reitwiessner2016zksnarks}.
-
-\subsection{zkSNARKs on Blockchains}\label{subsec:onchain-snarks}
-
-Recent applications of zkSNARKs include privacy preserving blockchains (see~\ref{sec:bitcoin}) where a network can
-verify a participant does not spend more funds that their balance without leaking any knowledge about the amount being
-spent, the balance itself, or the identities of payer and payee~\cite{zerocash_whitepaper}.
-
-Complex smart contracts (see~\ref{sec:ethereum}) quickly result in high costs for callers due to gas costs that increase with complexity of the
-contract's computation (see~\nameref{subsec:eth:gas}).
-zkSNARKs allow to verify a computation for a fraction of the cost of running it~\cite{zokrates_intro}.
-
-% TODO cite other frameworks?
-Several frameworks allow writing zkSNARKs and deploying them to a blockchain that supports smart contracts.
-
-\textit{ZoKrates}~\cite{zokrates_repo} allows writing off-chain programs (which can be run tested locally) for a
-verifier.
-The programs can also be exported as Solidity programs~(see~\ref{subsec:eth:contract_langs})~\cite{solidity_repo} which
-can then be deployed to the Ethereum network.
-%TODO zokrates 1.6m gas ouch
-
-
-\section{Licensing}\label{sec:licensing}
+\section{Legal Agreements}\label{sec:licensing}
 
 A legal agreement is a fairly broad definition which varies with each country's legal system.
 Most generally, it involves~\cite{contractDef2018precedent}:
 \begin{itemize}
     \item An offer by a party
-    \item An acceptance by another party
+    \item An acceptance by at least one other party
     \item Intention to create a legal relationship
-    \item Consideration for the offer - a sort of `promise' where a price is paid for the offer (monetary or
+    \item Consideration for the offer -- a sort of `promise' where a price is paid for the offer (monetary or
     otherwise).
 \end{itemize}
 
@@ -456,6 +68,51 @@ The processing must relate specifically to uses of legal documents (therefore fo
 
 See also~\autoref{sec:nlp} for normative rule generation from legal text, and~\autoref{subsec:reasoning-with-legal-agreements} for reasoning with existing formalisms.
 
+\subsection{Smart Contracts and Ethereum}\label{sec:ethereum}
+
+Smart contracts~\cite{szabo1997smart-contracts}, where a protocol formalises a secure agreement or program over a
+network, are supported to some extent in the first blockchain application, Bitcoin~\cite{nakamoto2008bitcoin}~(see~\ref{sec:bitcoin}) through scripting~\cite{bitcoinwiki-scripts}.
+
+A bitcoin script is a list of instructions in the \textit{Script} language recorded with each transaction
+(see~\nameref{subsec:btc:txs}) that gets executed by every participant that verifies that block and describes how the
+payee can access the coins being transferred.
+Bitcoin's Script has several limitations, such as lack of Turing-completeness (not all computable functions can be
+represented in Script), value blindness (a script cannot easily specify an exact amount to be
+withdrawn) and lack of internal state (beyond whether a transaction output is spent or
+unspent)~\cite{buterin2015ethereum}.
+
+Ethereum~\cite{buterin2015ethereum} is also a blockchain sharing many of Bitcoin's features, such as transactions and
+a proof-of-work consensus algorithm.
+While it also as scripting support, it varies greatly from Bitcoin's in that its built-in programming language is
+Turing-complete, value-aware and allows keeping internal state.
+For more details on Ethereum's scripting language, see~\ref{subsubsec:evm}.
+The name of the coin of the Ethereum ecosystem is \textit{ether}.
+
+Ethereum's state is encoded in \textit{accounts} - objects with their own address that contain the account's
+balance~(in ether), the contract code~(if present), the nonce~(a transaction counter), and the account's
+storage~(a persistent key-value store which is initially empty).
+
+Ethereum introduces an application of the concept first presented by Szabo in~\cite{szabo1997smart-contracts}, in that it allows defining self-enforceable relationships between entities.
+It is implemented thanks to the Ethereum Virtual Machine.
+
+\subsubsection{The Ethereum Virtual Machine}\label{subsubsec:evm}
+
+Ethereum's built-in scripting language is a stack-based low-level bytecode language called
+\textit{EVM language}, and runs on an execution environment called the \textit{Ethereum Virtual
+Machine} (EVM).
+Besides its stack, the EVM does have memory (an infinitely expandable byte array) which resets after
+each computation.
+For persisting data, the account's storage is used~\cite{buterin2015ethereum}.
+
+There are several high level languages that compile to EVM bytecode that are used to write smart
+contracts, such as Solidity~\cite{solidity_repo} and Vyper~\cite{vyper_repo}~(the most active and
+maintained languages at the time of writing~\cite{eth_smartContractLangs}).
+
+% TODO code an examples if you're going to be writing on these
+
+An application built on top of decentralised smart contracts is commonly called a
+\textit{Decentralised Application} (or DApp)~\cite{masteringEthGlossary}.
+
 \subsection{Juro}\label{subsec:juro}
 Juro~\cite{juroWhitepaper} is a start-up business seeking to make structured machine-readable data out of contracts.
 It focuses on:
@@ -494,10 +151,10 @@ breach of contract, or what action to take in a specific situation).
 See Figure~\ref{fig:accord-post-signature-code} for an example where the clause checks for the state of a
 delivery~(whether it is timely, has passed inspection, etc).
 
-\begin{figure}[th]
+\begin{listing}[th]
     \centering
     \small
-    \begin{verbatim}
+    \begin{minted}[autogobble, fontsize=\small]{javascript}
     contract SupplyAgreement over SupplyAgreementModel {
       clause acceptanceofdelivery(request : InspectDeliverable) : Response {
 
@@ -527,31 +184,31 @@ delivery~(whether it is timely, has passed inspection, etc).
         }
       }
     }
-    \end{verbatim}
+    \end{minted}
     \caption[Accord contract clause as code]{A contract clause encoded in Accord's \textit{Ergo} language,
         from~\cite{accordAfterSignatureCode}.}
     \label{fig:accord-post-signature-code}
-\end{figure}
+\end{listing}
 
 \textit{Ergo} code (the language in which Accord allows specifying contract behaviour~\cite{accordErgo}) can then be
 deployed to a permissioned open-source enterprise-oriented blockchain called \textit{HyperLedger
 Fabric}~\cite{hyperledgerFabric_repo, accordFabricDeployDocs} or to a NodeJS server~\cite{accordNodeJSDeployDocs}.
 
 While the Accord project does also aim to represent machine-readable contracts, its representation
-cannot be easily written by a non-software developer (unlike Juro's~\ref{subsec:juro}).
+cannot be easily written by a non-software developer (unlike Juro's,~\autoref{subsec:juro}).
 
 \subsection{Proof of Existence}\label{subsec:proof-of-existence}
 
-Among other contributions that ease the process (not unlike Juro~\ref{subsec:juro}) of negotiating
+Among other contributions that ease the process (not unlike Juro,~\autoref{subsec:juro}) of negotiating
 and drafting a contract,~\cite[Express Agreement]{expressAgreement} implemented Proof of Existence,
-where parties put a hash of a signed copy of a contract in the Bitcoin blockchain~(see~\ref{sec:bitcoin}).
+where parties put a hash of a signed copy of a contract in the Bitcoin blockchain~(see~\autoref{sec:bitcoin}).
 
 This allows irrevocable proof of agreement verifiable by third parties.
 
 \subsection{Ricardian Contracts}\label{subsec:ricardian-contracts}
 
 First introduced by~\cite{grigg2004ricardian, ricardianWeb}, Ricardian Contracts aim to encode a legal agreement as a human-readable document (handwritten legal prose) accompanied by machine-readable metadata.
-Additionally, it is cryptographically signed (see~\ref{fig:pubkey-signing}) by parties and uniquely identifiable;
+Additionally, it is cryptographically signed (see~\autoref{subsec:crypto:pubkey}) by parties and uniquely identifiable;
 giving it some extra cryptographic guarantees (for example, signatures cannot be plausibly denied and terms cannot be tampered with after signing).
 
 
@@ -612,7 +269,7 @@ It does this by providing several abstractions relating to legal concepts, such 
 Time and events through a model based on temporal logic~\cite{temporalLogic1984} which specifies time instances for events, time intervals for situations, and makes use of pre-state and post-state situations for events.
 
 % TODO Solidity ref
-Symboleo also hopes to provide an implementation-agnostic specification by transpiling to blockchain languages such as Solidity -- much like~\nameref{subsec:accord}.
+Symboleo also hopes to provide an implementation-agnostic specification by transpiling to blockchain languages, such as Solidity~\cite{solidity_repo}~(see~\autoref{subsubsec:evm}) -- much like~\nameref{subsec:accord}.
 At the time of writing, Accord has such an implementation in place while Symboleo does not.
 
 An example of a contract (a meat sales agreement that can be found in~\autoref{tab:meat}) translated into Symboleo is given under the Appendix in~\autoref{fig:symbolio:meatSales}.
@@ -728,12 +385,13 @@ It has advanced features including most of the ones mentioned in~\nameref{def:ho
 These are demonstrated in~\autoref{fig:haskellBasicDsl}, where Haskell functions are used as commands and statements of the BASIC language.
 This results in a valid Haskell expression (with some language modifications) that also defines a valid BASIC program -- therefore allowing to write and compile BASIC without actually needing a BASIC parser.
 
-\begin{figure}[h]
+\begin{listing}[h]
     \centering
     \begin{minipage}{0.8\textwidth}
         \begin{minted}[
             autogobble,
             frame=lines,
+            fontsize=\small,
             framesep=2mm]{haskell}
     {-# LANGUAGE ExtendedDefaultRules, OverloadedStrings #-}
     import BASIC
@@ -770,7 +428,7 @@ This results in a valid Haskell expression (with some language modifications) th
     \caption[BASIC program written in a Haskell DSL]
     {A BASIC program written in a Haskell DSL, from~\cite{haskellBasicDSL}}
     \label{fig:haskellBasicDsl}
-\end{figure}
+\end{listing}
 
 Haskell additionally permits defining the precedence of operators and infix functions, allowing to define the direction in which associativity propagates~\cite{haskellFixity}.
 This can be useful to form English-like sentences in a DSL such as \texttt{`Bob did eat after Alice did eat'}, where \texttt{`after'} can be an infix function with lower precedence that \texttt{`did'}, which forms the other two sentences.
@@ -784,7 +442,7 @@ One of the most used examples of such DSLs is the Gradle Build Language~\cite{gr
 This sets the build tool apart from similar tools, like Maven and Makefiles, which do not use DSLs.
 An example of a script for such a DSL is given in~\autoref{fig:gradleGroovyDSL}.
 
-\begin{figure}[h]
+\begin{listing}[h]
     \centering
     \begin{minipage}{0.8\textwidth}
         \begin{minted}[
@@ -819,7 +477,7 @@ An example of a script for such a DSL is given in~\autoref{fig:gradleGroovyDSL}.
     \caption[Gradle Groovy Build script]
     {A Gradle Groovy build script, from~\cite{gradleDSL}}
     \label{fig:gradleGroovyDSL}
-\end{figure}
+\end{listing}
 
 Unlike to the other candidates in this section, Groovy allows for dynamic typing.
 This means that the language offers more runtime flexibility when designing a DSL, as new variables and classes can be created as the script is interpreted.
@@ -833,7 +491,7 @@ Kotlin~\cite{kotlinLang} is another general-purpose language.
 The language supports infix functions and operator overloading.
 An example DSL that uses Kotlin as the host language is given in~\autoref{fig:kotlinHtmlDsl}.
 
-\begin{figure}[h]
+\begin{listing}[h]
     \centering
     \begin{minipage}{0.9\textwidth}
         \begin{minted}[
@@ -867,7 +525,7 @@ An example DSL that uses Kotlin as the host language is given in~\autoref{fig:ko
     \end{minipage}
     \caption{Kotlin DSL for building HTML, from~\cite{kotlinTypeSafeBuilders}}
     \label{fig:kotlinHtmlDsl}
-\end{figure}
+\end{listing}
 
 \paragraph{Tooling} While the language is not as flexible as Haskell or Groovy, it is supported by well-maintained and feature-rich external tooling (in terms of the \textit{IntelliJ IDEA} editor) and has stand-alone scripting support~\autoref{subsec:scripting-support}.
 
@@ -919,21 +577,21 @@ Easy Rules~\cite{easyRules} is a rules engine~\cite{fowlerRulesEngine} for Java 
 It allows programmatically generating rules (through \texttt{Rule} instances) as well as evaluating them.
 This API is particularly swell-suited to this project because it allows defining the predicate that triggers rule execution (the \texttt{when} clause in~\autoref{fig:easyRulesProgranmmatic}) at runtime rather than at compile-time.
 
-\begin{figure}[h]
-        \begin{minted}[
-            autogobble,
-            frame=lines,
-            framesep=2mm]{java}
+\begin{listing}[h]
+    \begin{minted}[
+        autogobble,
+        frame=lines,
+        framesep=2mm]{java}
                 Rule weatherRule = new RuleBuilder()
                         .name("weather rule")
                         .description("if it rains then take an umbrella")
                         .when(facts -> facts.get("rain").equals(true))
                         .then(facts -> System.out.println("It rains, take an umbrella!"))
                         .build();
-        \end{minted}
+    \end{minted}
     \caption[Programmatic Example of a Rule from Easy Rules]{Programmatic Example of a Rule from Easy Rules, from~\cite{easyRules}}
     \label{fig:easyRulesProgranmmatic}
-\end{figure}
+\end{listing}
 
 Rules evaluation can be customised to add a notion of priority between rules (which might allow to create precedence between clauses in contracts).
 Additionally, there is support for continous rule application, where rules are evaluated on known facts continously until no more rules are applicable.
