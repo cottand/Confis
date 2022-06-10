@@ -16,16 +16,10 @@ Take the example of a tenancy agreement: a tenant may want to know whether they 
 
 Therefore, a successful query system should be able to provide answers to questions such as \textit{`May $A$ do $X$?'}
 
-A party may also have some requirements to be able to perform some action - such as performing a payment.
-Continuing the example of the tenancy agreement, a landlord may be allowed to enter the premises in case of emergency, but not otherwise.
-Thus, a more general question could be \emph{`Under what condition may $A$ do $X$?'}
-
 \paragraph{Compliance verification} If figuring out a party's legal capabilities is a key part of dealing with a contract, so is figuring out their legal obligations.
 Unlike a legal capability question, a compliance question cannot be formulated as \textit{`May $A$ do $X$?'} -- they should instead be along the lines of \textit{`What does X need to do in order to be compliant?'}.
 We should also take into account that a party may have already done something to be compliant at the time of performing the query -- therefore we need to include some `state-of-the-world' in our question.
 Additionally, parties usually interact and actions between more than a single party may be needed to achieve compliance.
-
-Therefore, we can generalise a compliance verification question to \textit{`Given a series of past events S, what actions need to take place in order for the contract to be complied with?'}.
 
 \subsection{Confis Internal Representation}\label{subsec:confis-ir}
 As~\cite{knottenbeltContractDriven} notes, there is a clear compromise to be made between how complex a contract representation is, and how simple the computations needed to process it are.
@@ -40,11 +34,43 @@ For the sake of brevity, this report does not contain the entire schema, but see
 
 \section{Rule Generation and Contradiction Detection}\label{sec:rule-generation}
 
-Given Confis evaluates different rules depending on the query from the IR, rather than generating rules from the DSL, generating rules from the IR is a critical part of Confis.
+Confis produces an Internal Representation (IR) from compiling the language, and from there it is able to answer complex queries.
+It does this by generating normative rules from each clause.
+The nature of the rules depends on the type of query.
+Confis supports three different types of queries:
 
-Confis has several types of clauses (see~\autoref{sec:language-semantics}) and each clause generates between one and four rules depending on the query type and its~\nameref{def:allowance}.
+\paragraph{Allowance Questions} Their input is an Event (ie, a Sentence $S$ and a Circumstance Set $C$) and its output is an Allowance.
+It is meant to represent the question `What is the allowance of $S$ under the circumstances $C$'?
+An example of such a question is \emph{`May I use this dataset for commercial purposes?'}
+\begin{gather}
+    \nonumber
+    Q_\texttt{allowance}: \, \texttt{Event}\ \to\, \texttt{Allowance}
+\end{gather}
+
+\paragraph{Circumstance Questions} Their input is a Sentence $S$, and the output is two Circumstance Sets, $C_{\text{allow}}$ and $C_{\text{unless}}$, or a set of a set of clauses $A_{\text{contradictory}}$.
+The query is meant to represent the question \emph{`Under what circumstances may $S$ happen?'}.
+$C_{\text{allow}}$ represents the Circumstance Set which answers this question (if it is empty, then $S$ is Forbidden) with the exception of the Circumstances present in $C_{\text{unless}}$.
+If the contract contains contradictions between clauses, then $A_{\text{contradictory}}$ is returned: it represents the sets of clauses that contradict each other.
+This mechanism is what allows contradiction detection to aid the contract drafter to produce meaningful contracts.
+\begin{gather}
+    \nonumber Q_\texttt{circumstance}:\\
+    \nonumber \texttt{Sentence}\ \to \ (\,(\texttt{CircumstanceSet}, \  \texttt{CircumstanceSet}) \ | \ \texttt{Set<Set<Clause>}\texttt{>} \ )
+\end{gather}
+
+\paragraph{Compliance Questions} Their input is a set of Events (meant to represent a state-of-the-world) and the output is another set of Events of what needs to happen in order to become compliant, or a set of clauses that have been not been complied with~(see~\autoref{def:confis-compliance}) if any.
+\begin{gather}
+    \nonumber
+    Q_\texttt{compliance}: \, \texttt{Set<Event>}\ \to\ (\ \texttt{Set<Event>}\ | \ \texttt{Set<Clause>} \ )
+\end{gather}
+
+% TODO PICKUP
+
+Confis helps reason about legal agreements chiefly by accurately answering these types of queries.
+Therefore generating rules from the IR is a critical part of the project.
+
+There are several types of clauses (see~\autoref{sec:language-semantics}) and each clause generates between one and four rules depending on the query type and its~\nameref{def:allowance}.
 We will examine the example of converting a~\nameref{def:permission} clause with a non-empty~\nameref{def:circumstanceSet}.
-It is a simple case that generates two rules.
+It is one of the simpler cases, and it generates two rules.
 Take the clause specified by~\autoref{fig:confis:aliceMayUseDataCClause} (the full contract can be found in~\autoref{fig:confis:min-circumstance}):
 
 
@@ -56,9 +82,9 @@ Take the clause specified by~\autoref{fig:confis:aliceMayUseDataCClause} (the fu
             frame=lines,
             framesep=2mm,
         ]{kotlin}
-    alice may use(data) asLongAs {
-        within { (1 of June)..(30 of June) year 2022 }
-    }
+alice may use(data) asLongAs {
+    within { (1 of June)..(30 of June) year 2022 }
+}
         \end{minted}
     \end{minipage}
     \caption{Clause with a Circumstance -- extract from~\autoref{fig:confis:min-circumstance}}
@@ -68,7 +94,7 @@ Take the clause specified by~\autoref{fig:confis:aliceMayUseDataCClause} (the fu
 The IR generated by this agreement can be found in~\autoref{fig:confis:min-circumstance-ir}.
 
 We will now generate the rules for an \emph{allowance question} for this rule (ie, a query for legal capabilities).
-As explained in the previous ~\autoref{subsec:queries-requirements}, the question can be formulated as \emph{`Given circumstances $C$, may Alice use the data?'}.
+As explained in the previous~\autoref{subsec:queries-requirements}, the question can be formulated as \emph{`Given circumstances $C$, may Alice use the data?'}.
 The inputs are a~\nameref{def:sentence} and a~\nameref{def:circumstanceSet}, while the output is a set Circumstance Sets (we require a Circumstance Set for each of the scenarios where Alice may use the data).
 The resulting rules would
 \begin{enumerate}
@@ -87,24 +113,24 @@ Those rules are given by the pseudocode in~\autoref{fig:confis:aliceMayUseDataRu
         framesep=2mm,
         fontsize=\small,
     ]{kotlin}
-            AllowanceRule(
-                // predicate: (Permission, Question, Result) -> Boolean
-                when = { p, q, _ ->
-                    p.sentence == q.sentence &&
-                        p.circumstanceSet generalises q.circumstanceSet
-                }
-                // side-effect: (Permission, Result) -> Void
-                then = { p, r -> result = Allow }
-            ),
-            // question general enough to concern us but not narrow enough to match clause
-            AllowanceRule(
-                when = { p, q, _ ->
-                    p.sentence == q.sentence &&
-                        !(p.circumstanceSet generalises q.circumstanceSet)  &&
-                        p.circumstances overlapsWith q.circumstances
-                },
-                then = { if (result != Allow) result = Depends },
-            )
+AllowanceRule(
+    // predicate: (Permission, Question, Result) -> Boolean
+    when = { p, q, _ ->
+        p.sentence == q.sentence &&
+        p.circumstanceSet generalises q.circumstanceSet
+    }
+    // side-effect: (Permission, Result) -> Void
+    then = { p, r -> result = Allow }
+),
+// question general enough to concern us but not narrow enough to match clause
+AllowanceRule(
+    when = { p, q, _ ->
+        p.sentence == q.sentence &&
+        !(p.circumstanceSet generalises q.circumstanceSet)  &&
+        p.circumstances overlapsWith q.circumstances
+    },
+    then = { if (result != Allow) result = Depends },
+)
     \end{minted}
     \caption{Rules generated from the clause given in~\autoref{fig:confis:aliceMayUseDataCClause}}
     \label{fig:confis:aliceMayUseDataRule}
@@ -126,15 +152,15 @@ We are able to detect such a contradiction thanks to the \texttt{overlapsWith} f
         frame=lines,
         framesep=2mm,
     ]{kotlin}
-    alice mayNot use(data) asLongAs {
-        val year2022 = (1 of January)..(31 of December) year 2022
-        within { year2022 }
-    }
-    alice may use(data) asLongAs {
-        within { (1 of June)..(30 of June) year 2022 }
-    }
+alice mayNot use(data) asLongAs {
+    val year2022 = (1 of January)..(31 of December) year 2022
+    within { year2022 }
+}
+alice may use(data) asLongAs {
+    within { (1 of June)..(30 of June) year 2022 }
+}
     \end{minted}
-    \caption{A correct Confis agreement that contains detectable contradictions}
+    \caption{A syntactically correct Confis agreement that contains detectable contradictions}
     \label{fig:confis:contradictions-example}
 \end{listing}
 
@@ -153,7 +179,6 @@ This allows them to perform queries and check whether their answers are within t
 \subsection{Query UI Implementaiton}\label{subsec:query-ui-implementaiton}
 
 Implementing a UI to build queries involves:
-
 \begin{itemize}
     \item Constructing a Sentence through a UI
     \item Constructing a Circumstance Set through a UI
@@ -203,9 +228,9 @@ It parses the Circumstance editor and constructs a new AST which is then instant
             Contains circumstance code:
             \vspace{-6mm}
             \begin{minted}[autogobble]{kotlin}
-                after {
-                    alice did pay(bob)
-                }
+after {
+alice did pay(bob)
+}
             \end{minted}
         };
         \node (queryUi) [
@@ -238,10 +263,10 @@ It parses the Circumstance editor and constructs a new AST which is then instant
             Contains file contents of Confis contract:
             \vspace{-2mm}
             \begin{minted}[autogobble]{kotlin}
-                val alice by party
-                val bob by party
-                val pay by action
-                // ...
+val alice by party
+val bob by party
+val pay by action
+// ...
             \end{minted}
         };
 
@@ -413,4 +438,4 @@ A Ricardian contract, on the other hand, is closer to an instance of a specific 
 This project is a generalisation of Ricardian contracts in that Confis agreements meet all the requirements given by definition of~\nameref{def:ricardian}\footnote{It is worth noting that while Confis as a formalism does meet the requirements given by the definition of a~\nameref{def:ricardian}, the artefacts included in the project do not implement the public-key signing infrastructure (discussed in~\autoref{subsec:crypto:pubkey}).}, but it also tries to convey and capture the meaning of the contract, so that both a machine and a human can take every single possible state into account.
 
 Another crucial difference from what was first specified by Grigg in~\cite{grigg2004ricardian} is that Confis does not intend to let a user write legal prose.
-Rather, it hopes to produce machine-generated but human-readable prose legal prose from its internal encoding of the agreement -- see~\autoref{sec:additional-tooling:doc-rendering} for a discussion of this feature.
+It instead produces machine-generated but human-readable prose legal prose from its internal encoding of the agreement -- see~\autoref{sec:additional-tooling:doc-rendering} for a discussion of this feature.
