@@ -11,6 +11,7 @@ _minted-report/
 *.lof
 *.log
 *.lot
+*.lol
 *.out
 *.pdf
 *.run.xml

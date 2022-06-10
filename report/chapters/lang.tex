@@ -138,12 +138,6 @@ Allowance is used to answer questions of the type \emph{`May A do X?'} -- where 
     \emph{Allowance} is a value like \texttt{Allowance = Allow | Forbid | Unspecified | Depends}.
 \end{definition}
 
-
-\begin{definition}[Compliance]
-    \label{def:confis-compliance}
-\end{definition}
-
-
 Users are allowed to use Allowance in order to define a~\nameref{def:permission}, but only the values \texttt{Allow} and \texttt{Forbid}.
 The other values are reserved for answering queries and while they cannot be used, responses that return \texttt{Depends} and \texttt{Unspecified} can be crafted by defining the answer space accordingly.
 This is shown in~\autoref{fig:allowance-venn} and~\autoref{eq:allowance-cake-example}, where only \texttt{may} and \texttt{mayNot} keywords are used (corresponding to \texttt{Allow} and \texttt{Forbid} respectively) but all possible values of Allowance are present in the agreement.
@@ -232,6 +226,26 @@ Confis also assumes a that providing a legal obligation entails providing the le
 
     A requirement $r$ entails a permission $p$ where if $r = (s, C)$ then $p = (\texttt{Allow}, s, C)$
 \end{definition}
+
+\begin{definition}[Event]
+    \label{def:event}
+    An \emph{Event} is a tuple of a Sentence and a Circumstance set, describing the context the Sentence happens in, like \texttt{Event = (Sentence, CircumstanceSet)}
+\end{definition}
+
+We use a set of Events to represent a `state-of-the-world'.
+Note how we have no concept of precedence or ordering between events.
+The only way to order chronologically them would be with respect to a time-based Circumstance present in each event's Circumstance Set.
+
+\begin{definition}[Compliance]
+    \label{def:confis-compliance}
+    We say that a Requirement $r$ \emph{has been met by} a set of Events $W$ if and only if there is an event $e \in W$ such that they have the same Sentence and the Circumstance Set of $e$ is generalised by the Circumstance Set of $r$.
+
+    We say that a \texttt{Forbid} Permission $p$ \emph{is respected by} a set of Events $W$ if and only if there does not exist $e \in W$ such that $e$ has the same Sentence as $p$ and the Circumstance Set of $e$ overlaps with the Circumstance Set of $p$.
+
+    A set of Events $W$ \emph{is compliant with} an agreement if and only if, for every Requirement $r$ and every \texttt{Forbid} Permission $p$ that are part of the agreement, $r$ has been met by $W$ and $p$ is respected by $W$.
+\end{definition}
+
+For the meanings of `generalises' and `overlaps with', see~\autoref{def:circumstanceSet:generalise}, and~\autoref{def:circumstanceSet:overlap}.
 
 \subsection{Circumstance and Circumstance Set}\label{subsec:circumstance}
 
