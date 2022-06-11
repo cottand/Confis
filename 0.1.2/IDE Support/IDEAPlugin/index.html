@@ -372,6 +372,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#installing-the-plugin-from-sources" class="md-nav__link">
+    Installing the plugin from sources
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -533,6 +540,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#installing-the-plugin-from-sources" class="md-nav__link">
+    Installing the plugin from sources
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -560,6 +574,19 @@
 <p>Confis code can be converted to a better-looking <a href="../../AgreementsAsDocuments/">Document</a>. The Document that results from the contract you are writing can be previewed by the Confis Editor provided by the plugin:</p>
 <p><img alt="Document Preview" src="../../pics/documentPreviewZoomed.png" />
 <img alt="Confis Editor" src="../../pics/contractRenderedIdea.png" /></p>
+<h2 id="installing-the-plugin-from-sources">Installing the plugin from sources<a class="headerlink" href="#installing-the-plugin-from-sources" title="Permanent link">&para;</a></h2>
+<p>The IDEA plugin is not currently published to any repositories in binary form.
+In order to use it, you must compile it and install it manually.
+You only require Java 11 or later installed in your machine.</p>
+<ul>
+<li>Clone the Confis repository</li>
+<li>Run <code>./gradlew assemble</code></li>
+<li>Open your installation of IntelliJ IDEA and select <em>Settings</em> &gt; <em>Plugins</em> &gt; <em>Install plugin From Disk</em></li>
+<li>Select the compiled zip file
+<code>&lt;repositoryRoot&gt;/plugin/build/distributions/Confis-*.zip</code></li>
+<li>Restart IntelliJ</li>
+<li>Open any <code>*.confis.kts</code> and you can start writing contracts</li>
+</ul>
 
               
             </article>
