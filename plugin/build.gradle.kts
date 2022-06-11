@@ -4,7 +4,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm")
-    // until 1.5.4+
     id("org.jetbrains.intellij") version "1.6.0"
 }
 
@@ -18,14 +17,11 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-scripting-jvm:$kotlinVersion")
     implementation("org.jetbrains.kotlin:kotlin-scripting-jvm-host:$kotlinVersion")
     api(project(":lib"))
-    // implementation(project(":scriptHost"))
 }
 
 intellij {
     pluginName.set("Confis")
-    // version.set("2021.3")
     version.set("2022.1")
-    // version.set("IC-213.5744.223")
     type.set("IC")
 
     plugins.set(

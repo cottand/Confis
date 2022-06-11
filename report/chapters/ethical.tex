@@ -3,104 +3,66 @@
 \chapter{Ethical Considerations}\label{ch:ethical}
 
 
-\section{Legal Implications}\label{sec:legal-implications}
+\paragraph{Possible Discrepancies Between Machine-Readable Representations and Legal Requirements}
+\label{par:legal-discrepancies}
 
-\subsection{Possible Discrepancies Between Machine-Readable Representations and Legal Requirements}
-\label{subsec:legal-discrepancies}
+This project provides new technology to understand and reason about a legal contract.
+When it is applied in industry, there is always a risk that the contract the drafter means to represent (traditionally written as plain natural language) is not aligned with the contract represented by the Confis specification they actually write.
+This can stem primarily from misunderstandings of the limitations of what Confis can represent (these are discussed in~\autoref{subsec:confis-lang-limits}).
 
-This project hopes to automate enforcement of clauses in legal agreements.
-Contracts commonly have exceptions where violating the terms of the agreement is not a breach of the
-contract in circumstances outside the control of all parties (referred to as \textit{`Force
-Majeure'}~\cite{forceMajeureDefinition} - see~\cite[\textsection13.14]{jetbrainsEduLicence} for an
-example).
+\paragraph{Liability}\label{par:liability}
 
-It is still to be seen to what extent this project enforces clauses and to what extent it only
-provides an audit trail.
-The former may impede actions that could be law-compliant in case of force majeure, while the latter
-would give parties more freedom to breach the contract (and leave it up to the other party to follow
-up with legal action).
+Additionally, it is possible that instead of being used to draft new contracts, this project is used to translate existing contracts into a formalism.
+This creates the additional risk that a party may be subject to a natural language contract, but checking their legal capabilities and obligations within the scope of the Confis agreement.
+If these two different representations have discrepancies, then such a Party might inadvertently breach the natural language representation.
 
-While the latter may seem like a safer option, enforcing compliance outside of courts can be very
-attractive to all parties because they would be able to protect the terms of the contract without
-having to go to court and expending the financial and legal resources to take action in case of
-contract breach.
-So much so that this is the case already in many software licences~(where~\cite{jetbrainsEduLicence}
-is a prime example, see~\ref{subsec:licensing:software}), where the end user has their access
-revoked before the licensor.
+It is the opinion of this project that the liability this sort of legal blunder should lie with the party that agreed to be subject to a natural language contract but did not follow legal advice concerning that representation of the contract.
+This problematic scenario is the reason Confis makes an emphasis on authoring contracts, rather than translating existing agreements into a formalism.
 
-At any rate, due to the nature of legal agreements, it is likely there will be discrepancies
-between the traditional representation of the agreement and the structured format this project
-may propose.
-To what extent this discrepancy is mitigated or taken into account should be part of the
-evaluation criteria.
+\paragraph{Legal Validity}\label{par:legal-validity}
 
-\subsection{Liability}\label{subsec:liability}
+If this project wants to represent or encode real legal agreements, the representations should qualify as such within the legal system they intend to be used within.
 
-When discrepancies between human- and machine-readable representations of legal agreements do occur,
-this project must consider where liability lies in case this causes a breach of contract.
+Ideally, a court should be able to recognise a Confis representation as well as a
+traditional natural language one.
+Parties using Confis agreements should double-check they qualify as contracts within their legal jurisdiction.
+The background research this project has undertaken has verified this is commonly the case for Common Law jurisdictions~(which includes the United Kingdom)~\cite{larsonContractLawIntro, contractDef2018precedent, contractDefinition}.
 
-An easy (even naive) first approach could involve having parties agreeing to contracts forfeit
-liability for issues caused by this project, by appending a \textit{disclaimer of damages} clause to
-the agreement (common practice in software licences, as seen
-in~\cite[\textsection9]{jetbrainsToolbox}).
+\paragraph{Copyright}\label{par:copyright}
 
-
-\subsection{Legal Validity}\label{subsec:legal-validity}
-
-If this project wants to represent or encode legal agreements in any way, they should qualify as
-such within the legal definitions of a legal system (or of several!).
-
-Ideally, a court should be able to recognise a machine-readable representation as well as a
-traditional manually typed one.
-This must also hold true for other elements such as signatures (digital signatures as opposed
-handwritten ones), written notices, secure timestamps, etc.
-
-\subsection{Copyright}\label{subsec:copyright}
-
-The prototype for this project is likely to make use of several licensed, open-source software
+The prototype for this project makes use of several licensed, open-source software
 libraries.
+The licenses used are:
+\begin{itemize}
+    \item \textbf{Apache License} Used by the Kotlin Language~\cite{kotlinLang}, IntelliJ IDEA~\cite{intelliJRepo} and Gradle~\cite{gradleDSL}.
+    \item \textbf{MIT License} Used by Easy Rules~\cite{easyRules}.
+    \item \textbf{MSD 2-Clause Simplified License} used by MkDocs~\cite{mkDocs}
+\end{itemize}
 
-The prototype will be open-source and at all times operate within the licences it has been granted,
-by crediting the original authors and including copyright notices where applicable.
+All of these licenses allow the distribution of modified and larger works under different licenses.
+Confis includes copyright and license notices for all the above licenses, therefore it is compliant with all the licenses it has been granted.
 
-\section{Misuse}\label{sec:misuse}
+\paragraph{Misuse}\label{par:misuse}
 
-Depending on the future scope of this project, one of the parties could abuse self-executing
-contract clauses (for example, to revoke access to data in breach of the terms of an agreement).
-
-Different possible thread models will have to be carefully considered taking into account scenarios
-with malicious vs honest-but-curious adversaries.
+This project does not envision malicious use of the technology it introduces.
+It is also not particularly vulnerable to remote attack, since data is not transmitted through any networks.
 
 
-\section{Data Privacy and Compliance}\label{sec:data-privacy-compliance}
+\paragraph{Data Privacy and Compliance}\label{par:data-privacy-compliance}
 
+Legal agreements between businesses can be confidential both in their contents and their existence -- this project preserves these properties in that it does not upload or process any Confis document.
+Contracts are drafted with an offline editor, and the software prototype process files offline.
+Rules evaluation results are also not uploaded to the internet.
 
-Legal agreements between businesses can be confidential both in their contents and their existence -
-the project should aim to preserve these properties, whatever the format it considers for
-representing such agreements.
+Therefore, Confis is General Data Protection Regulation (GDPR)~\cite{gdprInfo} compliant.
 
-As for General Data Protection Regulation (GDPR)~\cite{gdprInfo}, if this project's prototype is
-implemented as software libraries (rather than a centralised server under control of a third party),
-then compliance obligations should remain within the responsibilities of the party using the
-software~\citeTODO.
+\paragraph{Dual Use}\label{par:dual-use}
 
-\section{Dual Use}\label{sec:dual-use}
-
-This project does have military applications: more automated licensing could be used to improve
-any supply chains, including military ones;
+This project does have military applications: automating workflows around legal agreements could improve supply chains, including military ones;
 but its focus and motivations are exclusively civilian.
 
-Therefore, this project falls under the definition of Dual Use.
+Therefore, this project does fall under the definition of Dual Use.
 
-\section{Environmental Implications}\label{sec:environmental-implications}
+\paragraph{Environmental Implications}\label{par:environmental-implications}
 
-%TODO more citations here
-While this project does not consider directly using any environmental-unfriendly technology, it
-considers using decentralised ledgers which heavily rely on Proof-of-Work
-algorithms~(see~\ref{subsec:btc:pow}) which has shown to be energy-hungry when used at the scale of
-Bitcoin or Ethereum~\cite{GOODKIND2020101281}.
-
-While addressing these issues is outside the scope of this project, at the time of writing the
-Ethereum community aims to make significant changes to its consensus mechanism (by moving away from
-proof-of-work altogether) that should greatly mitigate this environmental impact~\cite{eth2Vision}.
-
+This project does not have major environmental implications.
