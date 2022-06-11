@@ -15,3 +15,16 @@ Confis code can be converted to a better-looking [Document](../AgreementsAsDocum
 ![Document Preview](../pics/documentPreviewZoomed.png)
 ![Confis Editor](../pics/contractRenderedIdea.png)
 
+## Installing the plugin from sources
+
+The IDEA plugin is not currently published to any repositories in binary form.
+In order to use it, you must compile it and install it manually.
+You only require Java 11 or later installed in your machine.
+
+- Clone the Confis repository
+- Run `./gradlew assemble`
+- Open your installation of IntelliJ IDEA and select _Settings_ > _Plugins_ > _Install plugin From Disk_
+- Select the compiled zip file
+`<repositoryRoot>/plugin/build/distributions/Confis-*.zip`
+- Restart IntelliJ
+- Open any `*.confis.kts` and you can start writing contracts
