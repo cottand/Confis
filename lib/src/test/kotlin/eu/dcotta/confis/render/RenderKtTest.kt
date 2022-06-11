@@ -114,7 +114,7 @@ class RenderKtTest : StringSpec({
     }
 
     "world state rendering" {
-             Sentence { "alice"("take", Obj("cookie"))} to CircumstanceMap.empty       val empty: WorldState = persistentMapOf(
+        val empty: WorldState = persistentMapOf(
             Sentence { "alice"("take", Obj("cookie")) } to CircumstanceMap.empty
         )
         empty.render() should {
