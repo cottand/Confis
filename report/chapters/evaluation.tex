@@ -362,78 +362,16 @@ Full examples of such discrepancies can be found in the code archive, as well as
 
 \section{Software Deliverables}\label{sec:software-deliverables}
 
-\subsection{Language Implementation}
+Key software components like the language implementation, rule generation, and legal prose rendering have been thoroughly tested through unit and integration tests, in the spirit of rigorous software engineering.
+A brief test coverage report can be found in~\autoref{tab:coverage}
 
-\begin{itemize}
-    \item \textbf{Coverage} 92.8\%
-\end{itemize}
-
-\subsection{Querying Engine}
-
-\begin{itemize}
-    \item \textbf{Coverage} 81.6\%
-\end{itemize}
-
-\subsection{Tooling Implementation: Legal Prose Rendering}
-
-\begin{itemize}
-    \item \textbf{Coverage} 94.6\%
-\end{itemize}
-
-\subsection{Tooling Implementation: Editor and Query UI}
-
-
-\section[Overall Evaluation]{Overall Evaluation With Respect to Goals}
-
-
-\section{Machine Readable Licence Representations}\label{sec:licence-representations}
-
-% we are looking to eavaluate the project - a lot of this should go into the intro probably...
-
-% measures will be cost (smart contracts!), lawyer avoidance, and advice from people that know about this stuff
-
-Other goals of this project require that a legal agreement can be encoded for it to become
-structured data.
-The project should come up with, or find in the literature and adapt, a suitable format for a legal
-agreement.
-In order to limit the scope of the project, we will narrow the agreement to be encoded to
-licences.
-
-A successful project should include:
-\begin{itemize}
-    \item \textbf{Machine-readable representation of licenses}.
-    \item \textbf{Prototype Software} that uses the contract representation to ease the existing
-    manual workflow related to agreements in a business.
-    This could include a searchable database that is aware of licenses related to the same data or
-    software~(see~\ref{sec:contract-registry}).
-    The software should, to some extent, allow querying a contract to be able to determine the
-    conditions which the license allows to use the data in.
-    \item Secure, \textbf{self-executing clauses} that all parties bound to the contract can trust.
-    This includes making it so parties cannot have plausible deniability or repudiation if they are
-    dishonest.
-\end{itemize}
-
-Legal contracts are complex documents that may list vague or hard-to-encode conditions and
-situations.
-I expect not being able to (inexpensively) capture the entire meaning of a contract in a
-machine-readable format.
-This disassociation between reality and representation should be fully taken into account when
-providing guarantees and making assumptions.
-For example, a successful prototype should be aware of this enough to refer the user to the original
-license when it is unable to provide certainties with respect to a query against a license.
-
-In other words, this uncertainty created by attempting to represent a contract in a machine-readable
-encoding should be part of the encoding itself, for the sake of completeness and usability.
-
-Evaluation criteria would include whether the project can successfully encode a wide range of
-licence agreements.
-
-
-\section{A Universal Contract Registry}\label{sec:contract-registry}
-
-A decentralised contract registry, shared by multiple businesses (not unlike a decentralised version
-of Juro, see~\ref{subsec:juro}), can be a very useful contribution if it manages to meet the
-requirement of privacy.
-Businesses need not just the terms of their agreements to be secret to competitors
-(see~\cite[\textsection2.1]{economistIU2016licence}), but also the existence of the contracts
-themselves must remain private.
+\begin{table}[h]
+    \centering
+    \begin{tabular}{l|c}
+        Component & Coverage\\
+        \hline
+        Language Implementation & 92.8\%
+    \end{tabular}
+    \caption{Coverage for Confis components}
+    \label{tab:coverage}
+\end{table}

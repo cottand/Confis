@@ -148,6 +148,7 @@ We are able to detect such a contradiction thanks to the \texttt{overlapsWith} f
         autogobble,
         frame=lines,
         framesep=2mm,
+        fontsize=\small,
     ]{kotlin}
 alice mayNot use(data) asLongAs {
     val year2022 = (1 of January)..(31 of December) year 2022
@@ -223,11 +224,11 @@ It parses the Circumstance editor and constructs a new AST which is then instant
         ] {
             \textbf{Circumstance editor text box}\\
             Contains circumstance code:
-            \vspace{-6mm}
+%            \vspace{-6mm}
             \begin{minted}[autogobble]{kotlin}
-after {
-alice did pay(bob)
-}
+                after {
+                    alice did pay(bob)
+                }
             \end{minted}
         };
         \node (queryUi) [
@@ -258,12 +259,12 @@ alice did pay(bob)
             \textbf{Confis Contract}\\
             \textbf{Editor}\\
             Contains file contents of Confis contract:
-            \vspace{-2mm}
+%            \vspace{-2mm}
             \begin{minted}[autogobble]{kotlin}
-val alice by party
-val bob by party
-val pay by action
-// ...
+            val alice by party
+            val bob by party
+            val pay by action
+            // ...
             \end{minted}
         };
 

@@ -7,7 +7,7 @@
 %nolistspacing, % If the document is onehalfspacing or doublespacing, uncomment this to set spacing in lists to single
 %liststotoc, % Uncomment to add the list of figures/tables/etc to the table of contents
 %toctotoc, % Uncomment to add the main table of contents to the table of contents
-%parskip, % Uncomment to add space between paragraphs
+parskip, % Uncomment to add space between paragraphs
 %nohyperref, % Uncomment to not load the hyperref package
     headsepline, % Uncomment to get a line under the header
 %chapterinoneline, % Uncomment to place the chapter title next to the number on one line
@@ -110,9 +110,6 @@
 
 \begin{document}
     \usemintedstyle{tango}
-    \setlength{\parskip}{\medskipamount}
-    \setlength{\parindent}{0pt}
-
     \frontmatter
     \pagestyle{plain}
 
@@ -230,6 +227,9 @@
     \listoffigures
     \listoftables
     \listoflistings
+
+%    \setlength{\parskip}{\medskipamount}
+    \setlength{\parindent}{0pt}
 
 
     \mainmatter % Begin numeric (1,2,3...) page numbering

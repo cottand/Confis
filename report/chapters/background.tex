@@ -271,6 +271,8 @@ At the time of writing, Accord has such an implementation in place while Symbole
 
 An example of a contract (a meat sales agreement that can be found in~\autoref{tab:meat}) translated into Symboleo is given under the Appendix in~\autoref{fig:symbolio:meatSales}.
 
+A detailed comparison of Symboleo and Confis can be found in the~\nameref{ch:evaluation} chapter.
+
 
 \section{Natural Language Processing and its Limitations}\label{sec:nlp}
 
@@ -388,7 +390,7 @@ This results in a valid Haskell expression (with some language modifications) th
         \begin{minted}[
             autogobble,
             frame=lines,
-            fontsize=\small,
+            fontsize=\footnotesize,
             framesep=2mm]{haskell}
     {-# LANGUAGE ExtendedDefaultRules, OverloadedStrings #-}
     import BASIC
@@ -441,31 +443,27 @@ An example of a script for such a DSL is given in~\autoref{fig:gradleGroovyDSL}.
 
 \begin{listing}[h]
     \centering
-    \begin{minipage}{0.8\textwidth}
+    \begin{minipage}{0.75\textwidth}
         \begin{minted}[
             autogobble,
             frame=lines,
+            fontsize=\footnotesize,
             framesep=2mm]{groovy}
             plugins {
                 id 'groovy'
                 id 'application'
             }
-
             repositories {
                 mavenCentral()
             }
-
             dependencies {
                 implementation 'org.codehaus.groovy:groovy-all:3.0.9'
                 implementation 'com.google.guava:guava:30.1.1-jre'
-
                 testImplementation 'junit:junit:4.13.2'
             }
-
             application {
                 mainClass = 'demo.App'
             }
-
             tasks.named('test') {
                 useJUnitPlatform()
             }
@@ -490,10 +488,11 @@ An example DSL that uses Kotlin as the host language is given in~\autoref{fig:ko
 
 \begin{listing}[h]
     \centering
-    \begin{minipage}{0.9\textwidth}
+    \begin{minipage}{0.8\textwidth}
         \begin{minted}[
             autogobble,
             frame=lines,
+            fontsize=\footnotesize,
             framesep=2mm]{kotlin}
         import com.example.html.*
 
@@ -569,15 +568,14 @@ This rules out some logic programming languages appropriate for rules evaluation
 
 \subsection{Easy Rules}\label{subsec:j-easy-rules}
 
-Easy Rules~\cite{easyRules} is a rules engine~\cite{fowlerRulesEngine} for Java (therefore it can also be used in~\nameref{subsubsec:kotlinLang}).
-
-It allows programmatically generating rules (through \texttt{Rule} instances) as well as evaluating them.
+Easy Rules~\cite{easyRules} is a rules engine~\cite{fowlerRulesEngine} for Java (therefore it can also be used in~\nameref{subsubsec:kotlinLang}).  It allows programmatically generating rules (through \texttt{Rule} instances) as well as evaluating them.
 This API is particularly swell-suited to this project because it allows defining the predicate that triggers rule execution (the \texttt{when} clause in~\autoref{fig:easyRulesProgranmmatic}) at runtime rather than at compile-time.
 
 \begin{listing}[h]
     \begin{minted}[
         autogobble,
         frame=lines,
+    fontsize=\small,
         framesep=2mm]{java}
                 Rule weatherRule = new RuleBuilder()
                         .name("weather rule")
@@ -591,5 +589,5 @@ This API is particularly swell-suited to this project because it allows defining
 \end{listing}
 
 Rules evaluation can be customised to add a notion of priority between rules (which might allow to create precedence between clauses in contracts).
-Additionally, there is support for continous rule application, where rules are evaluated on known facts continously until no more rules are applicable.
-This allows building a knowledge based through inference (rather than just evaluating rules sequentially).
+Additionally, there is support for continuous rule application, where rules are evaluated on known facts continuously until no more rules are applicable.
+This allows building a knowledge base through inference, rather than just evaluating rules sequentially.
