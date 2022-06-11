@@ -39,9 +39,11 @@ sealed interface CircumstanceResult : QueryResponse {
 
     data class Contradictory(val contradictions: Set<List<Clause>>) : CircumstanceResult {
         override fun render() = "Contradictions found in circumstances. The following clauses are contradictory:\n  " +
-            contradictions.joinToString(separator = "  \n") {
-                it.mapIndexed { index, clause -> clause.renderMd(index + 1).trimMargin() }
-                    .joinToString(prefix = "- The clause:\n", separator = "\n\n- The clause\n", postfix = ";\n\n")
+            contradictions.joinToString(separator = "  \n") { clauses ->
+                clauses.mapIndexed { index, clause -> clause.renderMd(index + 1).trimMargin() }
+                    .joinToString(separator = "\n\n", postfix = ";\n\n") {
+                        "- The clause\n$it"
+                    }
             }
     }
 }

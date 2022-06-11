@@ -24,7 +24,10 @@ fun WorldState.render(): String = toList().joinToString { (sentence, cs) ->
         append(sentence.action)
         append(' ')
         append(sentence.obj)
-        append(".' under the following circumstances:")
-        append(cs.toList().joinToString { "\n    - ${it.render()}" })
+        append(".'")
+        if (cs != CircumstanceMap.empty) {
+            append("under the following circumstances:")
+            append(cs.toList().joinToString { "\n    - ${it.render()}" })
+        }
     }
 }

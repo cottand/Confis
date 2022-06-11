@@ -1,13 +1,21 @@
 package eu.dcotta.confis.render
 
+import eu.dcotta.confis.Sentence
 import eu.dcotta.confis.dsl.of
 import eu.dcotta.confis.dsl.rangeTo
 import eu.dcotta.confis.dsl.year
 import eu.dcotta.confis.model.Agreement
+import eu.dcotta.confis.model.CircumstanceMap
+import eu.dcotta.confis.model.Obj
 import eu.dcotta.confis.model.circumstance.Month.May
 import eu.dcotta.confis.model.circumstance.Purpose.Commercial
+import eu.dcotta.confis.model.circumstance.WorldState
+import eu.dcotta.confis.model.circumstance.render
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.should
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldNotContain
+import kotlinx.collections.immutable.persistentMapOf
 
 @Suppress("unused_variable")
 class RenderKtTest : StringSpec({
@@ -103,5 +111,24 @@ class RenderKtTest : StringSpec({
 
         val rendered = a.clauses.first().renderMd(1)
         rendered shouldContain "1. alice must pay alice:"
+    }
+
+    "world state rendering" {
+        val empty: WorldState = persistentMapOf(
+            Sentence { "alice"("take", Obj("cookie")) } to CircumstanceMap.empty
+        )
+        empty.render() should {
+            it shouldContain "alice take cookie"
+            it shouldNotContain "circumstance"
+        }
+
+        val nonEmpty: WorldState = persistentMapOf(
+            Sentence { "alice"("take", Obj("cookie")) } to CircumstanceMap.of(1 of May year 2022)
+        )
+
+        nonEmpty.render() should {
+            it shouldContain "alice take cookie"
+            it shouldContain "circumstance"
+        }
     }
 })

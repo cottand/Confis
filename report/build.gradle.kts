@@ -3,6 +3,18 @@ val latexClean by tasks.registering(Exec::class) {
 }
 
 tasks.clean {
-    delete(fileTree("out/"))
+    val others = fileTree(".").apply {
+        include(
+            "*.pdf",
+            "*.lol",
+            "*.synctex.gz",
+            "*.markdown.lua",
+            "*.markdown.out",
+            "*.markdown.in",
+            "*.bbl",
+            "*-blx.bib",
+        )
+    }
+    delete(fileTree("out/"), fileTree("_minted-report/"), others)
     dependsOn(latexClean)
 }
