@@ -89,7 +89,9 @@ Exceptions to this statement include accessible technologies like Juro (\autoref
 Such tools add contract metadata without actually allowing for querying beyond fetching the metadata, nor attempt to capture the semantics of the agreement -- like Adobe Signing tools or typical Ricardian Contracts~\cite{ricardianWeb}, but unlike Symboleo or The Accord Project.
 
 We translate to Confis a sample contract used in Symbolio~\cite{symboleo2020} in order to compare the same agreement in two different languages.
-For the sake of brevity, we wille examine an extract, but the full original (in plain English) can be found at~\autoref{tab:meat}, the full Symbolio specification at~\autoref{fig:symbolio:meatSales}, and the full Confis agreement at~\autoref{fig:confis:meat}.
+For the sake of brevity, we wille examine an extract~(given in~\autoref{tab:meat-confidentiality}), but the full original (in plain English) can be found at~\autoref{tab:meat}, the full Symbolio specification at~\autoref{fig:symbolio:meatSales}, and the full Confis agreement at~\autoref{fig:confis:meat}.
+The translated extracts are both re-written self-contained examples (rather than text extracts from the original, longer contracts).
+This is in order to fully reflect the necessary boilerplate and ceremony of each language.
 
 \begin{table}[h]
     \centering
@@ -105,12 +107,6 @@ For the sake of brevity, we wille examine an extract, but the full original (in 
     \caption[Sample confidentiality clause]{Sample confidentiality clause, extracted from~\autoref{tab:meat}}
     \label{tab:meat-confidentiality}
 \end{table}
-
-The comparison will be performed on a rather simple clause of the agreement, a confidentiality clause specified by~\autoref{tab:meat-confidentiality}.
-The Confis representation is specified by~\autoref{fig:confis:meat-confidentiality}, while the Symbolio one is specified by~\autoref{fig:symbolio:meatSales-confidentiality}.
-Both are re-written self-contained examples (rather than text extracts from the original, longer contracts).
-This was done in order to fully reflect the necessary boilerplate and ceremony of each language.
-
 
 \begin{listing}[h]
     \centering
@@ -363,7 +359,7 @@ Full examples of such discrepancies can be found in the code archive, as well as
 
 \section{Software Deliverables}\label{sec:software-deliverables}
 
-Key software components like the language implementation, rule generation, and legal prose rendering have been thoroughly tested through unit and integration tests, in the spirit of rigorous software engineering.
+Key software components like the language implementation, rule generation, and legal prose rendering have been thoroughly tested for correctness through unit and integration tests, in the spirit of rigorous software engineering.
 A brief test coverage report can be found in~\autoref{tab:coverage}
 
 \begin{table}[h]
@@ -387,3 +383,9 @@ A brief test coverage report can be found in~\autoref{tab:coverage}
     \caption{Coverage for Confis components}
     \label{tab:coverage}
 \end{table}
+
+Evaluating implementations of contract specification languages is outside the scope of this project.
+Some deliverables (like the querying engine) are left unimplemented by competing technologies like Symboleo~\cite{symboleo2020}.
+Because of this, the evaluation of the software artefacts introduced by this project is limited to testing for correctness.
+
+In integration tests, this is done by drafting contracts with the DSL implementation and comparing the contract and the internal representation it produces, as well as comparing the internal representation and the responses to different queries (which stem from rules generated from said internal representation).
