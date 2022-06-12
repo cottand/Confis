@@ -11,17 +11,17 @@ This project has introduced:
 
 Confis is novel and in stark contrast with the state of the art in that
 \begin{itemize}
-    \item It sets a precedent for reconciling rule-based formalisms for legal agreements with accessible industry-oriented software
+    \item It sets a precedent for successfully reconciling rule-based specification formalisms for legal agreements with accessible industry-oriented software
     \item It does not attempt to generate rules from text, nor introduce a specification which needs to be translated to other formalisms in order to be utilised.
     Confis is self-contained and flexible.
 \end{itemize}
 
-We find that it largely succeeds at introducing a machine-readable formalism for representing contracts (aided by novel features such as graphical query UIs and converting a formalism back to plain English), but at the cost of compromising on the expressiveness of its language and the contracts it is able to represent.
+We find that it largely succeeds at introducing a machine-readable formalism for representing contracts (aided by novel features such as graphical query UIs and converting a formalism back to natural language), but at the cost of compromising on the expressiveness of its language and the contracts it is able to represent.
 This lack of expressiveness stems primarily from its lack of temporal logic and its lack of ability to deal with contract violations after they happen.
 
 \section{Future Work}\label{sec:future-work}
 
-Future work could have two main directions: improving the existing Confis language semantics and software prototype, and building upon the querying engine in order to programmatically deal with legal agreements.
+Future work has two main directions: improving the existing Confis language semantics and software prototype, and building upon the querying engine in order to programmatically deal with legal agreements.
 
 \subsection{Better Language Semantics}\label{subsec:future:better-language-semantics}
 
@@ -39,6 +39,15 @@ This stems from the fact that a scenario can only stem from an \texttt{Allow}~\n
 
 Addressing this limitation could be possible by introducing a fifth type of Allowance that would account for the intersection of these two possible states.
 
+\subsection{Confis Implemented as an External Language}\label{subsec:confis-as-external-language}
+
+As discussed in~\autoref{subsec:dsl-implementation}, Confis is developed as an internal DSL that uses Kotlin as its host language.
+This places constraints on the language's syntax (since it needs to be in line with Kotlin's).
+Writing a new parser and compiler for the language would remove this limitation, allowing for a grammar including sentences like \texttt{alice may eat cookie with commercial purposes} as opposed to the longer, more convoluted current syntax (an example can be found in~\autoref{fig:confis:minimal}).
+The new DSL could even be graphical instead of textual for even more ease of use~\cite{fowlerLangWorkbench}.
+
+This is possible thanks to having developed the Confis IR, which separates the language implementation from the rule generation that underpins querying.
+
 \subsection{A Query API}\label{subsec:future:query-api}
 One of the key contributions of the project is the rule-based querying that allows asking a contract complex questions like \emph{`Under what circumstances may I access this data set?'}.
 While Confis makes a strong focus on human interaction through accessible graphical interfaces, it has a binary interface that makes the prototype usable in any JVM-based application~\cite{venners1998java}.
@@ -49,15 +58,6 @@ An example would be dataset access control and GDPR for an organisation that hol
 Similarly, employees' access to customers' data can be automatically permissioned depending on how or why they are accessing teh data, or which customer's data they are tampering with.
 
 The notion of services acting following the specifications of a legal agreement is in line with Szabo's original vision of smart contracts~\cite{szabo1997smart-contracts}, much like Knottenbelt's work on contract-driven agents~\cite{knottenbeltContractDriven} -- except Confis aims for non-logicians to write and review the contract specifications.
-
-\subsection{Confis Implemented as an External Language}\label{subsec:confis-as-external-language}
-
-As discussed in~\autoref{subsec:dsl-implementation}, Confis is developed as an internal DSL that uses Kotlin as its host language.
-This places constraints on the language's syntax (since it needs to be in line with Kotlin's).
-Writing a new parser and compiler for the language would remove this limitation, allowing for a grammar including sentences like \texttt{alice may eat cookie with commercial purposes} as opposed to the longer, more convoluted current syntax (an example can be found in~\autoref{fig:confis:minimal}).
-The new DSL could even be graphical instead of textual for even more ease of use~\cite{fowlerLangWorkbench}.
-
-This is possible thanks to having developed the Confis IR, which separates the language implementation from the rule generation that underpins querying.
 
 \subsection{An Implementation for Public-Key Signing Infrastructure}\label{subsec:future:signing}
 
