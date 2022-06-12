@@ -7,7 +7,7 @@
 
 This project hopes to leverage software engineering techniques (like domain-specific languages), existing logic abstractions (like normative rules), and existing technologies relating to law (like Ricardian contracts) in order to provide a framework allowing people with non-technical and non-legal backgrounds to draft, review, and access information in legal agreements.
 
-The following criteria are motivated by how existing technologies in the state-of-the-art (see sections~\ref{sec:nlp} and~\ref{sec:machine-readable-contracts}) fail to address them:
+The following criteria are motivated by how existing technologies in the state-of-the-art (see~\autoref{sec:nlp} and~\autoref{sec:machine-readable-contracts}) fail to address them:
 
 \begin{definition}[Meaningful Representation]
     \label{def:meaningful-representation}
@@ -22,7 +22,7 @@ The following criteria are motivated by how existing technologies in the state-o
     Whatever the encoding of a Confis agreement, should be possible to produce (albeit with the use of tooling) such Confis agreement without an in-depth understanding of the formalism that encodes the agreement.
 \end{definition}
 
-The following are loosely defined -- this is unavoidable because this project aims to introduce a formalisation for legal documents, which are not well-defined.
+The following are loosely defined -- this is unavoidable because this project aims to introduce a formalisation for legal documents, which are not well-defined and historically require natural language interpretation toi be understood.
 Please see~\nameref{sec:language-semantics} for the definitions of~\nameref{def:action},~\nameref{def:party},~\nameref{def:permission}, and~\nameref{def:requirement}.
 
 % TODO revisit after writing reasoning section
@@ -360,6 +360,7 @@ Full examples of such discrepancies can be found in the code archive, as well as
 
 % TODO and is this ok??
 
+
 \section{Software Deliverables}\label{sec:software-deliverables}
 
 Key software components like the language implementation, rule generation, and legal prose rendering have been thoroughly tested through unit and integration tests, in the spirit of rigorous software engineering.
@@ -367,16 +368,19 @@ A brief test coverage report can be found in~\autoref{tab:coverage}
 
 \begin{table}[h]
     \centering
+    \setlength{\tabcolsep}{8pt} % Default value: 6pt
+    \renewcommand{\arraystretch}{1.2} % Default value: 1
     \begin{tabular}{l|c}
-        \textbf{Component} &  \textbf{Coverage}\\
+        \textbf{Component}                   & \textbf{Coverage} \\
         \hline
-        Language implementation & 92.8\%
         \hline
-        Rule generation \& Evaluation & 81.2\%
+        Language implementation              & 92.8\%            \\
         \hline
-        Natural language rendering & 94.6\%
+        Rule generation \& Evaluation        & 81.2\%            \\
         \hline
-        Internal representation & 94.6\%
+        Natural language rendering           & 94.6\%            \\
+        \hline
+        Internal representation              & 68.3\%            \\
         \hline
         Scripting \& compiling configuration & 90\%
     \end{tabular}

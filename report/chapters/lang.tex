@@ -133,15 +133,16 @@ Allowance is used to answer questions of the type \emph{`May A do X?'} -- where 
     \emph{Allowance} is a value like \texttt{Allowance = Allow | Forbid | Unspecified | Depends}.
 \end{definition}
 
-Users are allowed to use Allowance in order to define a~\nameref{def:permission}, but only the values \texttt{Allow} and \texttt{Forbid}.
+Users are allowed to use Allowance in order to define a~\nameref{def:permission}, but only with the values \texttt{Allow} and \texttt{Forbid}.
 The other values are reserved for answering queries and while they cannot be used, responses that return \texttt{Depends} and \texttt{Unspecified} can be crafted by defining the answer space accordingly.
 This is shown in~\autoref{fig:allowance-venn} and~\autoref{eq:allowance-cake-example}, where only \texttt{may} and \texttt{mayNot} keywords are used (corresponding to \texttt{Allow} and \texttt{Forbid} respectively) but all possible values of Allowance are present in the agreement.
 
-\begin{figure}[h]
+\begin{listing}[h]
     \centering
     \begin{minipage}{0.5\textwidth}
         \begin{minted}[
-            autogobble
+            autogobble,
+            fontsize=\small,
 %            frame=lines,
 %            framesep=2mm
         ]{kotlin}
@@ -157,9 +158,15 @@ This is shown in~\autoref{fig:allowance-venn} and~\autoref{eq:allowance-cake-exa
             }
         \end{minted}
     \end{minipage}
+    \caption{Minimal 2-clause agreement with disjoint Permissions}
+    \label{list:disjoint-confis}
 
-    \vspace{0.2cm}
+\end{listing}
 
+
+\begin{figure}[h]
+
+    \centering
     \begin{tikzpicture}
         \node [
 %        draw,
@@ -189,7 +196,8 @@ This is shown in~\autoref{fig:allowance-venn} and~\autoref{eq:allowance-cake-exa
 
     \end{tikzpicture}
 
-    \caption{Agreement and Venn Diagram of a `\texttt{alice eat cake}?' query}
+    \caption[Venn diagram of query for disjoint circumstances agreement]
+    {Venn Diagram of a `\texttt{alice eat cake}?' query for~\autoref{list:disjoint-confis}}
     \label{fig:allowance-venn}
 \end{figure}
 
@@ -388,50 +396,10 @@ Recall a \texttt{Sentence} is simply a tuple of \texttt{(Subject, Action, Object
 \end{listing}
 
 We now need a DSL to construct this \texttt{Sentence}.
-We use an infix extension function in order to add the \texttt{`may'} adverb (which corresponds to \texttt{Allowance = Allow}) between the subject and the action of the sentence (\autoref{fig:permissionKotlin}).
+We use an infix extension function in order to add the \texttt{`may'} adverb (which corresponds to \texttt{Allowance = Allow}) between the subject and the action of the sentence.
+We also use a Kotlin operator function~\cite{kotlinInvokeOperator} in order to overload the \texttt{Action}, so the user is able to write \texttt{action(object)} as opposed to \texttt{ActionObj(action, obj)}.
+The full example is demonstrated in~\autoref{fig:permissionKotlinFull}, and a usage example is given in~\autoref{fig:finalPermissionInvocationDSL} -- which reads like an English sentence!
 
-\begin{listing}[h]
-    \centering
-    \begin{minipage}{\textwidth}
-        \begin{minted}[
-            autogobble,
-            frame=lines,
-            framesep=2mm]{kotlin}
-        // <Action, Object> tuple declaration
-        data class ActionObject(val action: Action, val obj: Object)
-
-        infix fun Subject.may(s: ActionObject) {
-            val permission = Permission(Allow, Sentence(this, s.action, s.obj))
-            clauses += permission
-        }
-        \end{minted}
-    \end{minipage}
-    \caption{Extension function to build a Permission}\label{fig:permissionKotlin}
-\end{listing}
-
-
-
-\begin{listing}[h]
-    \centering
-    \begin{minipage}{0.5\textwidth}
-        \begin{minted}[
-            autogobble,
-            frame=lines,
-            framesep=2mm]{kotlin}
-            val alice: Subject
-            val eat: Action
-            val cake: Object
-
-            alice may ActionObj(eat, cake)
-        \end{minted}
-    \end{minipage}
-    \caption{Invocation of Permission builder from~\autoref{fig:permissionKotlin}}
-    \label{fig:permissionUse}
-\end{listing}
-
-Now~\autoref{fig:permissionUse} almost reads like English, except the constructor of the tuple class \texttt{ActionObj}.
-We can use a Kotlin operator function in order to overload the \texttt{Action}, so the user is able to write \texttt{action(object)} as opposed to \texttt{ActionObj(action, obj)}.
-The full example is demonstrated in~\autoref{fig:permissionKotlinFull}, and a usage example is given in~\autoref{fig:finalPermissionInvocationDSL} -- which now reads much more like an English sentence!
 
 
 \begin{listing}[h]
@@ -455,7 +423,7 @@ The full example is demonstrated in~\autoref{fig:permissionKotlinFull}, and a us
             }
         \end{minted}
     \end{minipage}
-    \caption[Finished Permission builder]{Finished Permission builder with operator overloading (see~\cite{kotlinInvokeOperator})}
+    \caption{Finished Permission builder}
     \label{fig:permissionKotlinFull}
 \end{listing}
 

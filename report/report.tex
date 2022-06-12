@@ -7,7 +7,7 @@
 %nolistspacing, % If the document is onehalfspacing or doublespacing, uncomment this to set spacing in lists to single
 %liststotoc, % Uncomment to add the list of figures/tables/etc to the table of contents
 %toctotoc, % Uncomment to add the main table of contents to the table of contents
-parskip, % Uncomment to add space between paragraphs
+    parskip, % Uncomment to add space between paragraphs
 %nohyperref, % Uncomment to not load the hyperref package
     headsepline, % Uncomment to get a line under the header
 %chapterinoneline, % Uncomment to place the chapter title next to the number on one line
@@ -29,13 +29,14 @@ parskip, % Uncomment to add space between paragraphs
 \usepackage[autostyle=true]{csquotes}
 \usepackage{tikz}
 \usetikzlibrary{shapes.misc, arrows.meta}
+\usetikzlibrary{arrows,positioning}
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{textcomp}
 \usepackage{color}
 \usepackage{wasysym}
 \usepackage{amssymb}
-\usetikzlibrary{arrows,positioning}
+\usepackage[framemethod=TikZ]{mdframed}
 %\tikzset{
 %%Define standard arrow tip
 %    >=stealth',
@@ -73,8 +74,26 @@ parskip, % Uncomment to add space between paragraphs
 \newcommand{\monthdate}[2]{ \daymonth\formatdate{#1}{#2}{2022}}
 % TODO find a nice definition format
 \theoremstyle{definition}
-\newtheorem{definition}{Definition}
-\providecommand*\definitionautorefname{Definition}
+\newtheorem{ndefinition}{Definition}
+\providecommand*\ndefinitionautorefname{Definition}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins}
+\tcbuselibrary{hooks}
+
+\newenvironment{definition}[1][Definition]{
+    \begin{tcolorbox}[
+        enhanced, opacityfill=0,
+        parbox=false,
+        boxrule=0mm,
+        enhanced,
+        borderline west={0.5pt}{0pt}{black},
+    ]
+        \begin{ndefinition}[#1]
+        }
+        {
+        \end{ndefinition}
+    \end{tcolorbox}
+}
 \providecommand*{\listingautorefname}{Listing}
 
 

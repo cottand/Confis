@@ -31,13 +31,6 @@ infix fun Circumstance.disjoint(other: Circumstance) = when (this) {
     else -> !other.generalises(this) && !this.generalises(other)
 }
 
-/**
- * Similar to [Circumstance.generalises], and the map can be more specific for other [Circumstance]s.
- *
- * Equivalent to `CircumstanceMap.of(this) generalises map`
- */
-infix fun Circumstance.generalises(map: CircumstanceMap) = map[key]?.let { generalises(it) } ?: false
-
 @Serializable
 sealed interface OverlappingCircumstance : Circumstance {
     infix fun overlapsWith(other: Circumstance): Boolean
