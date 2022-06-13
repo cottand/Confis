@@ -13,7 +13,7 @@ The first forms of literacy and writing involved bills of sales like the one dep
 \end{figure}
 
 Contracts are pervasive and drivers of economic change and social progress~-- it is no overstatement that civilization fundamentally relies on understanding legal documents to function.
-In more than four millennia, the nature of these documents has not changed at all: they contain clauses natural language, and we still rely on human interpretation to understand them.
+In more than four millennia, the nature of these documents has not changed at all: they contain clauses in natural language, and we still rely on human interpretation to understand them.
 In that time, the complexity of the concepts legal documents represent has increased substantially, to the point of having professions that specialise in interpreting legal documents.
 This lack of change is despite the pervasiveness of contracts, their importance as drivers of economic activity, and significant technological progress.
 
@@ -60,7 +60,7 @@ By using an existing development environment, we greatly improve the~\nameref{de
 
 See~\autoref{sec:confis-editor} for more details on the editor.
 
-\paragraph{Queryable Documents} We also introduce a rules engine that compiles a Confis Agreement and is able to answer complex queries by generating and evaluating rules depending on the type of query.
+\paragraph{A Querying Engine for Confis Agreements} We also introduce a rules engine that compiles a Confis Agreement and is able to answer complex queries by generating and evaluating rules depending on the type of query.
 It is able to answer queries relating to determining the legal capabilities of parties, finding contradictions in an agreement, determining clause violations depending on past events, and determining necessary steps towards compliance.
 To better illustrate the extent of the querying, some questions that can be executed as queries are:
 \begin{itemize}
@@ -80,7 +80,9 @@ See~\autoref{sec:queryUI} for more details on the querying UI\@.
 \section*{Project Overview}
 
 This section hopes to provide a more concrete high-level overview of how the core contributions together form the Confis framework, which combines the different user interfaces, the editor, and the human-readable preview.
-It also includes an architectural diagram of how its components interact with each other in~\autoref{fig:confis-overview}.
+A screenshot depicting the user interfaces can be found in~\autoref{fig:geophys-full-editor}.
+
+An architectural diagram of how all components interact with each other in~\autoref{fig:confis-overview}.
 
 \begin{figure}[h]
     \centering
@@ -95,9 +97,8 @@ It also includes an architectural diagram of how its components interact with ea
     \label{fig:geophys-full-editor}
 \end{figure}
 
-\autoref{fig:geophys-full-editor} depicts the Confis Editor along with the Query UI
-
-
+Aside from this introduction and the background research~(\autoref{ch:background}), the main body of this report is divided in two parts: \autoref{ch:lang}, covering the Confis language, and~\autoref{ch:queries}, covering the querying of documents specified in said language.
+Both chapter discuss the requirements, design, tooling, and implementation of each part.
 \tikzset{font={\fontsize{9pt}{10}\selectfont}}
 \begin{figure}[h]
     \usetikzlibrary{shapes.misc, arrows.meta}
