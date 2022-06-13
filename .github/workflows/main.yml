@@ -28,7 +28,7 @@ jobs:
       - uses: codecov/codecov-action@v2
         name: Upload Coverage
         with:
-          files: ./build/reports/jacoco/report.xml
+          files: ./build/reports/kover/report.xml
           name: codecov-confis
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
