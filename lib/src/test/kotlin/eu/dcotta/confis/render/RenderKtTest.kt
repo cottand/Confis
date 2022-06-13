@@ -4,8 +4,11 @@ import eu.dcotta.confis.Sentence
 import eu.dcotta.confis.dsl.of
 import eu.dcotta.confis.dsl.rangeTo
 import eu.dcotta.confis.dsl.year
+import eu.dcotta.confis.eval.compliance.ComplianceResult
 import eu.dcotta.confis.model.Agreement
+import eu.dcotta.confis.model.Allowance.Allow
 import eu.dcotta.confis.model.CircumstanceMap
+import eu.dcotta.confis.model.Clause
 import eu.dcotta.confis.model.Obj
 import eu.dcotta.confis.model.circumstance.Month.May
 import eu.dcotta.confis.model.circumstance.Purpose.Commercial
@@ -130,5 +133,38 @@ class RenderKtTest : StringSpec({
             it shouldContain "alice take cookie"
             it shouldContain "circumstance"
         }
+    }
+    val aliceTakeCookie = Sentence { "alice"("take", Obj("cookie")) }
+
+    "compliance result rendering" {
+        val breach = ComplianceResult.Breach(
+            listOf(Clause.Permission(Allow, aliceTakeCookie))
+        )
+
+        breach.render() should {
+            it.shouldContain("1.")
+            it.shouldContain("alice may take cookie")
+        }
+    }
+
+    val empty: WorldState = persistentMapOf(
+        Sentence { "alice"("take", Obj("cookie")) } to CircumstanceMap.empty
+    )
+    val possibleBreach = ComplianceResult.PossibleBreach(
+        listOf(Clause.Permission(Allow, aliceTakeCookie)),
+        empty
+    )
+
+    possibleBreach.render() should {
+        it shouldContain "alice take cookie"
+        it shouldContain "Compliant if the following"
+        it shouldContain "Possibly breached"
+    }
+
+    val compliantForNow = ComplianceResult.CompliantIf(empty)
+
+    compliantForNow.render() should {
+        it shouldContain "alice take cookie"
+        it shouldContain "Compliant if the following"
     }
 })

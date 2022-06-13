@@ -1,10 +1,11 @@
+import kotlinx.kover.api.KoverTaskExtension
 import org.jlleitschuh.gradle.ktlint.KtlintPlugin
 
 plugins {
     kotlin("jvm") version "1.6.20"
     idea
     id("org.jlleitschuh.gradle.ktlint") version "10.2.1" apply false
-    jacoco
+    id("org.jetbrains.kotlinx.kover") version "0.5.0"
 }
 
 allprojects {
@@ -13,9 +14,6 @@ allprojects {
     repositories {
         mavenCentral()
     }
-    //jacoco {
-    //    toolVersion = "0.8.7"
-    //}
 }
 
 subprojects {
@@ -29,53 +27,15 @@ subprojects {
         testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
         testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
 
-        val mockkVerison ="1.12.3"
+        val mockkVerison = "1.12.3"
         testImplementation("io.mockk:mockk:$mockkVerison")
 
-
     }
-    if ("plugin" !in name) {
-        apply<JacocoPlugin>()
-        tasks {
-            jacocoTestReport {
-                reports {
-                    xml.required.set(false)
-                    html.required.set(false)
-                }
-                dependsOn(test)
-            }
-            test {
-                useJUnitPlatform()
-            }
+    tasks.test {
+        useJUnitPlatform()
+        extensions.configure(KoverTaskExtension::class) {
+            isDisabled = false
+            excludes = listOf("eu.dcotta.confis.plugin.*")
         }
-    }
-    //testing {
-    //    suites {
-    //        val test by getting(JvmTestSuite::class) {
-    //            useJUnitJupiter()
-    //        }
-    //    }
-    //}
-
-}
-
-val rootCoverageReport by tasks.registering(JacocoReport::class) {
-    executionData(fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec"))
-
-    subprojects { sourceSets(sourceSets.main.get()) }
-
-    reports {
-        xml.required.set(true)
-        xml.outputLocation.set(file("${buildDir}/reports/jacoco/report.xml"))
-        html.required.set(true)
-        csv.required.set(false)
-    }
-}
-tasks.check { dependsOn(rootCoverageReport) }
-
-afterEvaluate {
-    rootCoverageReport {
-        val testingTasks = subprojects.flatMap { it.tasks.withType<JacocoReport>() }
-        dependsOn(testingTasks)
     }
 }

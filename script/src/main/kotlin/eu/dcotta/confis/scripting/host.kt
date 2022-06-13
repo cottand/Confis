@@ -18,7 +18,7 @@ private val compilationConfiguration = createJvmCompilationConfigurationFromTemp
 private val host = BasicJvmScriptingHost(
     ScriptingHostConfiguration {
         jvm {
-            // hybridCacheConfiguration()
+            hybridCacheConfiguration()
         }
     }
 )
