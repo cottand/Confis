@@ -3,53 +3,6 @@
 \chapter{Evaluation}\label{ch:evaluation}
 
 
-\section{Confis Project Goals}\label{sec:eval:goals}
-
-This project hopes to leverage software engineering techniques (like domain-specific languages), existing logic abstractions (like normative rules), and existing technologies relating to law (like Ricardian contracts) in order to provide a framework allowing people with non-technical and non-legal backgrounds to draft, review, and access information in legal agreements.
-
-The following criteria are motivated by how existing technologies in the state-of-the-art (see~\autoref{sec:nlp} and~\autoref{sec:machine-readable-contracts}) fail to address them:
-
-\begin{definition}[Meaningful Representation]
-    \label{def:meaningful-representation}
-    Confis should be able to fully represent a legal agreement in a legal context.
-
-    That is, (albeit with the use of tooling) a Confis agreement should be usable in place of a legal one.
-
-\end{definition}
-
-\begin{definition}[Accessibility]
-    \label{def:accessibility}
-    Whatever the encoding of a Confis agreement, should be possible to produce (albeit with the use of tooling) such Confis agreement without an in-depth understanding of the formalism that encodes the agreement.
-\end{definition}
-
-The following are loosely defined -- this is unavoidable because this project aims to introduce a formalisation for legal documents, which are not well-defined and historically require natural language interpretation toi be understood.
-Please see~\nameref{sec:language-semantics} for the definitions of~\nameref{def:action},~\nameref{def:party},~\nameref{def:permission}, and~\nameref{def:requirement}.
-
-% TODO revisit after writing reasoning section
-\begin{definition}[Completeness]
-    \label{def:completeness}
-    A Confis agreement $C$ is complete with respect to a legal agreement $L$ if it represents $L$ and:
-
-    \begin{itemize}
-        \item If $L$ allows a legal capability $c$, then $C$ also allows $c$ through an equivalent permission
-        \item If $L$ forbids a legal capability $c$, then $C$ also forbids $c$ through an equivalent permission
-        \item If $L$ has a requirement $r$, then $C$ has $r$
-    \end{itemize}
-\end{definition}
-
-
-\begin{definition}[Soundness]
-    \label{def:soundness}
-    A Confis agreement $C$ is sound with respect to a legal agreement $L$ if it represents $L$ and:
-
-    \begin{itemize}
-        \item If $C$ has an \texttt{Allow} permission $p$ equivalent to a capability $c$, then a $L$ also allows $c$
-        \item If $C$ has a \texttt{Forbid} permission $p$ equivalent to a capability $c$, then a $L$ also forbids $c$
-        \item If $C$ has a requirement $r$, then $L$ has $r$
-    \end{itemize}
-\end{definition}
-
-
 \section{Language Formalism Evaluation}\label{sec:language-formalism-evaluation}
 % range of qs you can ask
 % what class of contracts cannot be represented (which can well?)
@@ -73,10 +26,10 @@ Please see~\nameref{sec:language-semantics} for the definitions of~\nameref{def:
 %
 
 The Confis language formalism and semantics are discussed in~\autoref{sec:language-semantics}.
-This project will evaluate it in how it meets the requirements described in~\autoref{sec:eval:goals}, its expressiveness (how capable it is to represent complex contracts) as well as how it performs in relation to comparable formalisms (like~\nameref{subsubsec:symboleo}~\cite{symboleo2020} or~\nameref{subsec:accord}~\cite{accordHomepage}).
+This project will evaluate it in how it meets the requirements described in~\autoref{sec:objectives}, its expressiveness (how capable it is to represent complex contracts) as well as how it performs in relation to comparable formalisms (like~\nameref{subsubsec:symboleo}~\cite{symboleo2020} or~\nameref{subsec:accord}~\cite{accordHomepage}).
 Due to the nature of legal agreements (and the impossibility of formalising large amounts of existing legal contracts) this assessment is a qualitative one.
 
-As far as fulfilling the~\nameref{def:accessibility} requirement, Confis is one of the few formalisms in the literature that makes an effort to penetrate industry by
+As for as fulfilling the accessibility requirements, Confis is one of the few formalisms in the literature that makes an effort to penetrate industry by
 \begin{itemize}
     \item Making few assumptions about the user's background (including knowledge such as event fluidity, event calculus, or first order predicate logic).
     \item Choosing language constructs to purposefully resemble natural language.
@@ -369,16 +322,16 @@ A brief test coverage report can be found in~\autoref{tab:coverage}
     \renewcommand{\arraystretch}{1.2} % Default value: 1
     \begin{tabular}{l|c}
         \hline
-        \textbf{Component}                   & \textbf{Coverage} \\
+        \textbf{Component}            & \textbf{Coverage} \\
         \hline
         \hline
-        Language implementation              & 90.6\%            \\
+        Language implementation       & 90.6\%            \\
         \hline
-        Rule generation \& Evaluation        & 85.0\%            \\
+        Rule generation \& Evaluation & 85.0\%            \\
         \hline
-        Natural language rendering           & 94.2\%            \\
+        Natural language rendering    & 94.2\%            \\
         \hline
-        Internal representation              & 73.5\%            \\
+        Internal representation       & 73.5\%            \\
         \hline
     \end{tabular}
     \caption{Coverage for Confis components}

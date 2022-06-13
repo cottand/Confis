@@ -12,8 +12,8 @@ The core of this tooling is the Confis language~(\autoref{sec:language-semantics
 
 \subsection{Implementation Requirements}\label{subsec:dsl:requirements}
 
-The language should fulfil the core requirements set out in~\autoref{ch:evaluation}.
-This involves prioritising~\nameref{def:accessibility} while making sure~\nameref{def:completeness} and~\nameref{def:soundness} are possible.
+The language should fulfil the core requirements set out in~\autoref{sec:objectives}.
+This involves prioritising accessibility while making sure the language stays expressive enough
 
 \subsubsection{Easy to write while still machine-readable}
 
@@ -27,13 +27,13 @@ A compromise must be struck between ease of writing and machine-readability.
 
 On one extreme, a data serialization text file (like JSON, YAML, or XML) would allow writing text that can be easily parsed by a program.
 But writing such files requires some data structures knowledge;
-and because of their key-value nature they do not allow writing sentences, leaving them too far from the readability of human-written legal prose -- thus they lack the~\nameref{def:accessibility} property.
+and because of their key-value nature they do not allow writing sentences, leaving them too far from the readability of human-written legal prose -- thus they lack they are not accessible.
 
 \paragraph{Natural Language Processing}
 
 On the other extreme, legal prose processed through a language processing program allows the drafter to completely ignore the machine-readable aspect of the document.
 Readers would be able to integrate such documents in their existing workflows -- as they would need to make no transition from their existing, non-machine-readable documents.
-This is approach is discussed in~\autoref{sec:nlp} -- we conclude it does not meet the~\nameref{def:completeness} property.\\
+This is approach is discussed in~\autoref{sec:nlp} -- we conclude it does not meet the expressiveness property faithfully enough, since it cannot specify contracts accurately.
 
 A compromise between these two solutions would be a language formal enough that it can be parsed by a program, but natural enough that natural language sentences can be recognised in it.
 Python or AppleScript~\cite{Sanderson2010appleScript}~(see~\autoref{fig:appleScript}) are good examples of programming languages (and therefore parseable) that are engineered with the goal of resembling English as much as possible.
@@ -67,7 +67,7 @@ A key aspect of development for a new user of a language is to understand the co
 A great aid to developing this understanding are visual cues in editors in integrated development environments (or IDEs).
 
 For the Confis DSL to be successful, it must be easy for the drafter of legal agreements to reason about the correctness of the document within the formalisms set out by this project.
-Good tooling is therefore a key requirement in order to achieve~\nameref{def:accessibility}.
+Good tooling is therefore a key requirement in order to achieve accessibility, a key priority as discussed in~\autoref{sec:objectives}.
 
 \subsection{Implementation Requirements Conclusion}\label{subsec:dsl-design-conclusion}
 
@@ -91,8 +91,8 @@ The choice to use Kotlin stems from how feature-rich the surrounding tooling is 
 
 This section is concerned with the structure, semantics, and design decisions regarding the Confis DSL.
 For the implementations details of the DSL, see~\nameref{subsec:dsl-implementation}.
-For motivations and priorities of the project, see~\nameref{sec:eval:goals}.
 
+As described in~\autoref{sec:objectives}, both accessibility and expressiveness are key priorities in designing the language.
 Confis introduces the following formalisms in order to limit the complexity of the language.
 These definitions make up the internal representation (IR) and are used to later generate rules to effectively answer complex queries.
 The language is designed to easily specify these abstractions.
@@ -277,7 +277,7 @@ A Circumstance Set is made up of Circumstances.
 
 A circumstance key $k$ is simply an element with a notion of equality.
 When two circumstances $c_1$ and $c_2$ produce they same key $k$, they are said to be~\emph{of the same type}.
-\texttt{render} is a function made to satisfy the requirement of being able to convert a Confis agreement into readable English for the sake of~\nameref{def:accessibility}.
+\texttt{render} is a function made to satisfy the requirement of being able to convert a Confis agreement into readable English for the sake of accessibility, and necessary to display query results in natural language.
 
 A Circumstance Set is an indexed set of~\nameref{def:circumstance}s, unique in that only one circumstance of each type can be stored.
 For example, we can only store a single circumstance representing time and a single circumstance representing purpose, because these are implemented to produce the same key $k$ each.
@@ -458,7 +458,7 @@ For example, \texttt{`cake may eat(alice)'} produces a compilation error, becaus
 
 \section{Additional Tooling: Legal Prose Rendering}\label{sec:additional-tooling:doc-rendering}
 
-In order to comply with the~\nameref{def:accessibility} requirement, it should be possible to generate a traditional document (perhaps in plaintext or PDF format) written in legal prose.
+In order to comply with the accessibility requirement, it should be possible to generate a traditional document (perhaps in plaintext or PDF format) in natural language.
 This generated document should then be usable in place of traditional agreement documents -- for example, a reviewer of an agreement will not need Confis software or to know about the Confis DSL in order to read a copy of the contract.
 
 We will call this feature \textbf{\emph{legal prose rendering}}.
@@ -469,7 +469,7 @@ If NLP~(see~\autoref{sec:nlp}) aims to translate traditional human-written legal
 
 \section[The Confis Editor]{Additional Editing Tooling: the Confis Editor}\label{sec:confis-editor}
 
-One of the key requirements for Confis is~\nameref{def:accessibility}.
+One of the key requirements for Confis is accessibility.
 In order to achieve this the Confis framework includes an extension to the IntelliJ Development Environment~\cite{intelliJRepo} - the \textbf{\emph{Confis Plugin}}.
 Bundled with this plugin is the \textbf{\emph{Confis Editor}}.
 
@@ -535,7 +535,7 @@ For the sake of brevity, this report will omit the implementation details of the
 
 \section{Language Documentation}\label{sec:language-documentation}
 
-In the spirit of software engineering principles and to further work towards meeting the~\nameref{def:accessibility} requirement, this project also introduces a documentation website, which can be found at \href{https://confis.dcotta.eu}{\texttt{confis.dcotta.eu}} and is pictured in~\autoref{fig:online-docs}.
+In the spirit of software engineering principles and to further work towards meeting the accessibility requirement, this project also introduces a documentation website, which can be found at \href{https://confis.dcotta.eu}{\texttt{confis.dcotta.eu}} and is pictured in~\autoref{fig:online-docs}.
 It is implemented as a series of Markdown documents rendered as HTML pages thanks to the MkDocs~\cite{mkDocs} tool.
 
 \begin{figure}[h]
