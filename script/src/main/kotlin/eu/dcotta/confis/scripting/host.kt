@@ -18,8 +18,7 @@ private val compilationConfiguration = createJvmCompilationConfigurationFromTemp
 private val host = BasicJvmScriptingHost(
     ScriptingHostConfiguration {
         jvm {
-            // breaks in CI due to file permissions
-            // hybridCacheConfiguration()
+            hybridCacheConfiguration()
         }
     }
 )

@@ -25,7 +25,7 @@ sealed interface ComplianceResult : QueryResponse {
         val requirements: WorldState,
     ) : ComplianceResult {
         override fun render() = buildString {
-            append("Compliant if then following happens:\n\n")
+            append("Compliant if the following happens:\n\n")
             append(requirements.render())
             append("\n\nPossibly breached:\n")
             clausesPossiblyBreached
