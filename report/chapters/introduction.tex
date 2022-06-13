@@ -34,26 +34,23 @@ This that means in practice they require they are specialist a strong background
 They also tend to make little effort in compromising with existing frameworks for dealing with legal agreements: while being machine-readable is a desirable property of a contract, being human-readable (eg, for use in court) is a necessary property.
 
 
-% these should be objectives
+\section{Objectives}\label{sec:objectives-and-aims}
 
-% TODO capitalise autoref
-\section{Objectives and Aims}\label{sec:objectives-and-aims}
-
-\begin{itemize}
 % TODO move from evalaution
 % objectives should be vague
 %% should be able to express legal agreements
 % expressive enough to support a large class
 % natural lang rep gives you confidence it represents what you think it represents
 
-
+From the above motivations we can derive the main objectives of this project, which are as follows:
+\begin{itemize}
 % for hi level
-    \item Develop a specification language both accessible and expressive enough to represent concepts that typically make up contracts~(such as parties' obligations and powers)
+    \item To develop a specification language both accessible and expressive enough to represent concepts that typically make up contracts~(such as parties' obligations and powers)
 
-    \item Develop an accessible analysis mechanism that helps parties understand their powers, obligations, and given a state of the world, understand whether they are (or how they can become) compliant with the agreement;
+    \item To develop an accessible analysis mechanism that helps parties understand their powers, obligations, and given a state of the world, understand whether they are (or how they can become) compliant with the agreement;
     as well as verifying said agreement is free of logical contradictions.
 
-    \item Demonstrate the applicability of the developed framework in the context of legal agreements
+    \item To demonstrate the applicability of the developed framework in the context of legal agreements
 \end{itemize}
 
 
@@ -63,24 +60,25 @@ They also tend to make little effort in compromising with existing frameworks fo
 
 Please see~\autoref{fig:confis-overview} for a diagram on how these contributions interact with each other.
 
-\paragraph{A Language for Specifying Legal Agreements}
+\subsection{A Language for Specifying Legal Agreements}
 The \textbf{Confis DSL} is a domain-specific language that specifies contracts.
 Like Applescript or Python, is engineered to resemble English.
 It is parsimonious and formalises a small set of concepts (legal obligations, powers, and the circumstances in which they apply) in order to be simple to learn and cover a broad range of contracts.
 
 See~\autoref{sec:language-semantics} for more details on the language.
 
-\paragraph{A Prototype Implementation of the Confis DSL}
+\subsection{A Prototype Implementation of the Confis DSL}
 By using Kotlin as a \emph{host language} for the DSL (see~\nameref{sec:dsls}), we present a prototype which allows compiling the Confis language.
 
 See~\autoref{subsec:dsl-implementation} for more details on the language implementation.
 
-\paragraph{An Intelligent Editor for the Confis DSL}
+\subsection{An Intelligent Editor for the Confis DSL}
 By using an existing development environment, we greatly improve the~\nameref{def:accessibility} of the Confis Language relative to other specification languages in the literature (like Accord or Symboleo) by also implementing a graphical prototype that eases the drafting of Confis agreements and is able to provide human-readable live previews and report errors.
 
 See~\autoref{sec:confis-editor} for more details on the editor.
 
-\paragraph{A Querying Engine for Confis Agreements} We also introduce a rules engine that compiles a Confis Agreement and is able to answer complex queries by generating and evaluating rules depending on the type of query.
+\subsection{A Querying Engine for Confis Agreements}
+We also introduce a rules engine that compiles a Confis Agreement and is able to answer complex queries by generating and evaluating rules depending on the type of query.
 It is able to answer queries relating to determining the legal capabilities of parties, finding contradictions in an agreement, determining clause violations depending on past events, and determining necessary steps towards compliance.
 To better illustrate the extent of the querying, some questions that can be executed as queries are:
 \begin{itemize}
@@ -95,15 +93,16 @@ See~\autoref{sec:rule-generation} for more details on the querying engine.
 
 % make subsecs for contribs
 
-\paragraph{A User Interface for Querying Documents} In addition to the formalisms necessary to examine a contract by querying it, we introduce a prototype that allows asking these questions through an accessible graphical user interface, and producing understandable human-readable answers to them.
+\subsection{A User Interface for Querying Documents}
+In addition to the formalisms necessary to examine a contract by querying it, we introduce a prototype that allows asking these questions through an accessible graphical user interface, and producing understandable human-readable answers to them.
 
 See~\autoref{sec:queryUI} for more details on the querying UI\@.
-
 
 
 % beauty is ver short distance from having written to answering sphisticated queries
 
 % no need for further translation and somehow efficient
+
 
 \section{Project Overview}\label{sec:project-overview}
 
@@ -127,6 +126,7 @@ An architectural diagram of how all components interact with each other in~\auto
 
 Aside from this introduction and the background research~(\autoref{ch:background}), the main body of this report is divided in two parts: \autoref{ch:lang}, covering the Confis language, and~\autoref{ch:queries}, covering the querying of documents specified in said language.
 Both chapter discuss the requirements, design, tooling, and implementation of each part.
+
 \tikzset{font={\fontsize{9pt}{10}\selectfont}}
 \begin{figure}[h]
     \usetikzlibrary{shapes.misc, arrows.meta}

@@ -42,10 +42,8 @@
     bottom=1.5cm,
 %showframe, % Uncomment to show how the type block is set on the page
 }
-
 % personal macros
 
-\newcommand{\citeTODO}{[\scriptsize{\textit{\textsc{CITATION NEEDED}}}\normalsize]}
 \newdateformat{daymonth}{
     \ordinal{DAY}\ of \monthname[\THEMONTH]
 }
@@ -53,7 +51,6 @@
 % TODO find a nice definition format
 \theoremstyle{definition}
 \newtheorem{ndefinition}{Definition}
-\providecommand*\ndefinitionautorefname{Definition}
 \usepackage{tcolorbox}
 \tcbuselibrary{skins}
 \tcbuselibrary{hooks}
@@ -72,9 +69,8 @@
         \end{ndefinition}
     \end{tcolorbox}
 }
+\providecommand*\ndefinitionautorefname{Definition}
 \providecommand*{\listingautorefname}{Listing}
-
-
 
 \thesistitle {Confis: A Framework for Authoring and Querying Machine-Readable Legal Agreements}
 \supervisor{Prof. William J. \textsc{Knottenbelt}} % print with \supname
@@ -94,6 +90,10 @@
     \hypersetup{pdftitle=\ttitle} % Set the PDF's title to your title
     \hypersetup{pdfauthor=\authorname} % Set the PDF's author to your name
     \hypersetup{pdfkeywords=\keywordnames} % Set the PDF's keywords to your keywords
+    \def\sectionautorefname{Section}
+    \def\subsectionautorefname{Subsection}
+    \def\chapterautorefname{Chapter}
+
 }
 
 
