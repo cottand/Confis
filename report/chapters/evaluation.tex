@@ -338,8 +338,27 @@ A brief test coverage report can be found in~\autoref{tab:coverage}
     \label{tab:coverage}
 \end{table}
 
-Evaluating implementations of contract specification languages is outside the scope of this project.
-Some deliverables (like the querying engine) are left unimplemented by competing technologies like Symboleo~\cite{symboleo2020}.
-Because of this, the evaluation of the software artefacts introduced by this project is limited to testing for correctness.
+%Comparing implementations of contract specification languages is outside the scope of this project.
+Some deliverables of other specification languages (like the querying engine) are left unimplemented by competing technologies like Symboleo~\cite{symboleo2020}, therefore it is hard to perform quantitative comparisons.
+
+In order to still demonstrate the tractability and the practical applicability of the computations Confis performs, we measure compilation time and evaluation time of a Confis agreement.
+We measure the following:
+\begin{itemize}
+    \item \textbf{Kotlin compilation time}, which converts text to a compiled Kotlin binary.
+    \item \textbf{IR generation}, which converts Kotlin binaries to the Confis IR
+    \item \textbf{Rule generation and evaluation}, which converts Confis IR to Easy Rules, and then evaluates the rules according to a given query (for all three kinds of queries)
+\end{itemize}
+
+The specifications of the machine these measurements are performed on are given in~\autoref{tab:measurement-env}.
+
+\begin{table}[h]
+    \caption{Specifications of host environment for performance evaluation}
+    \label{tab:measurement-env}
+\end{table}
+
+% TODO
+
+
+%Because of this, the evaluation of the software artefacts introduced by this project is limited to testing for correctness.
 
 In integration tests, this is done by drafting contracts with the DSL implementation and comparing the contract and the internal representation it produces, as well as comparing the internal representation and the responses to different queries (which stem from rules generated from said internal representation).
