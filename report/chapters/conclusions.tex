@@ -10,20 +10,21 @@ This project has introduced:
 \begin{itemize}
     \item Confis, an accessible specification language for legal agreements, implemented as an internal DSL~\cite{fowlerDsl} using Kotlin~\cite{kotlinLang} as a host language.
     \item An intelligent and language-aware editor equipped with all the utilities of the IDE of a general-purpose programming language, implemented as an IntelliJ~\cite{intelliJRepo} editor.
-    \item Conversion from Confis back to legal prose in plain English, encoded in Markdown and rendered as a live preview side-to-side with the editor.
+    \item Conversion from Confis back to natural language, encoded in Markdown and rendered as a live preview side-to-side with the editor.
     \item A rules engine that generates normative rules from a Confis agreement and answers complex queries, accompanied by a graphical interface that allows assembling such queries and rendering query results in plain English
     \item A user guide as an online website to complement the above tools.
 \end{itemize}
 
 Confis is novel and in stark contrast with the state of the art in that
 \begin{itemize}
-    \item It sets a precedent for successfully reconciling rule-based specification formalisms for legal agreements with accessible industry-oriented software
+    \item It sets a precedent for successfully reconciling rule-based specification formalisms for legal agreements with accessible software and abstractions.
     \item It does not attempt to generate rules from text, nor introduce a specification which needs to be translated to other formalisms in order to be utilised.
     Confis is self-contained and flexible.
 \end{itemize}
 
 We find that it largely succeeds at introducing a machine-readable formalism for representing contracts (aided by novel features such as graphical query UIs and converting a formalism back to natural language), but at the cost of compromising on the expressiveness of its language and the contracts it is able to represent.
 This lack of expressiveness stems primarily from its lack of temporal logic and its lack of ability to deal with contract violations after they happen.
+
 
 \section{Future Work}\label{sec:future-work}
 

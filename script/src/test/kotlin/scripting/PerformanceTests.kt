@@ -7,14 +7,11 @@ import eu.dcotta.confis.eval.ComplianceQuestion
 import eu.dcotta.confis.eval.allowance.ask
 import eu.dcotta.confis.eval.compliance.ask
 import eu.dcotta.confis.eval.inference.ask
-import eu.dcotta.confis.model.Agreement
 import eu.dcotta.confis.model.Sentence
 import eu.dcotta.confis.scripting.ConfisScriptDefinition
 import io.kotest.assertions.fail
 import io.kotest.core.spec.style.StringSpec
 import java.io.File
-import kotlin.script.experimental.api.EvaluationResult
-import kotlin.script.experimental.api.ResultWithDiagnostics
 import kotlin.script.experimental.api.ResultWithDiagnostics.Success
 import kotlin.script.experimental.host.ScriptingHostConfiguration
 import kotlin.script.experimental.host.toScriptSource
@@ -36,8 +33,12 @@ class PerformanceTests : StringSpec({
     }
 
     data class Res(
-        val file: String, val compile: Duration, val assemble: Duration,
-        val allowanceQ: Duration, val circumstanceQ: Duration, val complianceQ: Duration,
+        val file: String,
+        val compile: Duration,
+        val assemble: Duration,
+        val allowanceQ: Duration,
+        val circumstanceQ: Duration,
+        val complianceQ: Duration,
     )
 
     val host = BasicJvmScriptingHost(ScriptingHostConfiguration {})
@@ -45,7 +46,6 @@ class PerformanceTests : StringSpec({
         val source = file.toScriptSource()
 
         val sourceReading = measureTime { source.text }
-
 
         val (evaled, evaluation) = measureTimedValue { host.eval(source, compilationConfiguration, null) }
 
@@ -70,7 +70,6 @@ class PerformanceTests : StringSpec({
         val circumstanceQuerying = measureTime {
             assembled.ask(CircumstanceQuestion(firstSentence))
         }
-
 
         if (warmup.not()) {
             println("For file ${file.name}")
@@ -115,16 +114,18 @@ class PerformanceTests : StringSpec({
         )
     }
 
-    "benchmark".config(enabled = false) {
+    "benchmark".config(enabled = true) {
         val simple = File("src/test/resources/scripts/minimal.confis.kts")
         val geo = File("src/test/resources/scripts/geophys.confis.kts")
+        val meat = File("src/test/resources/scripts/meat.confis.kts")
         benchmark(simple, warmup = true)
         benchmark(geo, warmup = true)
 
+        val meatM = List(100) { benchmark(meat, warmup = true) }.avg()
+        println(meatM)
         val simpleM = List(100) { benchmark(simple, warmup = true) }.avg()
-        val geoM = List(100) { benchmark(geo, warmup = true) }.avg()
-
         println(simpleM)
+        val geoM = List(100) { benchmark(geo, warmup = true) }.avg()
         println(geoM)
     }
 })
