@@ -7,7 +7,6 @@ import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.actionSystem.impl.ActionToolbarImpl
 import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.diagnostic.debug
@@ -30,7 +29,6 @@ import eu.dcotta.confis.model.Agreement
 import org.intellij.plugins.markdown.ui.preview.MarkdownPreviewFileEditor
 import java.awt.Dimension
 import javax.swing.JComponent
-import javax.swing.JLayeredPane
 import kotlin.script.experimental.api.ResultWithDiagnostics
 
 class ConfisEditor(
@@ -103,12 +101,7 @@ class ConfisEditor(
     }
 
     private val myComponent: JComponent by lazy {
-        val editorLayerWrapper = super.getComponent()
-        val actionGroup = DefaultActionGroup(AskQuestionAction())
-        val toolbar = QuestionToolbar(editorLayerWrapper, actionGroup)
-        editorLayerWrapper.add(toolbar, null, JLayeredPane.DEFAULT_LAYER)
-
-        editorLayerWrapper
+        super.getComponent()
     }
 
     override fun getComponent(): JComponent = myComponent
@@ -124,12 +117,6 @@ class ConfisEditor(
             setSkipWindowAdjustments(true)
             isOpaque = false
             layoutPolicy = NOWRAP_LAYOUT_POLICY
-        }
-    }
-
-    class AskQuestionAction : AnAction("Ask Question", "Initiates a Confis query", ConfisIcons.ConfisOrange) {
-        override fun actionPerformed(e: AnActionEvent) {
-            Notifications.Bus.notify(Notification("Confis Plugin", "Noti8!", NotificationType.INFORMATION))
         }
     }
 

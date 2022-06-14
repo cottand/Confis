@@ -7,13 +7,11 @@ import java.util.Calendar
 
 infix fun Int.of(month: Month) = MonthDate(this, month)
 infix fun MonthDate.year(year: Int): Date = Date(day, month, year)
-//    Calendar.Builder().apply {
-//    setDate(year, month.ordinal, day)
-// }.build()
 
-infix fun Pair<MonthDate, MonthDate>.year(year: Int) = first.year(year)..second.year(year)
+data class TwoMonthDates(val from: MonthDate, val to: MonthDate)
+infix fun TwoMonthDates.year(year: Int) = from.year(year)..to.year(year)
 
-operator fun MonthDate.rangeTo(end: MonthDate) = this to end
+operator fun MonthDate.rangeTo(end: MonthDate) = TwoMonthDates(this, end)
 
 data class Days(val i: Int)
 
