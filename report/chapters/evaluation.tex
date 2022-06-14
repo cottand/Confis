@@ -308,9 +308,6 @@ Other lacks in expressiveness (like~\nameref{subsubsec:limits-domain-circumstanc
 Full examples of such discrepancies can be found in the code archive, as well as in~\autoref{ch:confis-examples}.
 We come to the conclusion that, despite the shortcomings of Confis as previously listed, we successfully represented the aforementioned contracts in the Confis specification.
 
-% TODO and is this ok??
-
-
 \section{Software Deliverables}\label{sec:software-deliverables}
 
 Key software components like the language implementation, rule generation, and legal prose rendering have been thoroughly tested for correctness through unit and integration tests, in the spirit of rigorous software engineering.
@@ -370,12 +367,13 @@ The specifications of the machine these measurements are performed on are given 
 
 The methodology is as follows:
 \begin{itemize}
-    \item We evaluate the Confis agreements \texttt{minimal}~(see~\autoref{fig:confis:minimal}) and \texttt{geophys}~(see~\autoref{fig:confis:geophys}).
+    \item We evaluate the Confis agreements \texttt{minimal}~(see~\autoref{fig:confis:minimal}), \texttt{geophys}~(see~\autoref{fig:confis:geophys}), and~\texttt{meat}~(see~\autoref{fig:confis:meat}).
     \item No compilation caching of any kind is used (although the prototype does support caching)
     \item We measure Kotlin compilation, IR generation, and rule generation and evaluation (for all three query types discussed in~\autoref{sec:rule-generation}).
     We evaluate rule generation and evaluation as a single measurement because they are both query-dependent (different rules are generated for different queries).
     \item To average out random variations caused by the kernel scheduler, we perform the measurements 100 and report the averages.
     \item Measurements are performed on a warm JVM~\cite{venners1998java}.
+    \item Confis code will be loaded into memory before measuring, so that fetching from disk is not taken into account.
 \end{itemize}
 
 The results of these measurements can be found in~\autoref{tab:benchmark-results}.
@@ -388,23 +386,23 @@ Please refer to the code archive for the benchmarking code\footnote{
 
 \begin{table}[h]
     \centering
-    \begin{tabular}{|l|c|c|}
+    \begin{tabular}{|l|c|c|c|}
         \hline
-        \multicolumn{1}{|c|}{\textbf{Step}} & \multicolumn{2}{c|}{\textbf{Duration}} \tabularnewline
-        & \texttt{minimal} & \texttt{geophys} \\
+        \multicolumn{1}{|c|}{\textbf{Step}} & \multicolumn{3}{c|}{\textbf{Duration}} \tabularnewline
+        & \texttt{minimal} & \texttt{geophys} & \texttt{meat} \\
         \hline
         \hline
-        Kotlin compilation & 280.9ms & 314.9ms \\
+        Kotlin compilation & 280.9ms & 314.9ms & 342.9ms \\
         \hline
-        IR generation from binaries & 4.47us & 3.97us \\
+        IR generation from binaries & 4.47us & 3.9us & 3.9us\\
         \hline
-        Rule generation \& evaluation (allowance)    & 182.4us & 242.8us \\
+        Rule generation \& evaluation (allowance)    & 182.4us & 242.8us & 354.1us \\
         \hline
-        Rule generation \& evaluation (compliance)   & 64.8us  & 242.9us \\
+        Rule generation \& evaluation (compliance)   & 64.8us  & 242.9us & 442.4us\\
         \hline
-        Rule generation \& evaluation (circumstance) & 112.3us & 116.7us \\
+        Rule generation \& evaluation (circumstance) & 112.3us & 116.7us & 164.8us\\
         \hline
-        Total & 482.0ms & 1,035.7ms \\
+        Total & 281.3ms & 315.5ms & 343.9ms  \\
         \hline
     \end{tabular}
     \caption{Results of performance evaluation for \texttt{simple} and \texttt{geophys} agreements}
