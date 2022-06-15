@@ -14,7 +14,7 @@ In common law, most generally it involves~\cite{contractDef2018precedent, contra
 \end{itemize}
 
 A licence is a specific kind of legal agreement which allows a party to perform an activity under some specific
-conditions\cite{licenseDefinition}.
+conditions~\cite{licenseDefinition}.
 
 \subsection{Dataset Licensing}\label{subsec:licensing:dataset}
 See~\cite{seismicDataLicence} for an example of a licence allowing access to data by a library.
@@ -81,7 +81,7 @@ Ethereum~\cite{buterin2015ethereum} is also a blockchain sharing many of Bitcoin
 a proof-of-work consensus algorithm.
 While it also as scripting support, it varies greatly from Bitcoin's in that its built-in programming language is
 Turing-complete, value-aware and allows keeping internal state.
-For more details on Ethereum's scripting language, see~\ref{subsubsec:evm}.
+For more details on Ethereum's scripting language, see~\autoref{subsubsec:evm}.
 The name of the coin of the Ethereum ecosystem is \textit{ether}.
 
 Ethereum's state is encoded in \textit{accounts} - objects with their own address that contain the account's
@@ -144,8 +144,7 @@ computations~(such as compounding interest over a period of time).
 
 After signature, more behaviour can be written in code to check information against a contract (like checking for
 breach of contract, or what action to take in a specific situation).
-See Figure~\ref{fig:accord-post-signature-code} for an example where the clause checks for the state of a
-delivery~(whether it is timely, has passed inspection, etc).
+See~\autoref{fig:accord-post-signature-code} for an example where the clause checks for the state of a delivery~(whether it is timely, has passed inspection, etc).
 
 \begin{listing}[th]
     \centering
@@ -156,7 +155,7 @@ delivery~(whether it is timely, has passed inspection, etc).
 
         let received = request.deliverableReceivedAt;
         enforce isBefore(received,now()) else
-          throw ErgoErrorResponse{
+          throw ErgoErrorResponse {
             message : "Transaction time is before the deliverable date."
           }
         ;
@@ -165,7 +164,7 @@ delivery~(whether it is timely, has passed inspection, etc).
           if isAfter(now(),
             addDuration(
                 received,
-                Duration{ amount: contract.businessDays, unit: days}
+                Duration { amount: contract.businessDays, unit: days }
             )
           )
           then OUTSIDE_INSPECTION_PERIOD
@@ -173,7 +172,7 @@ delivery~(whether it is timely, has passed inspection, etc).
           then PASSED_TESTING
           else FAILED_TESTING
         ;
-        return Response{
+        return Response {
           status : status,
           shipper : contract.shipper,
           receiver : contract.receiver
@@ -230,7 +229,7 @@ Using human-written legal prose has the advantages of leading to faster dispute 
 While Ricardian contracts can represent any type of agreement, they do not actually try to capture the \emph{meaning} of a specific type of agreement.
 
 For example, a Ricardian contract may capture all the necessary information related to a Tenancy Agreement in a format that may allow a machine to enquire about the monthly rent -- but such a machine would need to know how tenancy agreements are structured.
-In short, Ricardian contracts must follow a template and it is instances of this template that are easily read and queried by machines.
+In short, Ricardian contracts must follow a template and it is instances of this template that are easily read and queried.
 
 \subsection{Reasoning with Legal Agreements}\label{subsec:reasoning-with-legal-agreements}
 
@@ -251,7 +250,7 @@ NLP, on the other hand (discussed in~\autoref{sec:nlp}) struggles to extract suc
 Contract-Driven agents~\cite{knottenbeltContractDriven} introduces a specification for formalising the behaviours involved in a contract and the interactions between parties
 
 The formalism involves establishing a calculus based in multi-agents systems specifically oriented towards contracts, through the event calculus as first introduced by~\cite{kowalski1989logicEventBased}~(a logic-based system).
-Note how the event calculus can be generalised by~\autoref{eq:basic-rule}.
+Note how the event calculus conforms to~\autoref{eq:basic-rule}.
 
 Unlike Ricardian contracts~(see~\autoref{subsec:ricardian-contracts}), contract-driven agents attempt to describe the behaviours of all parties as well as how they react to other parties' behaviours.
 Therefore, unlike Ricardian contracts, they also capture the semantics of the agreement between all the parties.
@@ -264,13 +263,11 @@ Note that although contract-driven agents primarily target describing behaviours
 Much like~\nameref{subsubsec:contract-driven-agents} it aims to capture the semantics of the agreement.
 It does this by providing several abstractions relating to legal concepts, such as \emph{powers} and \emph{obligations}, and creating axioms around them.
 
-Time and events through a model based on temporal logic~\cite{temporalLogic1984} which specifies time instances for events, time intervals for situations, and makes use of pre-state and post-state situations for events.
-
+Time and events are represented by a model based on temporal logic~\cite{temporalLogic1984} which specifies time instances for events, time intervals for situations, and makes use of pre-state and post-state situations for events.
 Symboleo also hopes to provide an implementation-agnostic specification by transpiling to blockchain languages, such as Solidity~\cite{solidity_repo}~(see~\autoref{subsubsec:evm}) -- much like~\nameref{subsec:accord}.
 At the time of writing, Accord has such an implementation in place while Symboleo does not.
 
 An example of a contract (a meat sales agreement that can be found in~\autoref{tab:meat}) translated into Symboleo is given under the Appendix in~\autoref{fig:symbolio:meatSales}.
-
 A detailed comparison of Symboleo and Confis can be found in the~\nameref{ch:evaluation} chapter.
 
 
@@ -280,22 +277,19 @@ Human-written text, which is how legal agreements are typically persisted\footno
 
 Existing technologies trying to process legal text -- such as~\cite{angeli2015NLP1},~\cite{lapata2016NLP2},~\cite{lapata2018NLP3}, or~\cite{sleimi2018NLP4} -- try to produce normative rules.
 
-At the time of writing, they fall short of fully capturing all relevant information in an existing legal document -- therefore they lack the expressive property discussed in~\autoref{sec:objectives}.
+At the time of writing, they fall short of fully capturing all relevant information in an existing legal document -- therefore they lack the expressiveness property discussed in~\autoref{sec:objectives}, because they are unable to represent a contract well.
 They face the main following challenges~\cite{ferraroLegalNLPSSurvey}:
 
 \paragraph{Cross-referencing}
 
-Legal text is structured into sections and subsections which contain sentences which represent clauses applicable in a specific context.
-Documents therefore often reference information across sections or across documents.
+Legal text is structured into sections which contain sentences which represent clauses applicable in a specific context, and documents therefore often reference information across sections or across documents.
 Some of these references may not even be explicit: often, contracts have a `Definitions' section solely for the role of disambiguating terms which the reader is expected to use in their understanding of the document.
 
 NLP solutions must therefore be able to deal with referencing in order to extract context and resolve lexical ambiguities.
 
 \paragraph{Ambiguity}
 While legal documents aim to remove ambiguity and ideally produce a single interpretation, unintended ambiguities arise from the use of natural language.
-
 The most likely ambiguity is \emph{referential ambiguity} where a word or phrase has multiple meanings inferred from current context, from a parent statement (which is unique to legal text), or from other document sections via cross-referencing.
-
 Natural language can also represent different logical interpretations, which is referred to as \emph{local ambiguity}.
 An example of this is using the term ``and'' to represent a disjunction instead of a conjunction.
 
@@ -308,7 +302,7 @@ Current NLP technologies struggle with such sentences: syntactic analysers and p
 
 \begin{table}[h]
     \centering
-    \setlength{\fboxsep}{10pt}
+    \setlength{\fboxsep}{5pt}
     \fbox{
         \begin{minipage}{0.8\textwidth}
             On termination of this Licence the Licensee shall cease to have any rights or Licence in
@@ -333,8 +327,7 @@ Properly capturing modalities or behaviours such as a \emph{requirement} or a \e
 
 The use-case of representing complex, formalised abstractions in a machine-readable formats is a common one, and general-purpose programming languages (Java, Python, etc) are designed with exactly this goal in mind.
 
-A class of languages made to target a specific problem, rather than being general purpose, also exists: these are \emph{Domain-Specific Languages} (or \emph{DSLs})
-
+A class of languages made to target a specific problem, rather than being general purpose, also exists: these are \emph{Domain-Specific Languages} (or \emph{DSLs}).
 According to~\cite{fowlerDsl}: ``A DSL is a computer language that is targeted to a particular kind of problem, rather than a general purpose language that is aimed at any kind of software problem''.
 In order to write legal agreements and lower the barrier of entry as much as possible (ideally, no software engineering training should be required) a well-documented and easy-to-use DSL is a good solution: expressive enough to be able to represent a large range of agreements, but restrictive enough that language features should not require extensive training.
 
@@ -349,7 +342,7 @@ This solution is the easiest to develop but forces the DSL author to conform to 
 
 \paragraph{Textual External DSLs}
 
-Textual External DSLs have their own custom syntax and therefore they need a full new parsed to be processed.
+Textual External DSLs have their own custom syntax, and therefore they need a whole new parser to be processed.
 This solution provides the most flexibility in what the language can express but is more expensive in terms of development efforts for the DSL author.
 
 \paragraph{Graphical DSLs}
@@ -504,14 +497,11 @@ An example DSL that uses Kotlin as the host language is given in~\autoref{fig:ko
                 body {
                     h1 {+"XML encoding with Kotlin"}
                     p  {+"this can be used as an alternative to XML"}
-
                     // an element with attributes and text content
                     a(href = "https://kotlinlang.org") {+"Kotlin"}
-
                     // content generated by
                     p {
-                        for (arg in args)
-                            +arg
+                        for (arg in args) +arg
                     }
                 }
             }

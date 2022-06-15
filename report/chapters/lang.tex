@@ -13,15 +13,12 @@ The core of this tooling is the Confis language~(\autoref{sec:language-semantics
 \subsection{Implementation Requirements}\label{subsec:dsl:requirements}
 
 The language should fulfil the core requirements set out in~\autoref{sec:objectives}.
-This involves prioritising accessibility while making sure the language stays expressive enough
+This involves prioritising accessibility while making sure the language stays expressive enough.
 
 \subsubsection{Easy to write while still machine-readable}
 
-Writing a Confis agreement should be close to writing plain English, while still being machine-readable.
+Writing a Confis agreement should be close to writing natural language, while still being machine-readable.
 For more details on the meaning of \emph{machine-readable} in the context of this project, see~\autoref{sec:machine-readable-contracts}.
-
-
-A compromise must be struck between ease of writing and machine-readability.
 
 \paragraph{Data Serialization Language}
 
@@ -40,11 +37,12 @@ Python or AppleScript~\cite{Sanderson2010appleScript}~(see~\autoref{fig:appleScr
 
 \begin{listing}[h]
     \centering
-    \begin{minipage}{0.8\textwidth}
+    \begin{minipage}{0.7\textwidth}
         \begin{minted}[
             autogobble,
             frame=lines,
-            framesep=2mm
+            framesep=2mm,
+            fontsize=\small
         ]{applescript}
                 set the firstnumber to 1
                 set the secondnumber to 2
@@ -59,7 +57,7 @@ Python or AppleScript~\cite{Sanderson2010appleScript}~(see~\autoref{fig:appleScr
 
 \paragraph{Easy to develop and extend}
 
-With pragmatic implementation efforts in mind, this project should not aim to develop its own parser and interpreter or compiler: the project hopes to be more concerned with introducing a suitable abstraction that allows both drafting and processing legal documents.
+With pragmatic implementation efforts in mind, this project should not aim to develop its own parser and interpreter or compiler: the project hopes to be more concerned with introducing a suitable abstraction that allows specifying legal documents.
 
 \paragraph{Additional tooling for ease of use and correctness}
 
