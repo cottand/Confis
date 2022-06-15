@@ -30,7 +30,7 @@ This lack of expressiveness stems primarily from its lack of temporal logic and 
 
 Future work has two main directions: improving the existing Confis language semantics and software prototype, and building upon the querying engine in order to programmatically deal with legal agreements.
 
-\subsection{Better Language Semantics}\label{subsec:future:better-language-semantics}
+\subsection{A Better Language}\label{subsec:future:better-language-semantics}
 
 This project chose to compromise on that area for the sake of a leaner learning curve -- but it does not conclude new abstractions with stronger guarantees are not possible.
 
@@ -46,7 +46,13 @@ This stems from the fact that a scenario can only stem from an \texttt{Allow}~\n
 
 Addressing this limitation could be possible by introducing a fifth type of Allowance that would account for the intersection of these two possible states.
 
-\subsection{Confis Implemented as an External Language}\label{subsec:confis-as-external-language}
+\subsubsection{More Complex Sentences}
+
+Confis sentences are extremely simple tuples following a Subject, Action, Object model.
+While it is possible to represent complex clauses by dividing them into several Sentences, Confis agreements would better reflect natural language if Sentences could contain several objects or several subjects (through disjunctions or conjunctions).
+THe language would become more expressive, although rule generation would become more complex.
+
+\subsubsection{Confis Implemented as an External Language}\label{subsec:confis-as-external-language}
 
 As discussed in~\autoref{subsec:dsl-implementation}, Confis is developed as an internal DSL that uses Kotlin as its host language.
 This places constraints on the language's syntax (since it needs to be in line with Kotlin's).
