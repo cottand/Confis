@@ -128,7 +128,8 @@ Allowance is used to answer questions of the type \emph{`May A do X?'} -- where 
 
 \begin{definition}[Allowance]
     \label{def:allowance}
-    \emph{Allowance} is a value like \texttt{Allowance = Allow | Forbid | Unspecified | Depends}.
+    \emph{Allowance} is a value like:
+    \[\texttt{Allowance = Allow | Forbid | Unspecified | Depends}\]
 \end{definition}
 
 Users are allowed to use Allowance in order to define a~\nameref{def:permission}, but only with the values \texttt{Allow} and \texttt{Forbid}.
@@ -211,21 +212,20 @@ This is shown in~\autoref{fig:allowance-venn} and~\autoref{eq:allowance-cake-exa
 \begin{definition}[Permission]
     \label{def:permission} A \emph{Permission} represents a legal capability (or lack thereof) in the language.
     It is a tuple of a~\nameref{def:sentence}, an~\nameref{def:allowance}, and a~\nameref{def:circumstanceSet} (which may be empty).
-    \begin{verbatim}
-        Permission = (Sentence, Allowance, CircumstanceSet)
-    \end{verbatim}
+    The Circumstance Set of an Allow-Permission specifies in what circumstances it applies, whereas for a Forbid-Permission it specifies in what circumstances it does not apply.
+    \begin{align}
+        \nonumber \texttt{Allow-Permission}\, &=\, \texttt{(Sentence, Allowance, CircumstanceSet)}\\
+        \nonumber \texttt{Forbid-Permission}\, &=\, \texttt{(Sentence, Allowance, CircumstanceSet)}
+    \end{align}
 \end{definition}
 
-A requirement is an important abstraction necessary in order to define~\nameref{def:confis-compliance}.
-Confis also assumes a that providing a legal obligation entails providing the legal capability to fulfill that obligation, which means that when we have a Requirement we have an \texttt{Allow} Permission too.
+A requirement is an important abstraction and the first step towards defining~\nameref{def:confis-compliance}.
+Confis assumes a that providing a legal obligation entails providing the legal capability to fulfill that obligation, which means that when we have a Requirement we have an \texttt{Allow} Permission too.
 
 \begin{definition}[Requirement]
     \label{def:requirement} A \emph{Requirement} represents a legal obligation and is a tuple of a~\nameref{def:sentence} and a~\nameref{def:circumstanceSet} (which may be empty).
-    \begin{verbatim}
-        Requirement = (Sentence, CircumstanceSet)
-    \end{verbatim}
-
-    A requirement $r$ entails a permission $p$ where if $r = (s, C)$ then $p = (\texttt{Allow}, s, C)$
+    \[ \texttt{Requirement = (Sentence, CircumstanceSet)}\]
+    A requirement $r$ entails an allow-permission $p$ where if $r = (s, C)$ then $p = (\texttt{Allow}, s, C)$
 \end{definition}
 
 \begin{definition}[Event]
@@ -235,7 +235,7 @@ Confis also assumes a that providing a legal obligation entails providing the le
 
 We use a set of Events to represent a `state-of-the-world'.
 Note how we have no concept of precedence or ordering between events.
-The only way to order chronologically them would be with respect to a time-based Circumstance present in each event's Circumstance Set.
+The only way to order them chronologically would be with respect to a time-based Circumstance present in each event's Circumstance Set.
 
 \begin{definition}[Compliance]
     \label{def:confis-compliance}
@@ -246,7 +246,7 @@ The only way to order chronologically them would be with respect to a time-based
     A set of Events $W$ \emph{is compliant with} an agreement if and only if, for every Requirement $r$ and every \texttt{Forbid} Permission $p$ that are part of the agreement, $r$ has been met by $W$ and $p$ is respected by $W$.
 \end{definition}
 
-For the meanings of `generalises' and `overlaps with', see~\autoref{def:circumstanceSet:generalise}, and~\autoref{def:circumstanceSet:overlap}.
+For the meanings of `generalises' and `overlaps with', see~\autoref{def:circumstanceSet:generalise} and~\autoref{def:circumstanceSet:overlap}.
 
 \subsection{Circumstance and Circumstance Set}\label{subsec:circumstance}
 
@@ -264,10 +264,10 @@ A Circumstance Set is made up of Circumstances.
     \begin{align}
         \label{def:c:generalise}
         \texttt{generalise}&: \ c \to\ c' \to\ \texttt{Boolean}\\
-        \label{def:c:provideKey}
-        \texttt{provideKey}&: \ c \to\ k\\
         \label{def:c:overlap}
         \texttt{overlapsWith}&:\ c \to\ c' \to\ \texttt{Boolean}\\
+        \label{def:c:provideKey}
+        \texttt{provideKey}&: \ c \to\ k\\
         \label{def:c:render}
         \texttt{render}&: \ c \to\ \texttt{String}
     \end{align}
@@ -310,12 +310,11 @@ Defining a \texttt{generalise} equivalent for circumstances will be of use when 
     That is, if for all circumstances in $C_1$, there is a circumstance of the same type in $C_2$ and each circumstance in $C_1$ overlaps with the circumstance of the same type in $C_2$.
 \end{definition}
 
-This definitions of Circumstance Set Generalisation and Overlap have the following consequences:
+This definitions of Circumstance Set generalisation and overlap have the following consequences:
 \begin{itemize}
     \item The empty circumstance set generalises all circumstance sets
     \item The empty circumstance set overlaps with all circumstance sets
 \end{itemize}
-
 
 Although nothing requires Circumstance Set overlap to be commutative, it will be commutative if the Circumstances it contains have a commutative implementation of \texttt{overlapsWith}.
 This is the case for every Circumstance built into Confis so far.
@@ -330,7 +329,6 @@ Indeed, the event \emph{`Alice pays Bob'} generalises the event \emph{`Alice pay
 If a contract has a requirement for the former, and we supply it with a state of the world containing the latter, we can say that Alice is compliant with the contract!
 
 Likewise, the converse is true for \emph{disjoint} (not overlapping) events.
-
 For two events $e_1 = \textit{`Alice pays Bob during June'}$,  $e_2 = \textit{`Alice pays Bob during September'}$, we can say the Circumstance Sets of $e_1$ and $e_2$ are disjoint, therefore if a contract requires $e_1$ but we have a state of the world with $e_2$, we can say Alice still has some legal obligation she has not fulfilled.
 
 Generally, Circumstance Sets describe more specific situations the more elements they have.
@@ -458,10 +456,9 @@ For example, \texttt{`cake may eat(alice)'} produces a compilation error, becaus
 
 In order to comply with the accessibility requirement, it should be possible to generate a traditional document (perhaps in plaintext or PDF format) in natural language.
 This generated document should then be usable in place of traditional agreement documents -- for example, a reviewer of an agreement will not need Confis software or to know about the Confis DSL in order to read a copy of the contract.
+We will call this feature \textbf{\emph{natural language rendering}}.
 
-We will call this feature \textbf{\emph{legal prose rendering}}.
-
-If NLP~(see~\autoref{sec:nlp}) aims to translate traditional human-written legal-prose into a machine-readable format, you can think of legal prose rendering as the inverse process: we go from a machine-readable representation to a more human-readable one.
+If NLP~(see~\autoref{sec:nlp}) aims to translate natural language into a machine-readable format, you can think of natural language rendering as the inverse process: we go from a machine-readable representation to a more human-readable one.
 
 % TODO
 
@@ -477,8 +474,8 @@ The Confis Editor has two main goals:
 
 \paragraph{Providing a human-readable preview of the Confis Agreement}
 
-The Confis Editor should display a document in legal prose, made up from text generated from the Confis agreement (thanks to legal prose rendering~\ref{sec:additional-tooling:doc-rendering}).
-This preview should resemble a traditional legal document, and appear side-to-side the code the agreement drafter is writing in order to provide a useful live preview of the contract being authored (much like it is handy to have a PDF preview when drafting TeX documents).
+The Confis Editor should display a document in legal prose, made up from text generated from the Confis agreement (thanks to natural language rendering).
+This preview should resemble a traditional legal document, and appear side-to-side the code the agreement drafter is writing in order to provide a useful live preview of the contract being authored (much like it is handy to have a PDF preview when drafting TeX documents, an example of which can be found in~\autoref{fig:overleafPreview}).
 
 \subsection{Editor Implementation}\label{subsec:editor-implementation}
 
