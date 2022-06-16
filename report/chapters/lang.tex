@@ -362,7 +362,8 @@ For design decisions regarding the language (like what is a Sentence or the diff
 Because of the nature of internal DSLs~(see~\autoref{sec:dsls}), the syntax of the Confis DSL must be a subset of the Kotlin language's.
 % TODO add future work link for own lang
 Given the Confis DSL and the Confis IR are decoupled this section will not go into too much detail on how the DSL is implemented as most of that is specific to the Kotlin language, and the DSL could have been implemented as an internal DSL with a different host language anyway (like Haskell or Groovy).
-Instead, it will show a couple examples of how language constructs are implemented (like a Permission) which will be useful to understand~\autoref{subsec:editor-implementation}.
+Therefore, it will just show an example of how a Permission is implemented.
+Understanding how the Confis DSL is plain valid Kotlin will help understand how the editor~(\autoref{sec:confis-editor}) works (and why it works well).
 
 For more information on how DSLs can be built in Kotlin in general, see~\autoref{subsubsec:kotlinLang}, and in particular refer to~\cite{kotlinTypeSafeBuilders}.
 
@@ -371,30 +372,12 @@ For more information on how DSLs can be built in Kotlin in general, see~\autoref
 Recall a~\nameref{def:permission} is a tuple of~\texttt{(Allowance, Sentence, CircumstanceSet)}, where the \texttt{CircumstanceSet} may be empty.
 For the sake of brevity, we will leave the construction of the Circumstance Set out and discuss how we can construct a tuple of \texttt{(Allowance, Sentence)} in the DSL.
 % TODO CircumstanceMap
-First, we must define the tuple for~\nameref{def:sentence} in Kotlin as in~\autoref{fig:kotlinSentence}.
 Recall a \texttt{Sentence} is simply a tuple of \texttt{(Subject, Action, Object)}.
 
-\begin{listing}[h]
-    \centering
-    \begin{minipage}{0.4\textwidth}
-        \begin{minted}[
-            autogobble,
-            frame=lines,
-            framesep=2mm]{kotlin}
-        data class Sentence(
-            val subject: Subject,
-            val action: Action,
-            val obj: Object,
-        )
-        \end{minted}
-    \end{minipage}
-    \caption{\texttt{Sentence} tuple declaration}\label{fig:kotlinSentence}
-\end{listing}
-
-We now need a DSL to construct this \texttt{Sentence}.
+We first need a DSL to construct this \texttt{Sentence}.
 We use an infix extension function in order to add the \texttt{`may'} adverb (which corresponds to \texttt{Allowance = Allow}) between the subject and the action of the sentence.
 We also use a Kotlin operator function~\cite{kotlinInvokeOperator} in order to overload the \texttt{Action}, so the user is able to write \texttt{action(object)} as opposed to \texttt{ActionObj(action, obj)}.
-The full example is demonstrated in~\autoref{fig:permissionKotlinFull}, and a usage example is given in~\autoref{fig:finalPermissionInvocationDSL} -- which reads like an English sentence!
+The full example is demonstrated in~\autoref{fig:permissionKotlinFull}, and a usage example is given in~\autoref{fig:finalPermissionInvocationDSL} -- which reads like an English sentence.
 
 
 
@@ -405,7 +388,12 @@ The full example is demonstrated in~\autoref{fig:permissionKotlinFull}, and a us
             autogobble,
             frame=lines,
             mathescape,
+            fontsize=\small,
             framesep=2mm]{kotlin}
+            // Sentence tuple declaration
+            data class Sentence(
+                val subject: Subject, val action: Action, val obj: Object,
+            )
             // <Action, Object> tuple declaration
             data class ActionObject(val action: Action, val obj: Object)
 
@@ -427,9 +415,10 @@ The full example is demonstrated in~\autoref{fig:permissionKotlinFull}, and a us
 
 \begin{listing}[h]
     \centering
-    \begin{minipage}{0.5\textwidth}
+    \begin{minipage}{0.25\textwidth}
         \begin{minted}[
             autogobble,
+            fontsize=\small,
             frame=lines,
             framesep=2mm]{kotlin}
             val alice: Subject
@@ -457,8 +446,10 @@ For example, \texttt{`cake may eat(alice)'} produces a compilation error, becaus
 In order to comply with the accessibility requirement, it should be possible to generate a traditional document (perhaps in plaintext or PDF format) in natural language.
 This generated document should then be usable in place of traditional agreement documents -- for example, a reviewer of an agreement will not need Confis software or to know about the Confis DSL in order to read a copy of the contract.
 We will call this feature \textbf{\emph{natural language rendering}}.
-
 If NLP~(see~\autoref{sec:nlp}) aims to translate natural language into a machine-readable format, you can think of natural language rendering as the inverse process: we go from a machine-readable representation to a more human-readable one.
+
+This is implemented with advanced templating (a rendered Permission includes a rendered Sentence, for example) that transforms IR elements into markdown code.
+Markdown can then be conveniently converted to HTML (for rendering inside the editor, see~\autoref{fig:confis.minimal.editor}) or to PDF~\cite{pdf2020spec}.
 
 % TODO
 
@@ -467,14 +458,13 @@ If NLP~(see~\autoref{sec:nlp}) aims to translate natural language into a machine
 One of the key requirements for Confis is accessibility.
 In order to achieve this the Confis framework includes an extension to the IntelliJ Development Environment~\cite{intelliJRepo} - the \textbf{\emph{Confis Plugin}}.
 Bundled with this plugin is the \textbf{\emph{Confis Editor}}.
-
 The Confis Editor has two main goals:
 
 \paragraph{Providing context-aware aid for authoring agreements} Much like an IDE provides relevant aid to a software engineer (such as reporting compile errors before attempting to compile the program) the Confis Editor should allow an agreement drafter to write in the Confis DSL without needing to deal with command-line utilities or knowing the tooling around Kotlin language.
 
 \paragraph{Providing a human-readable preview of the Confis Agreement}
 
-The Confis Editor should display a document in legal prose, made up from text generated from the Confis agreement (thanks to natural language rendering).
+The Confis Editor should display a document in plain English, made up from text generated from the Confis agreement (thanks to natural language rendering).
 This preview should resemble a traditional legal document, and appear side-to-side the code the agreement drafter is writing in order to provide a useful live preview of the contract being authored (much like it is handy to have a PDF preview when drafting TeX documents, an example of which can be found in~\autoref{fig:overleafPreview}).
 
 \subsection{Editor Implementation}\label{subsec:editor-implementation}
@@ -482,7 +472,7 @@ This preview should resemble a traditional legal document, and appear side-to-si
 Two things are required in order to be able to draft single Confis code files inside an IDE:
 \begin{enumerate}
     \item It must be possible to write a self-contained, boilerplate-free contract in a single file.
-    \item The IDE must perform reporting specific to the Confis DSL when editing this file (as opposed to reporting on the host language, Kotlin).
+    \item The IDE must perform reporting specific to the Confis DSL when editing this file (as opposed to reporting only on the host language, Kotlin).
 \end{enumerate}
 
 (1.) is where Kotlin's custom scripting support~\cite{kotlinScriptKeep} is crucial.
@@ -490,7 +480,6 @@ See~\nameref{subsec:scripting-support} for a discussion on what is meant by scri
 
 In order to implement writing Confis agreements as stand-alone files, we create a \emph{Kotlin Custom Script definition}~\cite{kotlinScriptKeep}, which essentially contains information that assigns an instance of a class to a script.
 By placing DSL builder functions like those introduced in~\autoref{fig:permissionKotlinFull} inside a class (called \texttt{AgreementBuilder}, for example) and assigning an instance of this class to a script, we can let the script author (ie, the Confis agreement author) \textbf{mutate} our class when we evaluate their script.
-
 See~\autoref{fig:agreementBuilderSmall} for an example of such a class, and~\autoref{fig:confis:minimal} for an example of a single script bound to that class.
 
 We can then pass the script definition mentioned above to an extension point present in the IntelliJ API engineered specifically for this purpose~\cite{ideaExtensionPoints, intelliJRepo}.
@@ -508,24 +497,25 @@ See~\autoref{fig:intelliScriptAid} for an example where the Confis editor report
 A live video example can be found in the~\href{https://confis.dcotta.eu/0.1.1/IDE%20Support/IDEAPlugin/}{Confis Documentation Page}.
 
 In order to achieve (2.), we can implement a new editor in IntelliJ based on its existing markdown editor~\cite{ideaMarkdownPreview} which achieves a very similar purpose: providing a live preview of machine-readable code.
-
-The live preview is implemented as a preview of an in-memory Markdown document which is in turn generated upon code changes in the editor:
+The live preview is thus implemented as a preview of an in-memory Markdown document which is in turn generated upon code changes in the editor:
 \begin{equation*}
     \text{Confis Code}\; \to\; \text{Confis IR}\; \to\; \text{Markdown document}\; \to \text{HTML page}\; \to\; \text{Live preview}
 \end{equation*}
 
 A screenshot of the Confis Editor, including syntax highlighting and the live preview, can be found in~\autoref{fig:confis.minimal.editor}.
+For the sake of brevity, this report will omit the implementation details of the live preview -- but a starting point can be found in the software archive under the \texttt{ConfisEditor} class\footnote{
+    The \texttt{ConfisEditor} class can be found int he software archive under
+    \begin{itemize}
+        \item \texttt{plugin/src/main/kotlin/eu/dcotta/confis/plugin/ConfisEditor.kt}
+    \end{itemize}\vspace{-8mm}
+}.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{figures/simple.confis.editor}
-    \caption{Screenshot of the Confis Editor, including the legal prose preview}
+    \caption{Screenshot of the Confis Editor, including the natural language preview}
     \label{fig:confis.minimal.editor}
 \end{figure}
-
-
-
-For the sake of brevity, this report will omit the implementation details of the live preview -- but a starting point can be found in the software archive under the \texttt{ConfisEditor} class.
 
 
 \section{Language Documentation}\label{sec:language-documentation}

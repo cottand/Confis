@@ -4,10 +4,16 @@ title = "Minimal example"
 
 val alice by party
 val eat by action
-val cookie by thing
+val soup by thing
+
 val cake by thing
 
-alice may eat(cookie) unless  {
+alice mayNot  eat(soup) unless  {
     with purpose Commercial
+    after { alice did eat(cake) }
 }
 
+alice may eat(soup) asLongAs {
+    with purpose Commercial
+    after { alice did eat(cake) }
+}

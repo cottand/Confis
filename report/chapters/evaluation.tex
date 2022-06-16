@@ -26,8 +26,8 @@
 %
 
 The Confis language formalism and semantics are discussed in~\autoref{sec:language-semantics}.
-This project will evaluate it in how it meets the requirements described in~\autoref{sec:objectives}, its expressiveness (how capable it is to represent complex contracts) as well as how it performs in relation to comparable formalisms (like~\nameref{subsubsec:symboleo}~\cite{symboleo2020} or~\nameref{subsec:accord}~\cite{accordHomepage}).
-Due to the nature of legal agreements (and the impossibility of formalising large amounts of existing legal contracts) this assessment is a qualitative one.
+We will evaluate the language in how it meets the requirements described in~\autoref{sec:objectives}, its expressiveness (how capable it is to represent complex contracts) as well as how it performs in relation to comparable formalisms (like~\nameref{subsubsec:symboleo}~\cite{symboleo2020} or~\nameref{subsec:accord}~\cite{accordHomepage}).
+Due to the nature of legal agreements (and the impossibility of formalising every aspect of existing legal texts) this assessment is a qualitative one.
 
 As for as fulfilling the accessibility requirements, Confis is one of the few formalisms in the literature that makes an effort to penetrate industry by
 \begin{itemize}
@@ -124,7 +124,7 @@ buyer mayNot reveal(contract) asLongAs {
 
 \paragraph{Specifying a legal Obligation}
 Notice how Symboleo allows representing a more complex domain by specifying an \emph{Event} \texttt{`Disclosed'}, and constraining the legal capabilities of Buyer by creating an \emph{Obligation} (with a notion of this obligation being \emph{from} Buyer \emph{towards} Seller) which specifies that the \texttt{disclosed} event cannot happen before six months after the end of the contract.
-In Symbolio's model if \texttt{disclosed} happen, the breach cannot be attributed to either Seller nor Buyer.
+In Symbolio's model if \texttt{disclosed} happens, the breach cannot be attributed to either Seller nor Buyer.
 
 Confis specifies a simpler domain -- while it also specifies Seller and Buyer and represents `disclosing' as an Action, it has no notion of \emph{creditor} and \emph{lender} when it comes to Requirements (defined in~\autoref{def:requirement}).
 On the other hand, Confis can `blame' specific parties for a breach, as it attributes Actions to Subjects.
@@ -135,11 +135,11 @@ Both models are capable of expressing periods of time, but in Confis they are no
 
 \paragraph{Accessibility}
 
-While both contracts require language knowledge to write them, Confis can be read without prior training and its functions (\texttt{within}, \texttt{mayNot}, \texttt{asLongAs},~\dots) are easy to memorise.
+While both contracts require language knowledge to be written, Confis can be read without prior training and its operators (\texttt{within}, \texttt{mayNot}, \texttt{asLongAs},~\dots) are easy to memorise.
 The best example of this is the operation of summing six months to a time period -- while Symboleo requires specifying a \texttt{Date} library and wrapping the duration with a function (\texttt{`Date.add(..., 6, months)'}), Confis uses operator overloading to sum to a date (\texttt{`... + 6.months'}).
 
-As far as readability goes, Confis goes the extra mile by trying to combine metadata and language semantics to provide an English-like preview.
-This prose rendering is shown in~\autoref{fig:confis-render-meat-confidentiality}.
+As far as readability goes, Confis goes to further lengths to achieve it by trying to combine metadata and language semantics to provide a natural-language-like preview.
+This rendering is shown in~\autoref{fig:confis-render-meat-confidentiality}.
 While the preview is not as clear as the original plain-English clause, it conveys the obligations of each party well and is unambiguous thanks to its definition referencing (which is common in real legal agreements).
 
 \begin{figure}[H]
@@ -153,10 +153,9 @@ For a more detailed comparison of the specifications of this agreement in the Co
 
 \subsection{Confis Limitations in its Semantics}\label{subsec:confis-lang-limits}
 
-While the focus Confis makes in Accessibility makes it easier to learn, read, and write;
+While the focus Confis makes in accessibility makes it easier to learn, read, and write;
 it comes at a price in the guarantees it brings and the expressiveness of the contracts that it can represent.
-% TODO solutions in future work?
-This section provides a couple examples of clauses in existing contracts that Confis struggles to formalise and tries to generalise the situations it cannot encode, as well as suggesting solutions for the problem.
+This section provides examples of clauses in existing contracts that Confis struggles to formalise and tries to generalise the situations it cannot encode, as well as suggesting solutions or workarounds for said limitations.
 
 \subsubsection{Act Upon Violation}
 \label{subsubsec:limits-violations}
@@ -195,7 +194,6 @@ They then can use these relations to model enforcing conditions, pre-conditions,
 Confis only has a concept of time as a~\nameref{def:circumstance} -- an event does not necessarily happen at a given time, the same way it does not necessarily happen with a given purpose.
 Ordering of events is established with an additional circumstance called a Past Action.
 Again, this Circumstance does not receive special treatment and like the others it is up to the author of the contract to specify it.
-
 While this design choice greatly simplifies rule generation and language semantics (thus making Confis easier to learn) it is a sacrifice in expressiveness.
 
 For example, unlike Symboleo, Confis is unable to allow a new Capability only after an event $E$ occurred at a time $t$ and $E$ has happened after another event $E_{\text{past}}$.
@@ -217,7 +215,7 @@ This greatly limits its expressiveness in terms of numerical amounts and the com
 Consider The Accord Project~\cite{accordHomepage}~(see~\autoref{subsec:accord}), which models programs computationally with a more general-purpose language.
 It is able to perform complex floating-point arithmetic in order to compute interest rates and fees, such as the one given in~\autoref{tab:economist-interest}.
 
-On the other hand, Symboleo (and similar logic-based technologies) struggle more to perform such time-based calculations (possibly due to their declarative nature).
+On the other hand, Symboleo (and similar logic-based technologies) struggle more to perform such calculations (possibly due to their declarative nature).
 In the original Symboleo paper~\cite{symboleo2020} which contains a meat sales example hand-picked to showcase the language, the authors do not attempt to perform an interest calculation over time even though their original agreement (given in~\autoref{tab:meat}) specifies one -- this is shown in~\autoref{fig:symbolio:meat-interest} for convenience.
 
 \begin{listing}[h]
@@ -257,7 +255,7 @@ In the original Symboleo paper~\cite{symboleo2020} which contains a meat sales e
 \end{listing}
 
 In short, while Confis lacks the computational capabilities of a programming language, it is not lacking when compared to Symboleo since it does allow specifying numerical constants (except without having to specify their types).
-Additionally, traditional contracts also tend to leave to the reader such computations.
+Additionally, traditional contracts also leave such computations to the reader.
 
 \begin{table}[h]
     \centering
@@ -288,47 +286,48 @@ This makes Circumstances very intuitive to use in practice: if the contract spec
 
 The price to be paid for this ease-of-use is that Circumstances for new domains must be implemented before they can be used.
 The most simple example is geographical locations.
-This Circumstance is not already built into Confis.
+This Circumstance type is not already built into Confis.
 If we were to make such an extension to the language, we would need to define a location-type circumstance as some coordinates (or perhaps an address).
 The functions \texttt{generalises} and \texttt{overlapsWith} would compare coordinates in order to determine if one is a location included in the other (say, a house within a street), or if they are close enough to be the same place.
 
 In short, making domains accessible at the language level requires less general abstractions that require domain knowledge at the implementation level.
 While Confis is built to be easily extensible implementation-wise, this is a rare limitation in specification languages, which usually aim to be as general as possible in order to cover all possible cases.
-The trade-off is once again in accessibility and expressiveness, and can be circumvented by encoding a Circumstance inside a~\nameref{def:sentence}'s~\nameref{def:action} -- following the previous example, rather than `deliver', the Action can be rewritten as `deliver to 10 Downing St.'.
+The trade-off is once again in accessibility and expressiveness, and can be circumvented by encoding a Circumstance inside a~\nameref{def:sentence}'s~\nameref{def:action}~-- following the previous example, rather than `deliver', the Action would be rewritten as `deliver to 10 Downing St.'.
 
 \subsection{Gravity of Language Semantics Limitations}\label{subsec:gravity--lang-limits}
 
 This subsection aims to determine to what extent the limitations presented in~\autoref{subsec:confis-lang-limits} affect negatively the practical usability of Confis.
 Given how Confis is superior in its accessibility to comparable languages in the literature like Symboleo and The Accord Project (by virtue of the compromises it makes) we have focused on comparing real-world contracts with their Confis representations, including~\cite{economistIU2016licence, symboleoMeat, jetbrainsToolbox, seismicDataLicence}.
 
-The main discrepancies between the intended meaning of the plaintext agreements and their Confis counterparts concern re-evaluation of legal capabilities and obligations (ie, Confis'~\nameref{def:permission} and~\nameref{def:requirement}) when the state-of-the-world changes.
+The main discrepancies between the intended meaning of the traditional natural language agreements and their Confis counterparts concern re-evaluation of legal capabilities and obligations (ie, Confis'~\nameref{def:permission} and~\nameref{def:requirement}) when the state-of-the-world changes.
 This includes the~\nameref{subsubsec:limits-violations} and~\nameref{subsubsec:limits-time} limitations.
 Other lacks in expressiveness (like~\nameref{subsubsec:limits-domain-circumstances}) can be more easily circumvented by adapting Sentences to convey the intended meaning and by splitting clauses into several such Sentences.
 
 Full examples of such discrepancies can be found in the code archive, as well as in~\autoref{ch:confis-examples}.
 We come to the conclusion that, despite the shortcomings of Confis as previously listed, we successfully represented the aforementioned contracts in the Confis specification.
 
+
 \section{Software Deliverables}\label{sec:software-deliverables}
 
 Key software components like the language implementation, rule generation, and legal prose rendering have been thoroughly tested for correctness through unit and integration tests, in the spirit of rigorous software engineering.
 The methodology used in integration tests involves drafting plaintext contracts with the DSL implementation and comparing the contract and the internal representation it produces, as well as comparing the internal representation and the responses to different queries (which stem from rules generated from said internal representation).
-A brief test coverage report can be found in~\autoref{tab:coverage}
+A brief test coverage report can be found in~\autoref{tab:coverage}.
 
 \begin{table}[h]
     \centering
     \setlength{\tabcolsep}{8pt} % Default value: 6pt
     \renewcommand{\arraystretch}{1.2} % Default value: 1
-    \begin{tabular}{l|c}
-        \hline
+    \begin{tabular}{l c}
+%        \hline
         \textbf{Component}            & \textbf{Coverage} \\
-        \hline
+%        \hline
         \hline
         Language implementation       & 90.6\%            \\
-        \hline
+%        \hline
         Rule generation \& Evaluation & 85.0\%            \\
-        \hline
+%        \hline
         Natural language rendering    & 94.2\%            \\
-        \hline
+%        \hline
         Internal representation       & 73.5\%            \\
         \hline
     \end{tabular}
@@ -338,19 +337,19 @@ A brief test coverage report can be found in~\autoref{tab:coverage}
 
 %Comparing implementations of contract specification languages is outside the scope of this project.
 Some deliverables of other specification languages (like the querying engine) are left unimplemented by competing technologies like Symboleo~\cite{symboleo2020}, therefore it is hard to perform quantitative comparisons.
-
 In order to still demonstrate the tractability and the practical applicability of the computations Confis performs, we measure compilation time and evaluation time of a Confis agreement.
 We measure the following:
 \begin{itemize}
     \item \textbf{Kotlin compilation time}, which converts text to a compiled Kotlin binary.
     \item \textbf{IR generation}, which converts Kotlin binaries to the Confis IR
-    \item \textbf{Rule generation and evaluation}, which converts Confis IR to Easy Rules, and then evaluates the rules according to a given query (for all three kinds of queries)
+    \item \textbf{Rule generation and evaluation}, which converts Confis IR to normative rules, and then evaluates the rules according to a given query (for all three kinds of queries)
 \end{itemize}
 
 The specifications of the machine these measurements are performed on are given in~\autoref{tab:measurement-env}.
 
 \begin{table}[h]
     \centering
+    \renewcommand{\arraystretch}{1.2} % Default value: 1
     \begin{tabular}{l l}
         \hline
         \textbf{Hardware Model}  & Dell XPS 9300                  \\
@@ -368,10 +367,10 @@ The specifications of the machine these measurements are performed on are given 
 The methodology is as follows:
 \begin{itemize}
     \item We evaluate the Confis agreements \texttt{minimal}~(see~\autoref{fig:confis:minimal}), \texttt{geophys}~(see~\autoref{fig:confis:geophys}), and~\texttt{meat}~(see~\autoref{fig:confis:meat}).
-    \item No compilation caching of any kind is used (although the prototype does support caching)
+    \item No compilation caching of any kind is used (although the prototype does support caching).
     \item We measure Kotlin compilation, IR generation, and rule generation and evaluation (for all three query types discussed in~\autoref{sec:rule-generation}).
-    We evaluate rule generation and evaluation as a single measurement because they are both query-dependent (different rules are generated for different queries).
-    \item To average out random variations caused by the kernel scheduler, we perform the measurements 100 and report the averages.
+    We evaluate rule generation and evaluation as a single measurement because they are both query-dependent (as in different rules are generated for different queries).
+    \item To average out random variations caused by the kernel scheduler, we perform the measurements a hundred times and report the averages.
     \item Measurements are performed on a warm JVM~\cite{venners1998java}.
     \item Confis code will be loaded into memory before measuring, so that fetching from disk is not taken into account.
 \end{itemize}
@@ -394,15 +393,15 @@ Please refer to the code archive for the benchmarking code\footnote{
         \hline
         Kotlin compilation & 280.9ms & 314.9ms & 342.9ms \\
         \hline
-        IR generation from binaries & 4.47us & 3.9us & 3.9us\\
+        IR generation from binaries & 4.47us & 3.9us & 3.9us \\
         \hline
         Rule generation \& evaluation (allowance)    & 182.4us & 242.8us & 354.1us \\
         \hline
-        Rule generation \& evaluation (compliance)   & 64.8us  & 242.9us & 442.4us\\
+        Rule generation \& evaluation (compliance)   & 64.8us  & 242.9us & 442.4us \\
         \hline
-        Rule generation \& evaluation (circumstance) & 112.3us & 116.7us & 164.8us\\
+        Rule generation \& evaluation (circumstance) & 112.3us & 116.7us & 164.8us \\
         \hline
-        Total & 281.3ms & 315.5ms & 343.9ms  \\
+        Total & 281.3ms & 315.5ms & 343.9ms \\
         \hline
     \end{tabular}
     \caption{Results of performance evaluation for \texttt{simple} and \texttt{geophys} agreements}
