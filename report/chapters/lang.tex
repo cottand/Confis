@@ -493,8 +493,6 @@ If we include some additional information (such as a file extension for Confis a
 \end{figure}
 
 See~\autoref{fig:intelliScriptAid} for an example where the Confis editor reports a compile error (where the user attempted to form a Sentence with a Party that does not exist) as well as autocompletion for building a Permission clause.
-% TODO actually do this on the website
-A live video example can be found in the~\href{https://confis.dcotta.eu/0.1.1/IDE%20Support/IDEAPlugin/}{Confis Documentation Page}.
 
 In order to achieve (2.), we can implement a new editor in IntelliJ based on its existing markdown editor~\cite{ideaMarkdownPreview} which achieves a very similar purpose: providing a live preview of machine-readable code.
 The live preview is thus implemented as a preview of an in-memory Markdown document which is in turn generated upon code changes in the editor:
