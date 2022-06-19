@@ -270,6 +270,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#set-me-up" class="md-nav__link">
+    Set me up
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#quick-example" class="md-nav__link">
     Quick example
   </a>
@@ -511,6 +518,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#set-me-up" class="md-nav__link">
+    Set me up
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#quick-example" class="md-nav__link">
     Quick example
   </a>
@@ -540,9 +554,15 @@
 <p>"O ye who believe! When ye deal with each other, in transactions involving future obligations in a fixed period of time, reduce them to writing."
 <em>-- Holy Qur'an, 2:282</em></p>
 </blockquote>
-<p><strong>Confis</strong> (In Spanish, slang for <em>trust</em> and short for <em>confianzas</em>) is a framework for writing and representing legal agreements.</p>
+<p><strong>Confis</strong> (In Spanish, slang for <em>trust</em> and short for <em>confianzas</em>) is a framework for writing and representing legal agreements, as well as querying them for analysis on legal capabilities, obligations, and compliance.</p>
 <p>It includes its own language to write legal contracts and the ability to ask questions in order to allow parties to figure out their legal capabilities and responsibilities.</p>
 <p>It is meant to be a generalisation of a <a href="https://en.wikipedia.org/wiki/Ricardian_contract">Ricardian Contract</a>.</p>
+<h2 id="set-me-up">Set me up<a class="headerlink" href="#set-me-up" title="Permanent link">&para;</a></h2>
+<p>You can use Confis as a Kotlin library or as an IntelliJ plugin.</p>
+<ul>
+<li><a href="IDE%20Support/IDEAPlugin/">Set up the IntelliJ plugin here</a>.</li>
+<li>The Confis library is not published to any repositories, but you can install a jar from this repository by running <code>\.gradlew build</code>.</li>
+</ul>
 <h2 id="quick-example">Quick example<a class="headerlink" href="#quick-example" title="Permanent link">&para;</a></h2>
 <p>Below is a simple license agreement where <code>alice</code> licenses some data to <code>bob</code> in exchange for a fee of £100, which must be paid sometime in the month of April 2022.</p>
 <p>Additionally, <code>bob</code> may not use the data for commercial purposes.</p>
@@ -566,7 +586,7 @@
     <span class="n">within</span> <span class="p">{</span> <span class="p">(</span><span class="m">1</span> <span class="n">of</span> <span class="n">April</span><span class="p">)..(</span><span class="m">30</span> <span class="n">of</span> <span class="n">April</span><span class="p">)</span> <span class="n">year</span> <span class="m">2022</span> <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="n">alice</span> <span class="n">must</span> <span class="n">share</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="n">asLongAs</span> <span class="p">{</span>
+<span class="n">alice</span> <span class="n">must</span> <span class="n">share</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="n">underCircusmtances</span> <span class="p">{</span>
     <span class="n">after</span> <span class="p">{</span> <span class="n">bob</span> <span class="n">did</span> <span class="n">payLicenseFeeTo</span><span class="p">(</span><span class="n">alice</span><span class="p">)</span> <span class="p">}</span>
 <span class="p">}</span>
 
