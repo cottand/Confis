@@ -3,11 +3,18 @@
 > "O ye who believe! When ye deal with each other, in transactions involving future obligations in a fixed period of time, reduce them to writing."
 *-- Holy Qur'an, 2:282*
 
-**Confis** (In Spanish, slang for _trust_ and short for _confianzas_) is a framework for writing and representing legal agreements.
+**Confis** (In Spanish, slang for _trust_ and short for _confianzas_) is a framework for writing and representing legal agreements, as well as querying them for analysis on legal capabilities, obligations, and compliance.
 
 It includes its own language to write legal contracts and the ability to ask questions in order to allow parties to figure out their legal capabilities and responsibilities.
 
 It is meant to be a generalisation of a [Ricardian Contract](https://en.wikipedia.org/wiki/Ricardian_contract).
+
+## Set me up
+
+You can use Confis as a Kotlin library or as an IntelliJ plugin.
+
+- [Set up the IntelliJ plugin here](IDE%20Support/IDEAPlugin.md).
+- The Confis library is not published to any repositories, but you can install a jar from this repository by running `\.gradlew build`.
 
 ## Quick example
 
@@ -36,7 +43,7 @@ bob must payLicenseFeeTo(alice) underCircumstances {
     within { (1 of April)..(30 of April) year 2022 }
 }
 
-alice must share(data) asLongAs {
+alice must share(data) underCircusmtances {
     after { bob did payLicenseFeeTo(alice) }
 }
 

@@ -15,16 +15,47 @@ Confis code can be converted to a better-looking [Document](../AgreementsAsDocum
 ![Document Preview](../pics/documentPreviewZoomed.png)
 ![Confis Editor](../pics/contractRenderedIdea.png)
 
+## Launching an IDE with Confis from sources
+
+This will launch an instance of the IntelliJ development environment that already has Confis set up without requiring a local install of the IDE.
+You only require Java 11 or later installed on your machine
+
+=== "Linux / MacOS"
+
+    - Run `./gradlew runIde`
+    - Create a new project
+    - Open any `*.confis.kts` files and you can start writing contracts!
+    - You can open the Query UI by selecting **Confis Questions** _(View > Tool Windows > Confis Questions)_
+
+=== "Windows"
+
+    - Run `gradlew.bat runIde`
+    - Create a new project
+    - Open any `*.confis.kts` files and you can start writing contracts!
+    - You can open the Query UI by selecting **Confis Questions** _(View > Tool Windows > Confis Questions)_
+
 ## Installing the plugin from sources
 
 The IDEA plugin is not currently published to any repositories in binary form.
 In order to use it, you must compile it and install it manually.
-You only require Java 11 or later installed in your machine.
+You only require Java 11 or later installed on your machine.
 
-- Clone the Confis repository
-- Run `./gradlew assemble`
-- Open your installation of IntelliJ IDEA and select _Settings_ > _Plugins_ > _Install plugin From Disk_
-- Select the compiled zip file
-`<repositoryRoot>/plugin/build/distributions/Confis-*.zip`
-- Restart IntelliJ
-- Open any `*.confis.kts` and you can start writing contracts
+=== "Linux / MacOS"
+
+    - Run `./gradlew assemble`
+    - Open your installation of IntelliJ IDEA and select _Settings_ > _Plugins_ > _Install plugin From Disk_
+    - Select the compiled zip file
+      `<repositoryRoot>/plugin/build/distributions/Confis-*.zip`
+    - Restart IntelliJ
+    - Open any `*.confis.kts` files and you can start writing contracts!
+    - You can open the Query UI by selecting **Confis Questions** _(View > Tool Windows > Confis Questions)_
+
+=== "Windows"
+
+    - Run `gradlew.bat assemble`
+    - Open your installation of IntelliJ IDEA and select _Settings_ > _Plugins_ > _Install plugin From Disk_
+    - Select the compiled zip file
+      `<repositoryRoot>/plugin/build/distributions/Confis-*.zip`
+    - Restart IntelliJ
+    - Open any `*.confis.kts` files and you can start writing contracts!
+    - You can open the Query UI by selecting **Confis Questions** _(View > Tool Windows > Confis Questions)_
