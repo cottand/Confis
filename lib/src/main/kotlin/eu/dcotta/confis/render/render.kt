@@ -40,7 +40,7 @@ fun Agreement.renderMarkdown(): String {
     return """
         |# ${title ?: "Confis Agreement"}
         |
-        |${introduction?.replace("\n", "|\n")?.trimMargin("|")?.lineSequence()?.joinToString(separator = "\n|") ?: ""}
+        |${introduction?.replace("\n", "\n|")?.trimMargin("|")?.lineSequence()?.joinToString(separator = "\n|") ?: ""}
         |
         |## 1 - Parties
         |

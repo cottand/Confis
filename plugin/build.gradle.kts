@@ -36,6 +36,7 @@ intellij {
 
 tasks.runIde {
     autoReloadPlugins.set(true)
+    jvmArgs("-Xmx2048m")
 }
 
 tasks.buildSearchableOptions {

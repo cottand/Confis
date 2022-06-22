@@ -167,4 +167,16 @@ class RenderKtTest : StringSpec({
         it shouldContain "alice take cookie"
         it shouldContain "Compliant if the following"
     }
+
+    "intro does not contain indent characters" {
+        val a = Agreement {
+            introduction = """
+                Hello this is
+                a multiline
+                intro
+            """.trimIndent()
+        }
+
+        a.renderMarkdown() shouldNotContain "|"
+    }
 })

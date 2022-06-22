@@ -55,7 +55,7 @@ introduction = """Seismic data acquired pursuant to operations conducted subject
     to the Petroleum Act 1998 and landward area regulations made in exercise of
     powers conferred thereby are Crown Copyright material. $library, pursuant to
     worldwide exclusive rights granted by $controller hereby grants $licensee a
-    non-exclusive Licence to use $data on the following terms
+    non-exclusive Licence to use $data on the following terms.
 """
 
 licensee mayNot transfer(licence) unless {
