@@ -2,52 +2,57 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://cottand.github.io/MEngProject/0.2.0/</loc>
-         <lastmod>2023-01-03</lastmod>
+         <lastmod>2023-03-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cottand.github.io/MEngProject/0.2.0/AgreementsAsDocuments/</loc>
-         <lastmod>2023-01-03</lastmod>
+         <lastmod>2023-03-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cottand.github.io/MEngProject/0.2.0/Questions/</loc>
-         <lastmod>2023-01-03</lastmod>
+         <lastmod>2023-03-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://cottand.github.io/MEngProject/0.2.0/ThesisReport/</loc>
+         <lastmod>2023-03-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cottand.github.io/MEngProject/0.2.0/IDE%20Support/CompilationCaching/</loc>
-         <lastmod>2023-01-03</lastmod>
+         <lastmod>2023-03-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cottand.github.io/MEngProject/0.2.0/IDE%20Support/IDEAPlugin/</loc>
-         <lastmod>2023-01-03</lastmod>
+         <lastmod>2023-03-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cottand.github.io/MEngProject/0.2.0/IDE%20Support/NativeKotlin/</loc>
-         <lastmod>2023-01-03</lastmod>
+         <lastmod>2023-03-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cottand.github.io/MEngProject/0.2.0/Language/Circumstances/</loc>
-         <lastmod>2023-01-03</lastmod>
+         <lastmod>2023-03-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cottand.github.io/MEngProject/0.2.0/Language/Declarations/</loc>
-         <lastmod>2023-01-03</lastmod>
+         <lastmod>2023-03-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cottand.github.io/MEngProject/0.2.0/Language/PermissionClauses/</loc>
-         <lastmod>2023-01-03</lastmod>
+         <lastmod>2023-03-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://cottand.github.io/MEngProject/0.2.0/Language/RequirementClauses/</loc>
-         <lastmod>2023-01-03</lastmod>
+         <lastmod>2023-03-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
